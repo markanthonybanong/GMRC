@@ -1,0 +1,45 @@
+ .container {
+  display: flex;
+  justify-content: center;
+   mat-card {
+    mat-form-field{
+      width: 45%;
+    }
+    #addressField {
+      width: 100%;
+    }
+    >.form-header-block{
+      display: flex;
+      justify-content: center;
+    }
+    >.first-block, >.second-block, >.third-block, >.fourth-block, >.fifth-block{
+      display: flex;
+      justify-content: space-between;
+    }
+    >.action-buttons-block{
+      display: flex;
+      justify-content: flex-end;
+      #back-button{
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+/*MEDIA QUERIES*/
+/*MIN-WIDTH*/
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {  }
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {  }
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+
+}
+

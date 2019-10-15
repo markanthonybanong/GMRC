@@ -1,0 +1,73 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { LayoutModule } from '@angular/cdk/layout';
+import {
+  MatToolbarModule,
+  MatSidenavModule,
+  MatIconModule,
+  MatListModule,
+  MatButtonModule,
+  MatCardModule,
+  MatSelectModule,
+  MatTableModule,
+  MatDividerModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSnackBarModule,
+  MatPaginatorModule,
+  MatDialogModule,
+  MatProgressSpinnerModule,
+  MatDatepickerModule,
+  MatSortModule,
+  MatAutocompleteModule,
+  MatNativeDateModule,
+} from '@angular/material';
+
+@NgModule({
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    LayoutModule,
+    MatCardModule,
+    MatSelectModule,
+    MatTableModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSnackBarModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSortModule,
+    MatAutocompleteModule
+  ],
+  exports: [
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    LayoutModule,
+    MatCardModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatTableModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSnackBarModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSortModule,
+    MatAutocompleteModule
+  ],
+})
+export class AngularMaterialModule { }

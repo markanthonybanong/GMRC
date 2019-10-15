@@ -1,0 +1,45 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: 'Roboto', sans-serif; }
+/*common selectors*/
+#button-text-white {
+  color: white;
+}
+#label-text-primary{
+  color:#255070;
+}
+#delete{
+  color: red;
+}
+/*for snackbar notification*/
+.mat-simple-snackbar {
+  justify-content: center !important;
+}
+.snack-bar-success {
+  background-color:#255070;
+  color: white;
+  position: fixed;
+  top: 64px;
+}
+.snack-bar-failure {
+  background-color:red;
+  color: white;
+  position: fixed;
+  top: 64px;
+}
+/*for spinners*/
+.form-spinner-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.table-spinner-container{
+  display: flex;
+  justify-content: center;
+  mat-spinner{
+    margin-top: 30px;
+  }
+}
+
