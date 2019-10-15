@@ -1,0 +1,22 @@
+<mat-card>
+  <div class="header">
+    <div class="first-column">
+      <h1 id="label-text-primary">ROOM</h1>
+    </div>
+    <div class="second-column">
+      <button mat-raised-button color="primary" [routerLink]="'/room/private-transient'">
+        <span id="button-text-white">Private/Transient</span>
+      </button>
+      <button mat-raised-button color="primary" [routerLink]="'/room/bedspace'">
+        <span id="button-text-white">Bedspace</span>
+      </button>
+      <button mat-raised-button color="primary" [routerLink]="'/room/add'">
+        <span id="button-text-white">Add Room</span>
+      </button>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="route-area">
+    <router-outlet></router-outlet>
+  </div>
+</mat-card>

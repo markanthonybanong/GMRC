@@ -1,0 +1,48 @@
+.advance-search{
+  margin-top: 40px;
+  button{
+    width: 100%;
+  }
+}
+table{
+  mat-icon:hover{
+    cursor: pointer;
+  }
+  .mat-header-cell{
+    text-align: center;
+  }
+  .mat-cell{
+    text-align: center;
+  }
+}
+
+/*MEDIA QUERIES*/
+/*MAX-WIDTH*/
+@media (max-width: 768px) {
+
+}
+/*MIN-WIDTH*/
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .advance-search {
+    display: flex;
+    justify-content: flex-end;
+    button{
+      width: 30%;
+    }
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+
+}

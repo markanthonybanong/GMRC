@@ -1,0 +1,72 @@
+<div *ngIf="isLoading" class="form-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="form-parent-container" *ngIf="isLoading === false">
+  <mat-card [formGroup]="form" *ngIf="isLoading === false" class="form">
+    <div class="form-header-block">
+      <h5 id="label-text-primary">{{formTitle}}</h5>
+    </div>
+    <div class="first-block">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Name"  formControlName="name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Room number"  formControlName="roomNumber">
+      </mat-form-field>
+    </div>
+    <div class="second-block">
+      <mat-form-field>
+        <mat-select placeholder="How did you find us"  formControlName="howDidYouFindUs">
+          <mat-option *ngFor="let value of knownGMRCThrough;" [value]="value">
+            {{value}}
+          </mat-option>
+      </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="willOccupyIn" placeholder="Will occupy in" formControlName="willOccupyIn">
+        <mat-datepicker-toggle matSuffix [for]="willOccupyIn"></mat-datepicker-toggle>
+        <mat-datepicker #willOccupyIn></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="third-block">
+      <mat-form-field>
+        <input matInput type="number" placeholder="Phone number"  formControlName="phoneNumber">
+      </mat-form-field>
+      <mat-form-field>
+         <mat-select placeholder="Gender"  formControlName="gender">
+            <mat-option *ngFor="let gender of genders;" [value]="gender">
+              {{gender}}
+            </mat-option>
+         </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="fourth-block">
+      <mat-form-field>
+        <mat-select placeholder="Room type"  (selectionChange)="roomTypeToggle($event)" formControlName="roomType">
+          <mat-option *ngFor="let roomType of roomEnumService.roomType;" [value]="roomType">
+            {{roomType}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field formArrayName="deckNumbers" *ngFor="let deckNumber of form.get('deckNumbers').controls; let i=index;">
+        <div [formGroupName]="i">
+            <input matInput type="number" placeholder="Deck number"  formControlName="number">
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="action-buttons-block">
+      <div>
+        <button mat-raised-button color="warn" (click)='backToInquiryList()' id="back-button">
+          <span id="button-text">Back</span>
+        </button>
+        <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='!form.valid || isSubmitting'>
+          <span id="button-text-white">{{buttonName}}</span>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+
+
+

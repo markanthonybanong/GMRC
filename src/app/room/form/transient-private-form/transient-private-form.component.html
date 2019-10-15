@@ -1,0 +1,95 @@
+<div *ngIf="isLoading" class="form-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div [formGroup]="tenantForm" class="parent-tenant-form" *ngIf="isLoading === false">
+  <mat-card class="tenant-form" formArrayName="tenants" *ngFor="let tenant of tenantForm.get('tenants').controls; let i = index;" >
+    <div class="header-block">
+      <div>
+        <h5>Tenant {{i + 1}}</h5>
+      </div>
+      <div class="action-buttons-block">
+        <mat-icon class="material-icons" color="warn" (click)="removeTenant(i)">
+                 cancel
+        </mat-icon>
+      </div>
+    </div>
+    <div [formGroupName]="i">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Tenant name"  formControlName="name" (click)="setTenantOldObjectId(i)" (input)="searchTenant(tenant.get('name').value)" [matAutocomplete]="auto">
+      </mat-form-field>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id, i)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+          {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+    <div class="action-buttons-block">
+      <div>
+        <button mat-raised-button color="primary" (click)="tenantFormOnSubmit(i)" [disabled]='!tenant.valid || isSubmitting' *ngIf="tenant.get('fromServer').value === false">
+          <span id="button-text-white">Save</span>
+        </button>
+        <button mat-raised-button color="primary" (click)="tenantFormOnSubmit(i, true)" [disabled]="!tenant.get('name').value || isSubmitting" *ngIf="tenant.get('fromServer').value === true">
+          <span id="button-text-white">Update</span>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+<div class="parent-container">
+  <mat-card class="container" [formGroup]="form">
+    <div class="header-block">
+      <h5 id="label-text-primary">UPDATE ROOM</h5>
+    </div>
+    <div class="first-block">
+        <mat-form-field>
+            <input matInput type="number" placeholder="Room number" formControlName="number">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="number" placeholder="Floor number" formControlName="floor">
+        </mat-form-field>
+    </div>
+    <div class="second-block">
+      <mat-form-field>
+        <mat-select placeholder="Room type"  formControlName="type" (selectionChange)="roomTypeToggle($event)">
+          <mat-option *ngFor="let roomType of roomTypes;" [value]="roomType">
+            {{roomType}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Aircon" formControlName="aircon">
+          <mat-option *ngFor="let withOrWithout of roomEnumService.hasAircon;" [value]="withOrWithout">
+            {{withOrWithout}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="third-block" formArrayName="transientPrivateRoomProperties" *ngFor="let property of form.get('transientPrivateRoomProperties').controls; let i = index;">
+      <div [formGroupName]="i" class="transient-private-property-container">
+        <mat-form-field>
+          <mat-select placeholder="Room status" formControlName="status">
+            <mat-option *ngFor="let roomStatus of roomEnumService.roomStatus;" [value]="roomStatus">
+              {{roomStatus}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="Due rent date" formControlName="dueRent">
+        </mat-form-field>
+      </div>
+    </div>
+    <button mat-raised-button color="primary" id="add-tenant-button" (click)="addTenant()">
+      <span id="button-text-white">ADD TENANT</span>
+    </button>
+    <div class="action-buttons-block">
+      <div>
+        <button mat-raised-button color="warn" (click)='routeToTransientPrivateRooms()' id="back-button">
+          <span id="button-text">Back</span>
+        </button>
+        <button mat-raised-button color="primary" (click)='formOnSubmit()' [disabled]='!form.valid || isSubmitting'>
+          <span id="button-text-white">Update</span>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>

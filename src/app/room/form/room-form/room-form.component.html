@@ -1,0 +1,55 @@
+<div class="parent-container">
+  <mat-card class="container" [formGroup]="form">
+    <div class="header-block">
+      <h5 id="label-text-primary">ADD ROOM</h5>
+    </div>
+    <div class="first-block">
+        <mat-form-field>
+            <input matInput type="number" placeholder="Room number" formControlName="number">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="number" placeholder="Floor number" formControlName="floor">
+        </mat-form-field>
+    </div>
+    <div class="second-block">
+      <mat-form-field>
+        <mat-select placeholder="Room type"  formControlName="type" (selectionChange)="roomTypeToggle($event)">
+          <mat-option *ngFor="let roomType of roomEnumService.roomType;" [value]="roomType">
+            {{roomType}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Aircon" formControlName="aircon">
+          <mat-option *ngFor="let withOrWithout of roomEnumService.hasAircon;" [value]="withOrWithout">
+            {{withOrWithout}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="third-block" formArrayName="transientPrivateRoomProperties" *ngFor="let property of form.get('transientPrivateRoomProperties').controls; let i = index;">
+      <div [formGroupName]="i" class="transient-private-property-container">
+        <mat-form-field>
+          <mat-select placeholder="Room status" formControlName="status">
+            <mat-option *ngFor="let roomStatus of roomEnumService.roomStatus;" [value]="roomStatus">
+              {{roomStatus}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="Due rent date" formControlName="dueRent">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="action-buttons-block">
+      <div>
+        <button mat-raised-button color="warn" (click)='backToPreviousWindow()' id="back-button">
+          <span id="button-text">Back</span>
+        </button>
+        <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='!form.valid || isSubmitting'>
+          <span id="button-text-white">{{buttonName}}</span>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>

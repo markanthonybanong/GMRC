@@ -1,0 +1,74 @@
+<div *ngIf="isLoading" class="form-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="container" *ngIf="isLoading === false">
+  <mat-card [formGroup]="form">
+    <div class="form-header-block">
+      <h5 id="label-text-primary">{{formTitle}}</h5>
+    </div>
+    <div class="first-block">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Firstname"  formControlName="firstname">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="text" placeholder="Middlename"  formControlName="middlename">
+      </mat-form-field>
+    </div>
+    <div class="second-block">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Lastname"  formControlName="lastname">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Age"  formControlName="age">
+      </mat-form-field>
+    </div>
+    <div class="third-block">
+      <mat-form-field>
+        <mat-select placeholder="Gender" formControlName="gender">
+          <mat-option *ngFor="let gender of tenantEnumService.genders;" [value]="gender">
+            {{gender}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Type of network" formControlName="typeOfNetwork">
+            <mat-option *ngFor="let network of tenantEnumService.typeOfNetworks;" [value]="network">
+              {{network}}
+            </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="fourth-block">
+      <mat-form-field>
+        <input matInput type="number" placeholder="Contact number"  formControlName="contactNumber">
+      </mat-form-field>
+      <mat-form-field>
+          <input matInput type="number" placeholder="Emergency contact #"  formControlName="emergencyContactNumber">
+      </mat-form-field>
+    </div>
+    <div class="fifth-block">
+      <mat-form-field>
+        <input matInput type="number" placeholder="Room number"  formControlName="roomNumber">
+      </mat-form-field>
+      <mat-form-field>
+          <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
+      </mat-form-field>
+    </div>
+    <div class="sixth-block">
+      <mat-form-field id="addressField">
+        <textarea matInput placeholder="Address" formControlName="address"></textarea>
+      </mat-form-field>
+    </div>
+    <div class="action-buttons-block">
+      <div>
+        <button mat-raised-button color="warn" (click)='backToTenantsList()' id="back-button">
+          <span id="button-text">Back</span>
+        </button>
+        <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='!form.valid || isSubmitting'>
+          <span id="button-text-white">{{buttonName}}</span>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
