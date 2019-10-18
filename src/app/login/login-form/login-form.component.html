@@ -1,0 +1,38 @@
+<div class="parent-container">
+  <div [formGroup]="form" class="container">
+    <div class="form">
+      <div class="header-block">
+        <div class="first-block">
+          <h3>
+            <span id="label-text-primary">GMRC</span>
+          </h3>
+          <h3>
+            <span id="label-text-primary">Sign in to continue</span>
+          </h3>
+        </div>
+      </div>
+      <div class="body">
+        <div class="first-block">
+          <mat-form-field>
+            <input matInput type="email" placeholder="E-mail"  formControlName="email">
+          </mat-form-field>
+        </div>
+        <div class="second-block">
+          <mat-form-field>
+            <input matInput type="password" placeholder="Password"  formControlName="password">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="error">
+          <mat-error>{{errMsg}}</mat-error>
+      </div>
+      <div class="footer">
+        <div>
+          <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='!form.valid || isSubmitting'>
+            <span id="button-text-white">Log-in</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

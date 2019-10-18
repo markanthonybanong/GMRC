@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { StartRoutingModule } from './start-routing.module';
 import { StartComponent } from './start/start.component';
 import { SharedModule } from '../shared/shared.module';
+import { LoginModule } from '../login/login.module';
 
 
 
@@ -11,8 +12,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     StartRoutingModule,
-    SharedModule
-
+    SharedModule,
+    LoginModule,
   ],
   declarations: [StartComponent]
 })
