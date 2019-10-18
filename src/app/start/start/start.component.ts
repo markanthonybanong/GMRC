@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '@gmrc/services';
 
 @Component({
   selector: 'app-start',
@@ -8,16 +9,17 @@ import { Router } from '@angular/router';
 })
 export class StartComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService) { }
 
   ngOnInit() {
-    const isTokenValid = true;
-    // TODO: create auth service to check for token validity
-    if (isTokenValid) {
+    this.authService.checkTokenValidity()
+    .then(isValid => {
       this.router.navigateByUrl('/inquiry');
-    } else {
-      // TODO: navigate to login page
-    }
+    }).catch(err => {
+      this.router.navigateByUrl('/login');
+    });
   }
 
 }

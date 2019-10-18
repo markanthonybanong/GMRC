@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LocalStorageService } from '../local-storage/local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,17 @@ export class ApiService {
     headers: {}
   };
 
-  constructor(private http: HttpClient) { }
-
+  constructor(
+    private http: HttpClient,
+    private localStorageService: LocalStorageService) {
+  }
+  initHttpOptionsHeader() {
+    const token = this.localStorageService.getItem('token');
+    this.httpOptions.headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+  }
   post<T>(path, body) {
     return this.http.post<T>(`${this.api_uri}${path}`, body, this.httpOptions).toPromise();
   }
