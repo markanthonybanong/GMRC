@@ -16,6 +16,7 @@ export class ApiService {
   constructor(
     private http: HttpClient,
     private localStorageService: LocalStorageService) {
+      this.initHttpOptionsHeader();
   }
   initHttpOptionsHeader() {
     const token = this.localStorageService.getItem('token');

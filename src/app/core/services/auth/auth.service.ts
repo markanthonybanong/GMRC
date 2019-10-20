@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { LocalStorageService } from '../local-storage/local-storage.service';
-
+import { Token } from '@gmrc/models';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,16 +15,15 @@ export class AuthService {
     const tokenExp = this.localStorageService.getItem('tokenExp');
     if (tokenExp !== null) {
       if (tokenExp > new Date().getTime() / 1000 ) {
-         this.apiService.get('auth/validate-token').then( isValid => {
-            if ( isValid ) {
-              return true;
-            } else {
-              this.localStorageService.remove('token');
-              this.localStorageService.remove('tokenExp');
-              return false;
-            }
-         });
+        const isValid = await this.apiService.get('auth/validate-token');
+        if (isValid) {
+          return true;
+        } else {
+          this.localStorageService.clear();
+          return false;
+        }
        } else {
+         this.localStorageService.clear();
          return false;
        }
    } else {
@@ -32,19 +31,14 @@ export class AuthService {
    }
   }
   async login(email: string, password: string) {
-    return this.apiService
-      .post<any>('auth', {
-        email: email,
-        password: password
-      })
-      .then(res => {
-        this.localStorageService.setItem('token', res.token);
-        this.localStorageService.setItem('tokenExp', res.tokenExp);
-        this.apiService.initHttpOptionsHeader();
-      })
-      .catch(err => {
-        return Promise.reject('Invalid email or password. Try again.');
-      });
+    try {
+      const response = await this.apiService.post<Token>('auth', {email: email, password: password });
+      this.localStorageService.setItem('token', response.token);
+      this.localStorageService.setItem('tokenExp', response.tokenExp);
+      this.apiService.initHttpOptionsHeader();
+    } catch (error) {
+      return Promise.reject('Invalid email or password. Try again.');
+    }
   }
   logout(): void {
     this.localStorageService.remove('token');
