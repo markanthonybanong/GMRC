@@ -4,15 +4,16 @@ import { LayoutComponent } from '../layout/layout/layout.component';
 import { RoomModule } from '../room/room.module';
 import { TenantModule } from '../tenant/tenant.module';
 import { InquiryModule } from '../inquiry/inquiry.module';
+import { AuthGuardService } from '@gmrc/services';
 
 const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'inquiry', loadChildren: () => InquiryModule },
-      { path: 'room', loadChildren: () => RoomModule },
-      { path: 'tenant', loadChildren: () => TenantModule }
+      { path: 'inquiry', loadChildren: () => InquiryModule, canActivate: [AuthGuardService] },
+      { path: 'room', loadChildren: () => RoomModule, canActivate: [AuthGuardService] },
+      { path: 'tenant', loadChildren: () => TenantModule, canActivate: [AuthGuardService] }
     ]
   }
 ];
