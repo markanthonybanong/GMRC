@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="error">
-          <mat-error>{{errMsg}}</mat-error>
+        <mat-error *ngIf="isDisplayError">{{errMsg}}</mat-error>
       </div>
       <div class="footer">
         <div>

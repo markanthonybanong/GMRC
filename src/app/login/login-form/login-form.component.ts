@@ -14,6 +14,8 @@ export class LoginFormComponent implements OnInit {
     password: ['', Validators.required],
   });
   errMsg: string = null;
+  isDisplayError = true;
+  isSubmitting = false;
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -23,12 +25,18 @@ export class LoginFormComponent implements OnInit {
   ngOnInit() {
   }
   onSubmit() {
+    this.isSubmitting = true;
     this.authService.login(this.form.value.email, this.form.value.password)
     .then((result) => {
       this.router.navigate(['/inquiry']);
     })
     .catch(err => {
-       this.errMsg = err;
+      this.isSubmitting = false;
+      this.isDisplayError = true;
+      this.errMsg = err;
+       setTimeout(() => {
+         this.isDisplayError = false;
+       }, 2000);
     });
   }
 }
