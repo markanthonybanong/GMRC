@@ -14,7 +14,6 @@ export class LoginFormComponent implements OnInit {
     password: ['', Validators.required],
   });
   errMsg: string = null;
-  mylyn: string = null;
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -28,8 +27,8 @@ export class LoginFormComponent implements OnInit {
     .then((result) => {
       this.router.navigate(['/inquiry']);
     })
-    .catch(errMsg => {
-       this.errMsg = errMsg;
+    .catch(err => {
+       this.errMsg = err;
     });
   }
 }
