@@ -36,7 +36,7 @@
   </mat-card>
 </div>
 <div class="parent-container">
-  <mat-card class="container" [formGroup]="form">
+  <mat-card class="container" [formGroup]="form" *ngIf="isLoading === false">
     <div class="header-block">
       <h5 id="label-text-primary">UPDATE ROOM</h5>
     </div>
