@@ -14,7 +14,7 @@
   </header>
   <mat-divider></mat-divider>
   <body>
-    <table mat-table [dataSource]="dataSource">
+    <table *ngIf="isLoading === false" mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
         <td mat-cell *matCellDef="let element">{{element.name}}</td>
