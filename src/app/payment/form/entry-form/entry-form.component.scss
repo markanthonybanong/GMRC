@@ -1,11 +1,8 @@
-mat-form-field{
-  width: 100%;
-}
-.parent-container{
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-  >.container{
+.parent-form {
+  mat-form-field{
+    width: 100%;
+  }
+  >.form{
     >.header-block{
       display: flex;
       justify-content: center;
@@ -19,6 +16,7 @@ mat-form-field{
     }
   }
 }
+
 /*MEDIA QUERIES*/
 @media (max-width: 575px) {
 }
@@ -29,13 +27,25 @@ mat-form-field{
 }
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
-  .container{
-    mat-form-field{
-      width: 48%;
-    }
-    >.first-block, >.second-block, .transient-private-property-container{
-      display: flex;
-      justify-content: space-between;
+  .parent-form{
+    display: flex;
+    justify-content: center;
+    .form{
+      mat-form-field{
+        width: 48%;
+      }
+      >.first-block, >.second-block, >.third-block, >.fourth-block{
+        display: flex;
+        justify-content: space-between;
+      }
+      .fourth-block{
+        mat-form-field{
+          width: 100%;
+        }
+        >div{
+          width: 48%;
+        }
+      }
     }
   }
 }

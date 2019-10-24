@@ -13,13 +13,13 @@ const routes: Routes = [
     component: RoomComponent,
     children: [
       { path: '', redirectTo: 'private-transient', pathMatch: 'full' },
-      { path: 'private-transient', component: TransientPrivateComponent},
-      { path: 'bedspace', component: BedspaceComponent}
+      { path: 'private-transient', component: TransientPrivateComponent },
+      { path: 'bedspace', component: BedspaceComponent }
     ]
   },
   { path: 'add', component: RoomFormComponent },
-  { path: 'update-private-transient/:id', component: TransientPrivateFormComponent},
-  { path: 'update-bedspace/:id', component: BedspaceFormComponent},
+  { path: 'update-private-transient/:id', component: TransientPrivateFormComponent },
+  { path: 'update-bedspace/:id', component: BedspaceFormComponent },
 ];
 
 @NgModule({

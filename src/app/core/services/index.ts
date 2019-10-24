@@ -8,3 +8,4 @@ export * from './inquiry/inquiry.service';
 export * from './object/object.service';
 export * from './auth/auth.service';
 export * from './route-guard/auth-guard.service';
+export * from './payment/payment.service';
