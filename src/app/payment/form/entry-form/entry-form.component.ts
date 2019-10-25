@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
-import { Tenant, PageRequest, Entry } from '@gmrc/models';
+import { Tenant, PageRequest, Entry, Room } from '@gmrc/models';
 import { FilterType } from '@gmrc/enums';
-import { TenantService, PaymentService, NotificationService } from '@gmrc/services';
+import { TenantService, PaymentService, NotificationService, RoomService } from '@gmrc/services';
 import { MatSelectChange } from '@angular/material';
 
 
@@ -15,10 +15,12 @@ import { MatSelectChange } from '@angular/material';
 export class EntryFormComponent implements OnInit {
   isLoading = true;
   form = this.formBuilder.group({
+    roomNumber: ['', Validators.required],
     tenant: ['', Validators.required],
-    roomType: ['', Validators.required],
     monthlyRent: ['', Validators.required],
     key: ['', Validators.required],
+    dateEntry: [new Date(), Validators.required],
+    dateExit: [''],
     oneMonthDeposit: ['', Validators.required],
     oneMonthDepositBalance: this.formBuilder.array([]),
     oneMonthAdvance: ['', Validators.required],
@@ -42,7 +44,8 @@ export class EntryFormComponent implements OnInit {
     'Unpaid',
     'Balance',
   ];
-  pageRequest = new PageRequest(1, 5);
+  roomNumbers: number[] = [];
+  pageRequest = new PageRequest(null, null);
   tenants: Tenant[] = [];
   buttonName = 'Add';
   formTitle = 'ADD ROOM';
@@ -54,7 +57,8 @@ export class EntryFormComponent implements OnInit {
     private tenantService: TenantService,
     private router: Router,
     private paymentService: PaymentService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private roomService: RoomService
   ) { }
 
   ngOnInit() {
@@ -76,8 +80,18 @@ export class EntryFormComponent implements OnInit {
       balance: ['', Validators.required]
     });
   }
+  getRoomNumbers() {
+    this.pageRequest.filters.type = FilterType.ALLROOMS;
+    this.roomService.getRooms<Room>(this.pageRequest).then( rooms => {
+      rooms.data.forEach(room => {
+        this.roomNumbers.push(room.number);
+      });
+    })
+    .catch( err => {});
+  }
   isGoingToUpdate(): void {
     const entryObjectId = this.route.snapshot.paramMap.get('id');
+    this.getRoomNumbers();
     if (entryObjectId !== null) {
       this.getEntryByObjectId(entryObjectId);
     } else {

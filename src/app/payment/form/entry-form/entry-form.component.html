@@ -8,6 +8,13 @@
     </div>
     <div class="first-block">
       <mat-form-field>
+        <mat-select placeholder="Room number"  formControlName="roomNumber">
+          <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+            {{number}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
         <input matInput type="text" placeholder="Tenant" formControlName="tenant" (input)="searchTenant(form.get('tenant').value)" [matAutocomplete]="auto">
       </mat-form-field>
       <mat-autocomplete #auto="matAutocomplete">
@@ -15,13 +22,6 @@
           {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
         </mat-option>
       </mat-autocomplete>
-      <mat-form-field>
-        <mat-select placeholder="Room type"  formControlName="roomType">
-          <mat-option *ngFor="let roomType of roomTypes;" [value]="roomType">
-            {{roomType}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
     <div class="second-block">
       <mat-form-field>
@@ -37,6 +37,18 @@
     </div>
     <div class="third-block">
       <mat-form-field>
+        <input matInput [matDatepicker]="dateEntry" placeholder="Date entry" formControlName="dateEntry">
+        <mat-datepicker-toggle matSuffix [for]="dateEntry"></mat-datepicker-toggle>
+        <mat-datepicker #dateEntry></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="dateExit" placeholder="Date exit" formControlName="dateExit">
+        <mat-datepicker-toggle matSuffix [for]="dateExit"></mat-datepicker-toggle>
+        <mat-datepicker #dateExit></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="fourth-block">
+      <mat-form-field>
         <mat-select placeholder="One month deposit"  formControlName="oneMonthDeposit" (selectionChange)="oneMonthDepositToggle($event)">
           <mat-option *ngFor="let status of paymentStatuses;" [value]="status">
             {{status}}
@@ -51,7 +63,7 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="fourth-block">
+    <div class="fifth-block">
       <div formArrayName="oneMonthDepositBalance" *ngFor="let property of form.get('oneMonthDepositBalance').controls; let i = index;">
         <div [formGroupName]="i">
           <mat-form-field>

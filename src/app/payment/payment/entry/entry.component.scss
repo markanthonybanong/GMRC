@@ -16,6 +16,15 @@ table{
   }
   .mat-cell{
     text-align: center;
+    #paid{
+      color: green;
+    }
+    #un-paid{
+      color: red;
+    }
+    #balance{
+      color: orange;
+    }
   }
 }
 
@@ -39,7 +48,7 @@ table{
   .advance-search {
     display: flex;
     justify-content: flex-end;
-    background: yellow;
+
     >.container {
       width: 30%;
     }

@@ -1,4 +1,5 @@
 export enum FilterType {
+  ALLROOMS = 'allRooms',
   INQUIRYBYOBJECTID = 'inquiryByObjectId',
   ADVANCESEARCHINQUIRY = 'advanceSearchInquiry',
   TRANSIENTPRIVATEROOMS = 'transientPrivateRooms',
@@ -9,5 +10,8 @@ export enum FilterType {
   ADVANCESEARCHBEDSPACEROOMS = 'advanceSearchBedspaceRooms',
   TENANTBYKEYSTROKE = 'tenantByKeyStroke',
   TENANTBYOBJECTID = 'tenantByObjectId',
-  ADVANCESEARCHTENANT = 'advanceSearchTenant'
+  ADVANCESEARCHTENANT = 'advanceSearchTenant',
+  ALLENTRIES = 'allEntries',
+  ENTRYBYOBJECTID = 'entryByObjectId',
+  ADVANCESEARCHENTRY = 'advanceSearchEntry',
 }

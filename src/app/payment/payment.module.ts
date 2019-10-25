@@ -8,7 +8,7 @@ import { EntryFormComponent } from './form/entry-form/entry-form.component';
 import { RoomFormComponent } from './form/room-form/room-form.component';
 import { PenaltiesFormComponent } from './form/penalties-form/penalties-form.component';
 import { PenaltiesComponent } from './payment/penalties/penalties.component';
-import { AngularMaterialModule, SharedModule } from '@gmrc/shared';
+import { AngularMaterialModule, SharedModule, EntryAdvanceSearchComponent } from '@gmrc/shared';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -28,6 +28,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     RoomFormComponent,
     PenaltiesFormComponent,
     PenaltiesComponent
-  ]
+  ],
+  entryComponents: [EntryAdvanceSearchComponent]
 })
 export class PaymentModule { }

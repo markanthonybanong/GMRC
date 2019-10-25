@@ -34,11 +34,11 @@
       mat-form-field{
         width: 48%;
       }
-      >.first-block, >.second-block, >.third-block, >.fourth-block{
+      >.first-block, >.second-block, >.third-block, >.fourth-block, >.fifth-block{
         display: flex;
         justify-content: space-between;
       }
-      .fourth-block{
+      .fifth-block{
         mat-form-field{
           width: 100%;
         }

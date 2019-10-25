@@ -5,4 +5,5 @@ export * from './advanced-search-dialogs/tenant-advance-search/tenant-advance-se
 export * from './advanced-search-dialogs/transient-private-advance-search/transient-private-advance-search.component';
 export * from './advanced-search-dialogs/bedspace-advance-search/bedspace-advance-search.component';
 export * from './confirmation-dialog/confirmation-dialog.component';
+export * from './advanced-search-dialogs/entry-advance-search/entry-advance-search.component';
 export * from './shared.module';

@@ -9,6 +9,7 @@ import { TenantAdvanceSearchComponent } from './advanced-search-dialogs/tenant-a
 import { TransientPrivateAdvanceSearchComponent } from './advanced-search-dialogs/transient-private-advance-search/transient-private-advance-search.component';
 import { BedspaceAdvanceSearchComponent } from './advanced-search-dialogs/bedspace-advance-search/bedspace-advance-search.component';
 import { InquiryAdvanceSearchComponent } from './advanced-search-dialogs/inquiry-advance-search/inquiry-advance-search.component';
+import { EntryAdvanceSearchComponent } from './advanced-search-dialogs/entry-advance-search/entry-advance-search.component';
 
 
 // TODO: use the ts config.
@@ -27,8 +28,8 @@ import { InquiryAdvanceSearchComponent } from './advanced-search-dialogs/inquiry
     TenantAdvanceSearchComponent,
     TransientPrivateAdvanceSearchComponent,
     BedspaceAdvanceSearchComponent,
-    InquiryAdvanceSearchComponent
-
+    InquiryAdvanceSearchComponent,
+    EntryAdvanceSearchComponent
   ],
 
   providers: []

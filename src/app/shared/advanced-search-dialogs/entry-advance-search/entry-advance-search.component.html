@@ -1,0 +1,37 @@
+<form [formGroup]="searchFiltersForm">
+    <div class="header-container">
+      <h3 id="label-text-primary">Search Entry</h3>
+    </div>
+    <div class="body-container">
+      <div class="first-block">
+        <mat-form-field>
+          <mat-select placeholder="Room number" formControlName="roomNumber">
+            <mat-option *ngFor="let number of roomNumbers;" [value]="numbers">
+                {{number}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenant(searchFiltersForm.get('tenant').value)" [matAutocomplete]="auto">
+        </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id, i)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+            {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+      <div class="second-block">
+
+        <!-- <mat-form-field>
+          <input matInput [matDatepicker]="willOccupyIn" placeholder="Will occupy in" formControlName="willOccupyIn">
+          <mat-datepicker-toggle matSuffix [for]="willOccupyIn"></mat-datepicker-toggle>
+          <mat-datepicker #willOccupyIn></mat-datepicker>
+        </mat-form-field> -->
+      </div>
+      <div class="footer-container">
+        <button mat-raised-button color="primary" [matDialogClose]='searchFiltersForm.value'>
+          <span id="button-text-white">Search</span>
+        </button>
+      </div>
+    </div>
+  </form>

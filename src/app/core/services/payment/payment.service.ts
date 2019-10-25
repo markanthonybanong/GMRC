@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Entry } from '@gmrc/models';
+import { Entry, PageRequest, PageData } from '@gmrc/models';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -17,5 +17,7 @@ export class PaymentService {
   updateEntry(body: Entry) {
     return this.apiService.put<Entry>('payment/createEntry', body);
   }
-
+  getEntries<T>(pageRequest: PageRequest) {
+    return this.apiService.post<PageData<T>>('payment/page', pageRequest);
+  }
 }
