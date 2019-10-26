@@ -6,36 +6,30 @@ import { RoomType, RoomStatus, HasAirCon, DeckStatus, TransientBedspaceStatus } 
 })
 export class RoomEnumService {
 
-  get roomType() {
+  constructor() { }
+  get roomType(): Array<string> {
     return Object.keys(RoomType).map(function(key) {
       return RoomType[key];
     });
   }
-
-  get hasAircon() {
+  get hasAircon(): Array<string> {
     return Object.keys(HasAirCon).map(function(key) {
       return HasAirCon[key];
     });
   }
-
-  get roomStatus() {
+  get roomStatus(): Array<string> {
     return Object.keys(RoomStatus).map(function(key) {
       return RoomStatus[key];
     });
   }
-
-  get deckStatus() {
+  get deckStatus(): Array<string> {
     return Object.keys(DeckStatus).map(function(key) {
       return DeckStatus[key];
     });
   }
-
-  get transientBedspaceStatus() {
+  get transientBedspaceStatus(): Array<string> {
     return Object.keys(TransientBedspaceStatus).map(function(key) {
       return TransientBedspaceStatus[key];
     });
   }
-
-
-  constructor() { }
 }

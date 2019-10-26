@@ -28,8 +28,8 @@
         <input matInput type="number" placeholder="Monthy rent" formControlName="monthlyRent">
       </mat-form-field>
       <mat-form-field>
-        <mat-select placeholder="Key"  formControlName="key">
-          <mat-option *ngFor="let status of keyStatuses;" [value]="status">
+        <mat-select placeholder="Key" formControlName="key">
+          <mat-option *ngFor="let status of paymentEnumService.keyStatuses;" [value]="status">
             {{status}}
           </mat-option>
         </mat-select>
@@ -50,14 +50,14 @@
     <div class="fourth-block">
       <mat-form-field>
         <mat-select placeholder="One month deposit"  formControlName="oneMonthDeposit" (selectionChange)="oneMonthDepositToggle($event)">
-          <mat-option *ngFor="let status of paymentStatuses;" [value]="status">
+          <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
             {{status}}
           </mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field>
         <mat-select placeholder="One month advance"  formControlName="oneMonthAdvance" (selectionChange)="oneMonthAdvanceToggle($event)">
-          <mat-option *ngFor="let status of paymentStatuses;" [value]="status">
+          <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
             {{status}}
           </mat-option>
         </mat-select>

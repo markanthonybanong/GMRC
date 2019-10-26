@@ -15,7 +15,7 @@ export class PaymentService {
     return this.apiService.post<Entry>('payment/createEntry', body);
   }
   updateEntry(body: Entry) {
-    return this.apiService.put<Entry>('payment/createEntry', body);
+    return this.apiService.put<Entry>(`payment/updateEntry/${body._id}`, body);
   }
   getEntries<T>(pageRequest: PageRequest) {
     return this.apiService.post<PageData<T>>('payment/page', pageRequest);

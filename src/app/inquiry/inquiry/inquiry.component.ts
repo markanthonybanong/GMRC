@@ -4,7 +4,7 @@ import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { Router } from '@angular/router';
 import { InquiryService, NotificationService, ObjectService } from '@gmrc/services';
 import { ConfirmationDialogComponent, InquiryAdvanceSearchComponent } from '@gmrc/shared';
-import { FilterType, InquiryFilter } from '@gmrc/enums';
+import { FilterType, InquiryFilter, InquiryStatus } from '@gmrc/enums';
 import * as moment from 'moment';
 
 @Component({
@@ -19,6 +19,7 @@ export class InquiryComponent implements OnInit {
     'roomNumber',
     'willOccupyIn',
     'foundGMRCthrough',
+    'status',
     'actions',
   ];
   pageSizeOptions: number[] = [5, 10, 15];

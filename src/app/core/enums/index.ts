@@ -8,3 +8,6 @@ export * from './TypeOfNetwork';
 export * from './PatchTo';
 export * from './FilterType';
 export * from './inquiry-filter.enum';
+export * from './KeyStatus';
+export * from './PaymentStatus';
+export * from './InquiryStatus';

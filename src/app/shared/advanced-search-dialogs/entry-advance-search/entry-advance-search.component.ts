@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { PageRequest, Room, Tenant } from '@gmrc/models';
-import { RoomService, TenantService } from '@gmrc/services';
+import { RoomService, TenantService, PaymentEnumService } from '@gmrc/services';
 import { FilterType } from '@gmrc/enums';
 
 @Component({
@@ -13,12 +13,12 @@ export class EntryAdvanceSearchComponent implements OnInit {
   roomNumbers: number[] = [];
   searchFiltersForm = this.formBuilder.group({
     roomNumber: null,
-    tenant: null,
+    tenantName: null,
     oneMonthDeposit: null,
     oneMonthAdvance: null,
     dateEntry: null,
     dateExit: null,
-    tenantObjectId: null,
+    tenant: null,
   });
   pageRequest = new PageRequest(null, null);
   tenants: Tenant[];
@@ -26,6 +26,7 @@ export class EntryAdvanceSearchComponent implements OnInit {
     private formBuilder: FormBuilder,
     private roomService: RoomService,
     private tenantService: TenantService,
+    private paymentEnumService: PaymentEnumService
   ) { }
 
   ngOnInit() {
@@ -51,8 +52,8 @@ export class EntryAdvanceSearchComponent implements OnInit {
      });
     }
   }
-  patchTenantObjectId(tenantObjectId: string) {
-    this.searchFiltersForm.get('tenantObjectId').patchValue(tenantObjectId);
+  patchTenantObjectId(tenantObjectId: string): void {
+    this.searchFiltersForm.get('tenant').patchValue(tenantObjectId);
   }
 
 }

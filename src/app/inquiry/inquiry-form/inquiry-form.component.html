@@ -34,7 +34,7 @@
       </mat-form-field>
       <mat-form-field>
          <mat-select placeholder="Gender"  formControlName="gender">
-            <mat-option *ngFor="let gender of genders;" [value]="gender">
+            <mat-option *ngFor="let gender of tenantEnumService.genders;" [value]="gender">
               {{gender}}
             </mat-option>
          </mat-select>
@@ -48,11 +48,23 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field formArrayName="deckNumbers" *ngFor="let deckNumber of form.get('deckNumbers').controls; let i=index;">
-        <div [formGroupName]="i">
-            <input matInput type="number" placeholder="Deck number"  formControlName="number">
-        </div>
+      <mat-form-field>
+        <mat-select placeholder="Status" formControlName="status">
+          <mat-option *ngFor="let status of inquiryEnumService.inquiryStatuses" [value]="status">
+            {{status}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
+    </div>
+    <div class="fifth-block" formArrayName="bedInfos" *ngFor="let bedInfo of form.get('bedInfos').controls; let i=index;">
+      <div [formGroupName]="i">
+        <mat-form-field>
+          <input matInput type="number" placeholder="Bed number"  formControlName="bedNumber">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="Deck number"  formControlName="deckNumber">
+        </mat-form-field>
+      </div>
     </div>
     <div class="action-buttons-block">
       <div>

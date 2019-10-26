@@ -22,8 +22,8 @@ const routes: Routes = [
   },
   { path: 'add-entry', component: EntryFormComponent },
   { path: 'update-entry/:id', component: EntryFormComponent },
-  { path: 'add-room', component: RoomFormComponent },
-  { path: 'update-room', component: RoomFormComponent },
+  { path: 'add-room-payment', component: RoomFormComponent },
+  { path: 'update-room-payment', component: RoomFormComponent },
   { path: 'add-penalties', component: PenaltiesFormComponent },
   { path: 'update-panalties', component: PenaltiesFormComponent},
 ];

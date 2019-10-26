@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { Tenant, PageRequest, Entry, Room } from '@gmrc/models';
-import { FilterType } from '@gmrc/enums';
-import { TenantService, PaymentService, NotificationService, RoomService } from '@gmrc/services';
+import { FilterType, PaymentStatus } from '@gmrc/enums';
+import { TenantService, PaymentService, PaymentEnumService, NotificationService, RoomService } from '@gmrc/services';
 import { MatSelectChange } from '@angular/material';
-
 
 @Component({
   selector: 'app-entry-form',
@@ -19,36 +18,20 @@ export class EntryFormComponent implements OnInit {
     tenant: ['', Validators.required],
     monthlyRent: ['', Validators.required],
     key: ['', Validators.required],
-    dateEntry: [new Date(), Validators.required],
+    dateEntry: ['', Validators.required],
     dateExit: [''],
     oneMonthDeposit: ['', Validators.required],
     oneMonthDepositBalance: this.formBuilder.array([]),
     oneMonthAdvance: ['', Validators.required],
     oneMonthAdvanceBalance: this.formBuilder.array([]),
     tenantObjectId: ['',  Validators.required],
+    _id: '',
   });
-  roomTypes: string[] = [
-    'Transient',
-    'Private',
-    'Bedspace Deck 1',
-    'Bedspace Deck 2',
-    'Bedpsace Deck 3',
-  ];
-  keyStatuses: string[] = [
-    'Paid',
-    'Returned',
-    'None'
-  ];
-  paymentStatuses: string[] = [
-    'Paid',
-    'Unpaid',
-    'Balance',
-  ];
   roomNumbers: number[] = [];
   pageRequest = new PageRequest(null, null);
   tenants: Tenant[] = [];
   buttonName = 'Add';
-  formTitle = 'ADD ROOM';
+  formTitle = 'ADD ENTRY';
   isSubmitting = false;
   model: Entry;
   constructor(
@@ -58,7 +41,8 @@ export class EntryFormComponent implements OnInit {
     private router: Router,
     private paymentService: PaymentService,
     private notificationService: NotificationService,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private paymentEnumService: PaymentEnumService
   ) { }
 
   ngOnInit() {
@@ -75,11 +59,6 @@ export class EntryFormComponent implements OnInit {
   getOneMonthAdvanceBalance(): FormArray{
     return this.form.get('oneMonthAdvanceBalance') as FormArray;
   }
-  createOneMonthAdvanceBalanceFormGroup(): FormGroup {
-    return this.formBuilder.group({
-      balance: ['', Validators.required]
-    });
-  }
   getRoomNumbers() {
     this.pageRequest.filters.type = FilterType.ALLROOMS;
     this.roomService.getRooms<Room>(this.pageRequest).then( rooms => {
@@ -93,13 +72,50 @@ export class EntryFormComponent implements OnInit {
     const entryObjectId = this.route.snapshot.paramMap.get('id');
     this.getRoomNumbers();
     if (entryObjectId !== null) {
+      this.formTitle = 'UPDATE ENTRY';
       this.getEntryByObjectId(entryObjectId);
     } else {
       this.isLoading = false;
     }
   }
+  loadFormValue(): void {
+    if (this.model.oneMonthDepositBalance.length) {
+      this.getOneMonthDepositBalance().push(
+        this.formBuilder.group({
+          balance: this.model.oneMonthDepositBalance[0].balance,
+        })
+      );
+    }
+    if (this.model.oneMonthAdvanceBalance.length) {
+      this.getOneMonthAdvanceBalance().push(
+        this.formBuilder.group({
+          balance: this.model.oneMonthAdvanceBalance[0].balance,
+        })
+      );
+    }
+    this.form.patchValue({
+      _id: this.model._id,
+      roomNumber: this.model.roomNumber,
+      tenant: `${this.model.tenant[0].firstname} ${this.model.tenant[0].middlename} ${this.model.tenant[0].lastname}`,
+      monthlyRent: this.model.monthlyRent,
+      key: this.model.key,
+      dateEntry: this.model.dateEntry,
+      dateExit: this.model.dateExit,
+      oneMonthDeposit: this.model.oneMonthDeposit,
+      oneMonthAdvance: this.model.oneMonthAdvance,
+      tenantObjectId: this.model.tenant[0]._id,
+    });
+  }
   getEntryByObjectId(objectId: string): void {
-
+    this.pageRequest.filters.type = FilterType.ENTRYBYOBJECTID;
+    this.pageRequest.filters.entryObjectId = objectId;
+    this.paymentService.getEntries<Entry>(this.pageRequest)
+    .then( entry => {
+      this.model = entry.data[0];
+      this.loadFormValue();
+      this.buttonName = 'Update';
+      this.isLoading = false;
+    });
   }
   searchTenant(inputTenantName: string): void {
     if (inputTenantName.length !== 0 ) {
@@ -125,7 +141,7 @@ export class EntryFormComponent implements OnInit {
     }
   }
   oneMonthDepositToggle($event: MatSelectChange): void {
-    if ($event.value === this.paymentStatuses[2]) {
+    if ($event.value === PaymentStatus.BALANCE) {
       this.addOneMonthDepositBalanceFormGroup();
     } else {
       this.removeOneMonthDepositBalanceFormGroup();
@@ -144,7 +160,7 @@ export class EntryFormComponent implements OnInit {
     }
   }
   oneMonthAdvanceToggle($event: MatSelectChange): void {
-    if ($event.value === this.paymentStatuses[2]) {
+    if ($event.value === PaymentStatus.BALANCE) {
       this.addOneMonthAdvanceBalanceFormGroup();
     } else {
       this.removeOneMonthAdvanceBalanceFormGroup();

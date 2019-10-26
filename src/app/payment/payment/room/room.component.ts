@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-room',
@@ -6,10 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit {
-
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
-
+  addRoomPayment(): void {
+    this.router.navigate(['payment/add-room-payment']);
+  }
 }

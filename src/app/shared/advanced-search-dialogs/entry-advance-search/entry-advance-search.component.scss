@@ -7,6 +7,14 @@
     width: 48%;
   }
   >.first-block{
+    mat-form-field{
+      width: 100%;
+    }
+    >.first-block, >.second-block{
+      width: 48%;
+    }
+  }
+  >.first-block, >.second-block, >.third-block{
     display: flex;
     justify-content: space-between;
   }

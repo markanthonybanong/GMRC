@@ -4,29 +4,53 @@
     </div>
     <div class="body-container">
       <div class="first-block">
-        <mat-form-field>
-          <mat-select placeholder="Room number" formControlName="roomNumber">
-            <mat-option *ngFor="let number of roomNumbers;" [value]="numbers">
+        <div class="first-block">
+          <mat-form-field>
+            <mat-select placeholder="Room number" formControlName="roomNumber">
+              <mat-option *ngFor="let number of roomNumbers;" [value]="number">
                 {{number}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="second-block">
+          <mat-form-field>
+              <input matInput type="text" placeholder="Tenant name"  formControlName="tenantName" (input)="searchTenant(searchFiltersForm.get('tenantName').value)" [matAutocomplete]="auto">
+          </mat-form-field>
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id, i)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+              {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
             </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenant(searchFiltersForm.get('tenant').value)" [matAutocomplete]="auto">
-        </mat-form-field>
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id, i)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
-            {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
-          </mat-option>
-        </mat-autocomplete>
+          </mat-autocomplete>
+        </div>
       </div>
       <div class="second-block">
-
-        <!-- <mat-form-field>
-          <input matInput [matDatepicker]="willOccupyIn" placeholder="Will occupy in" formControlName="willOccupyIn">
-          <mat-datepicker-toggle matSuffix [for]="willOccupyIn"></mat-datepicker-toggle>
-          <mat-datepicker #willOccupyIn></mat-datepicker>
-        </mat-form-field> -->
+        <mat-form-field>
+            <mat-select placeholder="1 month deposit status"  formControlName="oneMonthDeposit">
+              <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+                {{status}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="1 month advance status"  formControlName="oneMonthAdvance">
+              <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+                {{status}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="third-block">
+        <mat-form-field>
+          <input matInput [matDatepicker]="dateEntry" placeholder="Date entry" formControlName="dateEntry">
+          <mat-datepicker-toggle matSuffix [for]="dateEntry"></mat-datepicker-toggle>
+          <mat-datepicker #dateEntry></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="dateExit" placeholder="Date exit" formControlName="dateExit">
+          <mat-datepicker-toggle matSuffix [for]="dateExit"></mat-datepicker-toggle>
+          <mat-datepicker #dateExit></mat-datepicker>
+        </mat-form-field>
       </div>
       <div class="footer-container">
         <button mat-raised-button color="primary" [matDialogClose]='searchFiltersForm.value'>
