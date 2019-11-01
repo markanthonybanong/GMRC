@@ -8,7 +8,8 @@ export class Room {
   aircon: string;
   transientPrivateRoomProperties: [{
     status: string,
-    dueRent: number,
+    dueRentDate: number,
+    monthlyRent: number
   }];
   bedspaces: Bedspace[];
   tenantsArr: Tenant[];

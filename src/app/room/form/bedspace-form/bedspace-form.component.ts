@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { RoomEnumService, RoomService, NotificationService, TenantService } from '@gmrc/services';
-import { RoomType, FilterType, DeckStatus, PatchTo } from '@gmrc/enums';
+import { RoomType, FilterType, DeckStatus, PatchTo, RoomStatus } from '@gmrc/enums';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageRequest, Room, Tenant, DeckToRemove, PatchData, Bedspace, Away } from '@gmrc/models';
 import { MatSelectChange, MatDialog } from '@angular/material';
@@ -65,6 +65,8 @@ export class BedspaceFormComponent implements OnInit {
         inTime: away.inTime,
         outDate: away.outDate,
         outTime: away.outTime,
+        dueRentDate: away.dueRentDate,
+        rent: away.rent,
         tenant: away.tenant !== null ? `${away.tenant.firstname} ${away.tenant.middlename} ${away.tenant.lastname}` : null,
         tenantObjectId: away.tenant !== null ? away.tenant._id : null,
       }),
@@ -78,7 +80,8 @@ export class BedspaceFormComponent implements OnInit {
           _id: deck._id,
           number: deck.number,
           status: deck.status,
-          dueRent: deck.dueRent,
+          dueRentDate: deck.dueRentDate,
+          monthlyRent: deck.monthlyRent,
           tenant: deck.tenant !== null ? `${deck.tenant.firstname}  ${deck.tenant.middlename} ${deck.tenant.lastname}` : null,
           away: deck.away !== null ? this.patchAwayFormValue(deck.away) : this.formBuilder.array([]),
           fromServer: true,
@@ -141,10 +144,11 @@ export class BedspaceFormComponent implements OnInit {
       number: [this.getDeckNumber(bedIndex), Validators.required],
       status: [DeckStatus.VACANT, Validators.required],
       tenant: [''],
-      tenantObjectId: null,
-      dueRent: [''],
+      dueRentDate: [''],
+      monthlyRent: [''],
       away: this.formBuilder.array([]),
       fromServer: false,
+      tenantObjectId: null,
       _id: '',
     });
   }
@@ -156,6 +160,8 @@ export class BedspaceFormComponent implements OnInit {
       inTime: [''],
       outDate: [''],
       outTime: [''],
+      dueRentDate: [''],
+      rent: [''],
       tenant: null,
       tenantObjectId: null,
     });
@@ -226,7 +232,8 @@ export class BedspaceFormComponent implements OnInit {
     const bed = decks.at(deckIndex) as FormGroup;
     bed.get('tenant').patchValue(null);
     bed.get('tenantObjectId').patchValue(null);
-    bed.get('dueRent').patchValue(null);
+    bed.get('dueRentDate').patchValue(null);
+    bed.get('monthlyRent').patchValue(null);
   }
   deckStatusToggle($event: MatSelectChange, bedIndex: number, deckIndex: number): void {
     if ($event.value === DeckStatus.AWAY) {
@@ -292,6 +299,8 @@ export class BedspaceFormComponent implements OnInit {
         outDate: element.outDate,
         outTime: element.outTime,
         status: element.status,
+        dueRentDate: element.dueRentDate,
+        rent: element.rent,
         tenant: element.tenantObjectId !== null ? element.tenantObjectId : null,
         willReturnIn: element.willReturnIn,
       });
@@ -307,7 +316,8 @@ export class BedspaceFormComponent implements OnInit {
         deckObject['number'] = element.number;
         deckObject['status'] = element.status;
         deckObject['tenant'] =  element.tenantObjectId !== null ? element.tenantObjectId : null;
-        deckObject['dueRent'] = element.dueRent;
+        deckObject['dueRentDate'] = element.dueRentDate;
+        deckObject['monthlyRent'] = element.monthlyRent;
         deckObject['away'] = element.away.length > 0 ? this.formatAwayFormValues(element.away) : null;
         modifiedDecks.push(deckObject);
       });
@@ -315,13 +325,29 @@ export class BedspaceFormComponent implements OnInit {
     bedspaceFormGroup.decks = modifiedDecks;
     return bedspaceFormGroup;
   }
+  emptyFormControlInAwayFormGroup(bedIndex: number, deckIndex: number ) {
+    const awayFormGroup = this.getAwayFormArrayInDecksFormArray(bedIndex, deckIndex).at(0);
+    awayFormGroup.get('inDate').patchValue(null);
+    awayFormGroup.get('inTime').patchValue(null);
+    awayFormGroup.get('outDate').patchValue(null);
+    awayFormGroup.get('outTime').patchValue(null);
+    awayFormGroup.get('tenant').patchValue(null);
+    awayFormGroup.get('dueRentDate').patchValue(null);
+    awayFormGroup.get('rent').patchValue(null);
+    awayFormGroup.get('tenantObjectId').patchValue(null);
+  }
+  setAwayFormGroupToNull(bedIndex: number, deckIndex: number, $event: MatSelectChange): void {
+    if($event.value === RoomStatus.VACANT ) {
+      this.emptyFormControlInAwayFormGroup(bedIndex, deckIndex);
+    }
+  }
+
   bedspaceFormOnSubmit(bedIndex: number, updateBedspace: boolean = false): void {
     this.isSubmitting = true;
     const bedspaceFormGroup = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
     const bedspace = this.getBedspacesFormArray().at(bedIndex).value;
     bedspace['roomObjectId'] = this.form.get('_id').value;
     const formToSend = this.formatBedspaceFormValues(bedspace);
-
     let promiseForm: Promise<Bedspace>;
     promiseForm = updateBedspace ? this.roomService.updateBedspace(formToSend) : this.roomService.addBedspace(formToSend);
     // tslint:disable-next-line: no-shadowed-variable

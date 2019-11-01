@@ -55,7 +55,7 @@ export class EntryComponent implements OnInit{
     this.router.navigate([`payment/add-entry`]);
   }
   convertDateToDateString(date: Date): string {
-    return date !== null ? moment(date).format('MM-DD-YYYY') : null;
+    return date !== null ? moment(date).format('MM/DD/YYYY') : null;
   }
   removeTenantNameInSearchResult(searchResult: object): object {
     const filteredSearchResult = {};
@@ -76,7 +76,6 @@ export class EntryComponent implements OnInit{
         this.pageRequest.filters.type = FilterType.ADVANCESEARCHENTRY;
         this.pageRequest.filters.entryFilter = this.objectService.removeNullValuesInSearchResult(
           this.removeTenantNameInSearchResult(searchResult));
-        console.log(this.pageRequest);
         this.getEntries();
       }
     });

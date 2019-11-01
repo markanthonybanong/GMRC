@@ -55,7 +55,8 @@ export class TransientPrivateFormComponent implements OnInit {
       transientPrivateRoomProperties.push(
         this.formBuilder.group({
           status: this.model.transientPrivateRoomProperties[0].status,
-          dueRent: this.model.transientPrivateRoomProperties[0].dueRent,
+          dueRentDate: this.model.transientPrivateRoomProperties[0].dueRentDate,
+          monthlyRent: this.model.transientPrivateRoomProperties[0].monthlyRent,
         })
       );
     }

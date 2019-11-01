@@ -1,3 +1,179 @@
-<p>
-  room-form works!
-</p>
+<div *ngIf="isLoading" class="form-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="table-grandparent-container" *ngIf="isLoading === false && roomTenants.length > 0">
+  <mat-card>
+    <table mat-table [dataSource]="roomTenants">
+      <ng-container matColumnDef="tenants">
+        <th mat-header-cell *matHeaderCellDef>Tenants</th>
+        <td mat-cell *matCellDef="let element">
+          <p *ngFor="let name of element.names">
+            <span>
+                {{name}}
+            </span>
+          </p>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="dueDate">
+        <th mat-header-cell *matHeaderCellDef>Due date</th>
+        <td mat-cell *matCellDef="let element">
+          <p *ngFor="let date of element.dueRentDates">
+            <span>
+              {{date}}
+            </span>
+          </p>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="monthlyRent">
+        <th mat-header-cell *matHeaderCellDef>Monthly rent/rent</th>
+        <td mat-cell *matCellDef="let element">
+          <p *ngFor="let rent of element.rents">
+            <span>
+              {{rent}}
+            </span>
+          </p>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">
+          <p *ngFor="let status of element.statuses">
+            <span>
+              {{status}}
+            </span>
+          </p>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef >Action</th>
+        <td mat-cell *matCellDef="let element" >
+         <p id="icon-container" *ngFor="let status of element.statuses">
+            <span>
+                <mat-icon id="label-text-primary" (click)="updateTransientPrivateRoom(element._id)">edit</mat-icon>
+            </span>
+         </p>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+    </table>
+    <footer>
+        <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [length]="totalCount" (page)="onPaginatorUpdate($event)"></mat-paginator>
+    </footer>
+  </mat-card>
+</div>
+<div class="form-parent-container" *ngIf="isLoading === false">
+  <mat-card [formGroup]="form" class="form">
+    <div class="form-header-block">
+      <h5 id="label-text-primary">{{formTitle}}</h5>
+    </div>
+    <div class="first-block">
+      <mat-form-field>
+          <mat-select placeholder="Room number"  formControlName="roomNumber">
+            <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+              {{number}}
+            </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <input class="hidden-date-input" formControlName="date" [matDatepicker]="date">
+        <input matInput placeholder="Month/Year" [value]="monthYear">
+        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+        <mat-datepicker #date
+                        startView="multi-year"
+                        (monthSelected)="chosenMonthHandler($event, date)"
+        ></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="second-block">
+      <mat-form-field>
+        <input matInput [matDatepicker]="previousReading" placeholder="Previous reading" formControlName="previousReading">
+        <mat-datepicker-toggle matSuffix [for]="previousReading"></mat-datepicker-toggle>
+        <mat-datepicker #previousReading></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="KW used"  formControlName="previousReadingKWUsed">
+      </mat-form-field>
+    </div>
+    <div class="third-block">
+      <mat-form-field>
+        <input matInput [matDatepicker]="presentReading" placeholder="Present reading" formControlName="presentReading">
+        <mat-datepicker-toggle matSuffix [for]="presentReading"></mat-datepicker-toggle>
+        <mat-datepicker #presentReading></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="KW used"  formControlName="presentReadingKWUsed" (input)="calculateTotalKWused()">
+      </mat-form-field>
+    </div>
+    <div class="fourth-block">
+      <mat-form-field>
+        <input disabled="true" matInput type="number" placeholder="Total"  formControlName="total">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Amount/ KW used (NORECO)"  formControlName="amountKWUsed" (input)="calculateTotalAmountElectricBill()">
+      </mat-form-field>
+    </div>
+    <div class="fifth-block">
+      <mat-form-field>
+        <input matInput type="number" placeholder="Total amount electric bill"  formControlName="totalAmountElectricBill">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Electric bill status"  formControlName="electricBillStatus" (selectionChange)="electricBillStatusToggle($event)">
+          <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+            {{status}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="sixth-block">
+      <div formArrayName="electricBillBalance" *ngFor="let property of form.get('electricBillBalance').controls; let i = index;">
+        <div [formGroupName]="i">
+          <mat-form-field>
+            <input matInput type="number" placeholder="Remaining balance" formControlName="balance">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="seventh-block">
+      <div>
+        <mat-form-field>
+            <mat-select placeholder="Water bill status"  formControlName="waterBillStatus" (selectionChange)="waterBillStatusToggle($event)">
+              <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+                {{status}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-select placeholder="Rice cooker bill status"  formControlName="riceCookerBillStatus" (selectionChange)="riceCookerBillStatusToggle($event)">
+            <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+              {{status}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="eight-block">
+      <div formArrayName="waterBillBalance" *ngFor="let property of form.get('waterBillBalance').controls; let i = index;">
+        <div [formGroupName]="i">
+          <mat-form-field>
+            <input matInput type="number" placeholder="Remaining balance" formControlName="balance">
+          </mat-form-field>
+        </div>
+      </div>
+      <div formArrayName="riceCookerBillBalance" *ngFor="let property of form.get('riceCookerBillBalance').controls; let i = index;">
+        <div [formGroupName]="i">
+          <mat-form-field>
+            <input matInput type="number" placeholder="Remaining balance" formControlName="balance">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="show-tenants-button-container">
+      <button mat-raised-button color="primary" (click)='showTenants()' [disabled]='isRoomNumberControlEmpty'>
+          <span id="button-text-white">Show Tenants</span>
+      </button>
+    </div>
+  </mat-card>
+</div>

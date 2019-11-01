@@ -35,12 +35,12 @@
           .tenant-away-container{
             padding: 5px;
           }
+
         }
       }
       margin-bottom: 8px;
       border: 4px solid gray;
     }
-
     >.action-buttons-block{
       display: flex;
       justify-content: flex-end;
@@ -85,7 +85,7 @@
     grid-gap: 1em;
     >.bedspace-form{
       .deck-form-group{
-        >.first-block, >.second-block{
+        >.first-block, >.second-block, >.third-block{
           mat-form-field{
             width: 48%;
           }
@@ -105,6 +105,18 @@
               width: 48%;
             }
             mat-form-field:nth-child(2){
+              float: right;
+            }
+          }
+          >.fourth-block{
+            mat-form-field{
+              width: 100%;
+            }
+            >.first-block, >.second-block{
+              width: 48%;
+              display: inline-block;
+            }
+            >.second-block{
               float: right;
             }
           }

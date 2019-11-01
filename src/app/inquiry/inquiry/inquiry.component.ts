@@ -100,5 +100,4 @@ export class InquiryComponent implements OnInit {
     this.pageRequest.page = $event.pageIndex + 1;
     this.getInquiries();
   }
-
 }

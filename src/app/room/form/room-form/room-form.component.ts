@@ -38,7 +38,8 @@ export class RoomFormComponent implements OnInit {
   createTransientPrivateRoomProperties(): FormGroup {
     return this.formBuilder.group({
     status: [RoomStatus.VACANT, Validators.required],
-    dueRent: [''],
+    dueRentDate: [''],
+    monthlyRent: [''],
     });
   }
   getTransientPrivateRoomProperties(): FormArray {

@@ -50,10 +50,15 @@
               </mat-autocomplete>
             </mat-form-field>
             <mat-form-field>
-              <input matInput type="number" placeholder="Due rent date"  formControlName="dueRent">
+              <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
             </mat-form-field>
           </div>
           <div class="clear-float">
+          </div>
+          <div class="third-block">
+            <mat-form-field>
+              <input matInput type="number" placeholder="Monthly rent"  formControlName="monthlyRent">
+            </mat-form-field>
           </div>
           <!--TENANT AWAY BLOCK -->
           <div formArrayName="away" *ngFor="let awayField of deck.get('away').controls; let awayFieldIndex = index" class="tenant-away-block">
@@ -95,14 +100,28 @@
                 </mat-form-field>
               </div>
               <div class="fourth-block">
+                <div class="first-block">
+                  <mat-form-field>
+                      <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenantNameFieldInput(awayField.get('tenant').value)" [matAutocomplete]="auto">
+                  </mat-form-field>
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId('AwayFormGroup', {tenantObjectId:tenant._id, index:awayFieldIndex, bedIndex: bedIndex, deckIndex: deckIndex})" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+                      {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </div>
+                <div class="second-block">
+                  <mat-form-field>
+                    <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="clear-float">
+              </div>
+              <div class="fifth-block">
                 <mat-form-field>
-                  <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenantNameFieldInput(awayField.get('tenant').value)" [matAutocomplete]="auto">
+                  <input matInput type="number" placeholder="Rent"  formControlName="rent">
                 </mat-form-field>
-                <mat-autocomplete #auto="matAutocomplete">
-                  <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId('AwayFormGroup', {tenantObjectId:tenant._id, index:awayFieldIndex, bedIndex: bedIndex, deckIndex: deckIndex})" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
-                    {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
-                  </mat-option>
-                </mat-autocomplete>
               </div>
             </div>
           </div>

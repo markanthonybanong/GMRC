@@ -1,5 +1,6 @@
 export enum FilterType {
   ALLROOMS = 'allRooms',
+  ROOMNUMBER = 'roomNumber',
   INQUIRYBYOBJECTID = 'inquiryByObjectId',
   ADVANCESEARCHINQUIRY = 'advanceSearchInquiry',
   TRANSIENTPRIVATEROOMS = 'transientPrivateRooms',
