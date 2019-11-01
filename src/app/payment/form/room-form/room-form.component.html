@@ -1,9 +1,9 @@
 <div *ngIf="isLoading" class="form-spinner-container">
   <mat-spinner></mat-spinner>
 </div>
-<div class="table-grandparent-container" *ngIf="isLoading === false && roomTenants.length > 0">
+<div class="table-grandparent-container" *ngIf="isLoading === false && roomTenantsDataSource.length > 0">
   <mat-card>
-    <table mat-table [dataSource]="roomTenants">
+    <table mat-table [dataSource]="roomTenantsDataSource">
       <ng-container matColumnDef="tenants">
         <th mat-header-cell *matHeaderCellDef>Tenants</th>
         <td mat-cell *matCellDef="let element">

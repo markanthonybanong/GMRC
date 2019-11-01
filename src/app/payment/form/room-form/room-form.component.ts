@@ -38,7 +38,9 @@ export class RoomFormComponent implements OnInit {
   roomNumbers: number[] = [];
   pageRequest = new PageRequest(null, null);
   roomType: string = null;
+  roomTenantsDataSource: Array<RoomTenant> = [];
   roomTenants: Array<RoomTenant> = [];
+  letss: Array<RoomTenant> = [];
   columns: string[] = [
     'tenants',
     'dueDate',
@@ -46,7 +48,7 @@ export class RoomFormComponent implements OnInit {
     'status',
     'action',
   ];
-  pageSizeOptions: number[] = [6, 12];
+  pageSizeOptions: number[] = [6, 12, 18];
   totalCount: number;
   constructor(
     private route: ActivatedRoute,
@@ -172,7 +174,8 @@ export class RoomFormComponent implements OnInit {
     }
   }
   setRoomTenants(room: Room): void {
-    this.roomTenants = [];
+    this.roomTenantsDataSource   = [];
+    this.roomTenants             = [];
     const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null};
     const tenants: string []     = [];
     const dueDates: number []    = [];
@@ -203,13 +206,13 @@ export class RoomFormComponent implements OnInit {
       rents.push(room.transientPrivateRoomProperties[0].monthlyRent);
       status.push(PaymentStatus.UNPAID);
     }
-    roomTenant.names        = tenants;
-    roomTenant.dueRentDates = dueDates;
-    roomTenant.rents        = rents;
+    roomTenant.names         = tenants;
+    roomTenant.dueRentDates  = dueDates;
+    roomTenant.rents         = rents;
     roomTenant.statuses      = status;
     this.totalCount = tenants.length;
     this.roomTenants.push(roomTenant);
-
+    this.tablePagination(6, 0);
   }
   // setRoomTenant(roomTenants: RoomTenant) {
   //   const electricityBalanceFormGroup      = this.electricBillBalanceFormArray.at(0);
@@ -238,13 +241,16 @@ export class RoomFormComponent implements OnInit {
       this.setRoomTenants(roomByRoomType.data[0]);
     } catch (error) {}
   }
-  tablePagination($event: PageEvent): void {
-    // lenght
-    // pageIndex
-    // pagesize
-    console.log($event);
+  tablePagination(pageSize: number, pageNumber: number): void {
+    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null};
+    roomTenant.names             = this.roomTenants[0].names.slice(pageSize * pageNumber, pageSize * (pageNumber + 1));
+    roomTenant.dueRentDates      = this.roomTenants[0].dueRentDates.slice(pageSize * pageNumber, pageSize * (pageNumber + 1));
+    roomTenant.statuses          = this.roomTenants[0].statuses.slice(pageSize * pageNumber, pageSize * (pageNumber + 1));
+    roomTenant.rents             = this.roomTenants[0].rents.slice(pageSize * pageNumber, pageSize * (pageNumber + 1));
+    this.roomTenantsDataSource = [roomTenant];
   }
   onPaginatorUpdate($event: PageEvent): void {
-    this.tablePagination($event);
+   // console.log('before ', this.roomTenants);
+    this.tablePagination($event.pageSize, $event.pageIndex);
   }
 }
