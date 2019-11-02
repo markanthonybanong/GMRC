@@ -10,6 +10,7 @@ import { TransientPrivateAdvanceSearchComponent } from './advanced-search-dialog
 import { BedspaceAdvanceSearchComponent } from './advanced-search-dialogs/bedspace-advance-search/bedspace-advance-search.component';
 import { InquiryAdvanceSearchComponent } from './advanced-search-dialogs/inquiry-advance-search/inquiry-advance-search.component';
 import { EntryAdvanceSearchComponent } from './advanced-search-dialogs/entry-advance-search/entry-advance-search.component';
+import { RoomPaymentDialogComponent } from './room-payment-dialog/room-payment-dialog.component';
 
 
 // TODO: use the ts config.
@@ -29,7 +30,8 @@ import { EntryAdvanceSearchComponent } from './advanced-search-dialogs/entry-adv
     TransientPrivateAdvanceSearchComponent,
     BedspaceAdvanceSearchComponent,
     InquiryAdvanceSearchComponent,
-    EntryAdvanceSearchComponent
+    EntryAdvanceSearchComponent,
+    RoomPaymentDialogComponent
   ],
 
   providers: []

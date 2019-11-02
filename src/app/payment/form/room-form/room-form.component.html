@@ -37,19 +37,18 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
         <td mat-cell *matCellDef="let element">
-          <p *ngFor="let status of element.statuses">
-            <span>
-              {{status}}
-            </span>
-          </p>
+          <span *ngFor="let status of element.statuses">
+              <p appRoomPaymentStatus>{{status.value}}</p>
+              <p *ngIf="status.balance !== null" id="balance">{{status.balance}}</p>
+          </span>
         </td>
       </ng-container>
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef >Action</th>
         <td mat-cell *matCellDef="let element" >
-         <p id="icon-container" *ngFor="let status of element.statuses">
+         <p id="icon-container" *ngFor="let index of element.indexes">
             <span>
-                <mat-icon id="label-text-primary" (click)="updateTransientPrivateRoom(element._id)">edit</mat-icon>
+              <mat-icon id="label-text-primary" (click)="updateTenantPayment(index)">edit</mat-icon>
             </span>
          </p>
         </td>

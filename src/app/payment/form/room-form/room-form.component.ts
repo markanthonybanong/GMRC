@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, FormControl, FormArray, Form, FormGroup } from '@angular/forms';
-import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatDatepicker, MatSelectChange, PageEvent } from '@angular/material';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatDatepicker, MatSelectChange, PageEvent, MatDialog } from '@angular/material';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import * as moment from 'moment';
 import { Moment} from 'moment';
 import { PaymentEnumService, RoomService } from '@gmrc/services';
 import { PaymentStatus, FilterType, RoomType, DeckStatus } from '@gmrc/enums';
-import { PageRequest, Room, PageData, Tenant, Bedspace, RoomTenant } from '@gmrc/models';
+import { PageRequest, Room, PageData, Tenant, Bedspace, RoomTenant, TenantPayment } from '@gmrc/models';
+import { RoomPaymentDialogComponent } from '@gmrc/shared';
 @Component({
   selector: 'app-room-form',
   templateUrl: './room-form.component.html',
@@ -40,7 +41,7 @@ export class RoomFormComponent implements OnInit {
   roomType: string = null;
   roomTenantsDataSource: Array<RoomTenant> = [];
   roomTenants: Array<RoomTenant> = [];
-  letss: Array<RoomTenant> = [];
+  pageNumber: number = null;
   columns: string[] = [
     'tenants',
     'dueDate',
@@ -55,6 +56,7 @@ export class RoomFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private paymentEnumService: PaymentEnumService,
     private roomService: RoomService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -176,25 +178,37 @@ export class RoomFormComponent implements OnInit {
   setRoomTenants(room: Room): void {
     this.roomTenantsDataSource   = [];
     this.roomTenants             = [];
-    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null};
+    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null, indexes: null};
     const tenants: string []     = [];
     const dueDates: number []    = [];
     const rents: number[]        = [];
-    const status: string []      = [];
+    const status: Array<{value: string, balance?: number}>     = [];
+    const arrayIndex: number[]   = [];
+    let   index                  = 0;
     if (room.type === RoomType.BEDSPACE) {
       room.bedspaces.forEach( bedspace => {
-        bedspace.decks.forEach( deck => {
+        bedspace.decks.forEach( deck  => {
           if (deck.tenant !== null) {
+            status.push({
+              value: PaymentStatus.UNPAID,
+              balance: null,
+            });
             tenants.push(`${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`);
             dueDates.push(deck.dueRentDate);
             rents.push(deck.monthlyRent);
-            status.push(PaymentStatus.UNPAID);
+            arrayIndex.push(index);
+            index++;
           }
           if (deck.status === DeckStatus.AWAY && deck.away[0].tenant !== null ) {
             tenants.push(`${deck.away[0].tenant.firstname} ${deck.away[0].tenant.middlename} ${deck.away[0].tenant.lastname}`);
             dueDates.push(deck.away[0].dueRentDate);
             rents.push(deck.away[0].rent);
-            status.push(PaymentStatus.UNPAID);
+            status.push({
+              value: PaymentStatus.UNPAID,
+              balance: null,
+            });
+            arrayIndex.push(index);
+            index++;
           }
         });
       });
@@ -204,12 +218,17 @@ export class RoomFormComponent implements OnInit {
       });
       dueDates.push(room.transientPrivateRoomProperties[0].dueRentDate);
       rents.push(room.transientPrivateRoomProperties[0].monthlyRent);
-      status.push(PaymentStatus.UNPAID);
+      status.push({
+        value: PaymentStatus.UNPAID,
+        balance: null
+      });
+      arrayIndex.push(index);
     }
     roomTenant.names         = tenants;
     roomTenant.dueRentDates  = dueDates;
     roomTenant.rents         = rents;
     roomTenant.statuses      = status;
+    roomTenant.indexes       = arrayIndex;
     this.totalCount = tenants.length;
     this.roomTenants.push(roomTenant);
     this.tablePagination(6, 0);
@@ -242,15 +261,44 @@ export class RoomFormComponent implements OnInit {
     } catch (error) {}
   }
   tablePagination(pageSize: number, pageNumber: number): void {
-    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null};
-    roomTenant.names             = this.roomTenants[0].names.slice(pageSize * pageNumber, pageSize * (pageNumber + 1));
-    roomTenant.dueRentDates      = this.roomTenants[0].dueRentDates.slice(pageSize * pageNumber, pageSize * (pageNumber + 1));
-    roomTenant.statuses          = this.roomTenants[0].statuses.slice(pageSize * pageNumber, pageSize * (pageNumber + 1));
-    roomTenant.rents             = this.roomTenants[0].rents.slice(pageSize * pageNumber, pageSize * (pageNumber + 1));
-    this.roomTenantsDataSource = [roomTenant];
+    const start     = pageSize * pageNumber;
+    const end       = pageSize * (pageNumber + 1);
+    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null, indexes: null};
+    roomTenant.names             = this.roomTenants[0].names.slice(start, end);
+    roomTenant.dueRentDates      = this.roomTenants[0].dueRentDates.slice(start, end);
+    roomTenant.statuses          = this.roomTenants[0].statuses.slice(start, end);
+    roomTenant.rents             = this.roomTenants[0].rents.slice(start, end);
+    roomTenant.indexes           = this.roomTenants[0].indexes.slice(start, end);
+    this.roomTenantsDataSource   = [roomTenant];
   }
   onPaginatorUpdate($event: PageEvent): void {
-   // console.log('before ', this.roomTenants);
+    this.pageNumber = $event.pageIndex;
     this.tablePagination($event.pageSize, $event.pageIndex);
+  }
+  updateTenantPayment(index: number) {
+    const dialogRef = this.dialog.open(
+      RoomPaymentDialogComponent,
+      {
+        data: {
+          name:    this.roomTenants[0].names[index],
+          dueDate: this.roomTenants[0].dueRentDates[index],
+          rent:    this.roomTenants[0].rents[index],
+          status:  this.roomTenants[0].statuses[index].value,
+        }
+      }
+    );
+    dialogRef.afterClosed().subscribe( (result: TenantPayment) => {
+      if (result !== undefined) {
+       this.roomTenants[0].statuses.splice(index, 1,
+        {
+         value: result.status,
+         balance: result.rentBalance.length !== 0 ? result.rentBalance[0].balance : null
+        }
+        );
+       this.roomTenantsDataSource = [this.roomTenants[0]];
+       console.log(this.roomTenantsDataSource);
+       this.tablePagination(6, this.pageNumber);
+      }
+    });
   }
 }

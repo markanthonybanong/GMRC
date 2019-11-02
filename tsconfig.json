@@ -20,7 +20,8 @@
       "@gmrc/shared": ["src/app/shared/"],
       "@gmrc/services": ["src/app/core/services"],
       "@gmrc/enums": ["src/app/core/enums"],
-      "@gmrc/models": ["src/app/core/models"]
+      "@gmrc/models": ["src/app/core/models"],
+      "@gmrc/directives": ["src/app/core/directives"],
     }
   }
 }

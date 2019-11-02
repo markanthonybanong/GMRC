@@ -13,3 +13,4 @@ export * from './Inquiry';
 export * from './Token';
 export * from './Entry';
 export * from './RoomTenant';
+export * from './TenantPayment';
