@@ -41,7 +41,8 @@ export class RoomFormComponent implements OnInit {
   roomType: string = null;
   roomTenantsDataSource: Array<RoomTenant> = [];
   roomTenants: Array<RoomTenant> = [];
-  pageNumber: number = null;
+  pageNumber = 0;
+  pageSize = 5;
   columns: string[] = [
     'tenants',
     'dueDate',
@@ -49,7 +50,7 @@ export class RoomFormComponent implements OnInit {
     'status',
     'action',
   ];
-  pageSizeOptions: number[] = [6, 12, 18];
+  pageSizeOptions: number[] = [5, 10, 15];
   totalCount: number;
   constructor(
     private route: ActivatedRoute,
@@ -231,7 +232,7 @@ export class RoomFormComponent implements OnInit {
     roomTenant.indexes       = arrayIndex;
     this.totalCount = tenants.length;
     this.roomTenants.push(roomTenant);
-    this.tablePagination(6, 0);
+    this.tablePagination();
   }
   // setRoomTenant(roomTenants: RoomTenant) {
   //   const electricityBalanceFormGroup      = this.electricBillBalanceFormArray.at(0);
@@ -260,9 +261,9 @@ export class RoomFormComponent implements OnInit {
       this.setRoomTenants(roomByRoomType.data[0]);
     } catch (error) {}
   }
-  tablePagination(pageSize: number, pageNumber: number): void {
-    const start     = pageSize * pageNumber;
-    const end       = pageSize * (pageNumber + 1);
+  tablePagination(): void {
+    const start     = this.pageSize * this.pageNumber;
+    const end       = this.pageSize * (this.pageNumber + 1);
     const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null, indexes: null};
     roomTenant.names             = this.roomTenants[0].names.slice(start, end);
     roomTenant.dueRentDates      = this.roomTenants[0].dueRentDates.slice(start, end);
@@ -273,7 +274,8 @@ export class RoomFormComponent implements OnInit {
   }
   onPaginatorUpdate($event: PageEvent): void {
     this.pageNumber = $event.pageIndex;
-    this.tablePagination($event.pageSize, $event.pageIndex);
+    this.pageSize   = $event.pageSize;
+    this.tablePagination();
   }
   updateTenantPayment(index: number) {
     const dialogRef = this.dialog.open(
@@ -296,8 +298,7 @@ export class RoomFormComponent implements OnInit {
         }
         );
        this.roomTenantsDataSource = [this.roomTenants[0]];
-       console.log(this.roomTenantsDataSource);
-       this.tablePagination(6, this.pageNumber);
+       this.tablePagination();
       }
     });
   }

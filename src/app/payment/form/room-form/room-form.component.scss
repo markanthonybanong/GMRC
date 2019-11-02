@@ -9,19 +9,42 @@
       mat-icon:hover{
         cursor: pointer;
       }
-      th.mat-header-cell, td.mat-cell {
-        border-bottom: 4px solid rgba(0, 0, 0, 0.12);
+      th.mat-header-cell {
+        text-align: center;
       }
-      td {
-        p{
-          height: 40px;
-          display: flex;
-          align-items: center;
-          border-bottom: 4px solid rgba(0, 0, 0, 0.12);
+      th, td.mat-cell{
+        border: none;
+      }
+      td{
+        .table-detail, .table-detail-action{
+          p {
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-top: 4px solid rgba(0, 0, 0, 0.12);
+            border-bottom: 4px solid rgba(0, 0, 0, 0.12);
+            // background: pink;
+          }
+          p:first-child{
+
+          }
         }
-        p:last-child {
-          border: none;
+        .table-detail-status{
+          p{
+           // background: orange;
+          }
+          #status-value{
+            border-top: 4px solid rgba(0, 0, 0, 0.12);
+          }
+          #balance{
+            border-bottom: 4px solid rgba(0, 0, 0, 0.12);
+            margin-top: 0px;
+            text-align: center;
+          }
+
         }
+
       }
     }
   }
