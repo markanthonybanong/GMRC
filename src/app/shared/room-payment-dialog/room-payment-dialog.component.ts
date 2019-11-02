@@ -25,6 +25,11 @@ export class RoomPaymentDialogComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    if (this.data.rentBalance[0] !== null) {
+      this.rentBalanceFormArray.push(this.formBuilder.group({
+        balance: this.data.rentBalance[0].balance,
+      }));
+    }
   }
   get createBalanceFormGroup(): FormGroup {
     return this.formBuilder.group({

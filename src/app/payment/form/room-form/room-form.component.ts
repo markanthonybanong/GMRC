@@ -286,6 +286,9 @@ export class RoomFormComponent implements OnInit {
           dueDate: this.roomTenants[0].dueRentDates[index],
           rent:    this.roomTenants[0].rents[index],
           status:  this.roomTenants[0].statuses[index].value,
+          rentBalance: [ this.roomTenants[0].statuses[index].balance !== null ? {
+                        balance: this.roomTenants[0].statuses[index].balance
+                       } : null]
         }
       }
     );

@@ -3,7 +3,7 @@
   justify-content: center;
   margin-bottom: 10px;
   mat-card{
-    width: 80%;
+    width: 100%;
     table{
       width: 100%;
       mat-icon:hover{
@@ -22,21 +22,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border-top: 4px solid rgba(0, 0, 0, 0.12);
             border-bottom: 4px solid rgba(0, 0, 0, 0.12);
             // background: pink;
-          }
-          p:first-child{
-
+            padding-bottom: 10px;
           }
         }
         .table-detail-status{
-          p{
-           // background: orange;
-          }
-          #status-value{
-            border-top: 4px solid rgba(0, 0, 0, 0.12);
-          }
+
           #balance{
             border-bottom: 4px solid rgba(0, 0, 0, 0.12);
             margin-top: 0px;
