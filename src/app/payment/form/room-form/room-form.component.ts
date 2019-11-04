@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, FormControl, FormArray, Form, FormGroup } from '@angular/forms';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatDatepicker, MatSelectChange, PageEvent, MatDialog } from '@angular/material';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -16,23 +16,24 @@ import { RoomPaymentDialogComponent } from '@gmrc/shared';
 })
 export class RoomFormComponent implements OnInit {
   isLoading = true;
+  isSubmitting = false;
   form = this.formBuilder.group({
     roomNumber: ['', Validators.required],
-    date: ['', Validators.required],
+    date: [''],
     previousReading: ['', Validators.required],
     previousReadingKWUsed: ['', Validators.required],
     presentReading: ['', Validators.required],
     presentReadingKWUsed: ['', Validators.required],
-    total: [{value: '', disabled: true}, Validators.required],
+    total: [{value: '', disabled: true}],
     amountKWUsed: ['', Validators.required],
-    totalAmountElectricBill: [{value: '', disabled: true}, Validators.required],
+    totalAmountElectricBill: [{value: '', disabled: true}],
     electricBillStatus: [PaymentStatus.UNPAID, Validators.required],
     electricBillBalance: this.formBuilder.array([]),
     waterBillStatus: [PaymentStatus.UNPAID, Validators.required],
     waterBillBalance: this.formBuilder.array([]),
     riceCookerBillStatus: [PaymentStatus.UNPAID, Validators.required],
     riceCookerBillBalance: this.formBuilder.array([]),
-    _id: '',
+    _id: null,
   });
   formTitle = 'ADD ROOM PAYMENT';
   date: Moment;
@@ -52,12 +53,14 @@ export class RoomFormComponent implements OnInit {
   ];
   pageSizeOptions: number[] = [5, 10, 15];
   totalCount: number;
+  buttonName = 'Add';
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private paymentEnumService: PaymentEnumService,
     private roomService: RoomService,
     private dialog: MatDialog,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -68,11 +71,12 @@ export class RoomFormComponent implements OnInit {
   }
   chosenMonthHandler(date: Moment, datepicker: MatDatepicker<Moment>): void {
     this.date = date;
+    this.form.get('date').setValue(this.monthYear);
     datepicker.close();
   }
   getRoomPayment(roomPaymentObjectId: string): void {
   }
-  getRoomNumbers() {
+  getRoomNumbers(): void {
     this.pageRequest.filters.type = FilterType.ALLROOMS;
     this.roomService.getRooms<Room>(this.pageRequest).then( rooms => {
       rooms.data.forEach(room => {
@@ -277,7 +281,7 @@ export class RoomFormComponent implements OnInit {
     this.pageSize   = $event.pageSize;
     this.tablePagination();
   }
-  updateTenantPayment(index: number) {
+  updateTenantPayment(index: number): void {
     const dialogRef = this.dialog.open(
       RoomPaymentDialogComponent,
       {
@@ -304,5 +308,11 @@ export class RoomFormComponent implements OnInit {
        this.tablePagination();
       }
     });
+  }
+  routeToRoomPayments() {
+    this.router.navigate(['payment/room']);
+  }
+  onSubmit() {
+    console.log('FORM VALUE', this.form.value);
   }
 }

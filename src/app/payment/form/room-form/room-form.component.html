@@ -75,8 +75,8 @@
           </mat-select>
       </mat-form-field>
       <mat-form-field>
-        <input class="hidden-date-input" formControlName="date" [matDatepicker]="date">
-        <input matInput placeholder="Month/Year" [value]="monthYear">
+        <input class="hidden-date-input" [matDatepicker]="date">
+        <input matInput placeholder="Month/Year" [value]="monthYear" formControlName="date">
         <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
         <mat-datepicker #date
                         startView="multi-year"
@@ -173,6 +173,16 @@
       <button mat-raised-button color="primary" (click)='showTenants()' [disabled]='isRoomNumberControlEmpty'>
           <span id="button-text-white">Show Tenants</span>
       </button>
+    </div>
+    <div class="action-buttons-block">
+      <div>
+        <button mat-raised-button color="warn" (click)='routeToRoomPayments()' id="back-button">
+          <span id="button-text">Back</span>
+        </button>
+        <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='!form.valid || isSubmitting'>
+          <span id="button-text-white">{{buttonName}}</span>
+        </button>
+      </div>
     </div>
   </mat-card>
 </div>

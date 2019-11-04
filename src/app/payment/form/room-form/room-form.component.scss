@@ -66,6 +66,7 @@
       }
     }
     >.action-buttons-block{
+      margin-top: 20px;
       display: flex;
       justify-content: flex-end;
       #back-button{
@@ -97,7 +98,11 @@
         display: flex;
         justify-content: space-between;
       }
-
+      >.sixth-block{
+        mat-form-field{
+          width: 100%;
+        }
+      }
     }
   }
 }
