@@ -17,3 +17,39 @@
         </button>
    </div>
  </div>
+ <table *ngIf=" isLoading === false" mat-table [dataSource]="dataSource">
+  <ng-container matColumnDef="roomNumber">
+    <th mat-header-cell *matHeaderCellDef>Room number</th>
+    <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+  </ng-container>
+  <ng-container matColumnDef="date">
+    <th mat-header-cell *matHeaderCellDef>Date</th>
+    <td mat-cell *matCellDef="let element">{{element.date}}</td>
+  </ng-container>
+  <ng-container matColumnDef="electricBillStatus">
+    <th mat-header-cell *matHeaderCellDef>Electric bill status</th>
+    <td mat-cell *matCellDef="let element" appPaymentStatus>{{element.electricBillStatus}}</td>
+   </ng-container>
+   <ng-container matColumnDef="waterBillStatus">
+    <th mat-header-cell *matHeaderCellDef>Water bill status</th>
+    <td mat-cell *matCellDef="let element" appPaymentStatus>{{element.waterBillStatus}}</td>
+   </ng-container>
+   <ng-container matColumnDef="riceCookerBillStatus">
+    <th mat-header-cell *matHeaderCellDef>Rice cooker bill status</th>
+    <td mat-cell *matCellDef="let element" appPaymentStatus>{{element.riceCookerBillStatus}}</td>
+   </ng-container>
+   <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let element">
+      <mat-icon id="label-text-primary" (click)="updateRoomPayment(element._id)">edit</mat-icon>
+    </td>
+   </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+ </table>
+ <div class="table-spinner-container">
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+ </div>
+<footer>
+  <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [length]="totalCount" (page)="onPaginatorUpdate($event)"></mat-paginator>
+</footer>

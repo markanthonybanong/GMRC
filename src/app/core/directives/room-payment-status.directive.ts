@@ -34,8 +34,7 @@ export class RoomPaymentStatusDirective implements OnInit, AfterViewInit {
       this.renderer.setStyle(this.elRef.nativeElement, 'display', 'flex');
       this.renderer.setStyle(this.elRef.nativeElement, 'align-items', 'center');
       this.renderer.setStyle(this.elRef.nativeElement, 'justify-content', 'center');
-    }
-    else if (paymentStatus === PaymentStatus.NONE) {
+    } else if (paymentStatus === PaymentStatus.NONE) {
       this.renderer.setStyle(this.elRef.nativeElement, 'height', '50px');
       this.renderer.setStyle(this.elRef.nativeElement, 'border-bottom', '4px solid rgba(0, 0, 0, 0.12)');
       this.renderer.setStyle(this.elRef.nativeElement, 'padding-bottom', '10px');

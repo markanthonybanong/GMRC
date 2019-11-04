@@ -36,7 +36,7 @@
         <th mat-header-cell *matHeaderCellDef>Status</th>
         <td mat-cell *matCellDef="let element">
           <div class="table-detail-status">
-            <span *ngFor="let status of element.statuses">
+            <span *ngFor="let status of element.rentStatuses">
               <p appRoomPaymentStatus id="status-value">{{status.value}}</p>
               <p *ngIf="status.balance !== null" id="balance">{{status.balance}}</p>
             </span>
@@ -68,7 +68,7 @@
     </div>
     <div class="first-block">
       <mat-form-field>
-          <mat-select placeholder="Room number"  formControlName="roomNumber">
+          <mat-select placeholder="Room number"  formControlName="roomNumber" (selectionChange)="roomNumbersToggle($event)">
             <mat-option *ngFor="let number of roomNumbers;" [value]="number">
               {{number}}
             </mat-option>
@@ -76,7 +76,7 @@
       </mat-form-field>
       <mat-form-field>
         <input class="hidden-date-input" [matDatepicker]="date">
-        <input matInput placeholder="Month/Year" [value]="monthYear" formControlName="date">
+        <input matInput placeholder="Month/Year" formControlName="date">
         <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
         <mat-datepicker #date
                         startView="multi-year"
@@ -170,7 +170,7 @@
       </div>
     </div>
     <div class="show-tenants-button-container">
-      <button mat-raised-button color="primary" (click)='showTenants()' [disabled]='isRoomNumberControlEmpty'>
+      <button mat-raised-button color="primary" (click)='showTenants()' [disabled]='disabledShowTenantsButton'>
           <span id="button-text-white">Show Tenants</span>
       </button>
     </div>

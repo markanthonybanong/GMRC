@@ -15,4 +15,5 @@ export enum FilterType {
   ALLENTRIES = 'allEntries',
   ENTRYBYOBJECTID = 'entryByObjectId',
   ADVANCESEARCHENTRY = 'advanceSearchEntry',
+  ROOMPAYMENTBYOBJECTID = 'roomPaymentByObjectId'
 }

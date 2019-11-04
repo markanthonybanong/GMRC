@@ -179,6 +179,7 @@ export class EntryFormComponent implements OnInit {
      ? this.paymentService.updateEntry(this.form.value)
      : this.paymentService.addEntry(this.form.value);
     promiseForm.then( (entry) => {
+       this.model = entry;
        const message = this.model ? 'Updated entry' : 'Added entry';
        this.notificationService.notifySuccess(message);
        this.buttonName = 'Update';

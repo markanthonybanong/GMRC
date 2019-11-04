@@ -10,7 +10,7 @@ import { PenaltiesFormComponent } from './form/penalties-form/penalties-form.com
 import { PenaltiesComponent } from './payment/penalties/penalties.component';
 import { AngularMaterialModule, SharedModule, EntryAdvanceSearchComponent, RoomPaymentDialogComponent } from '@gmrc/shared';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { RoomPaymentStatusDirective } from '@gmrc/directives';
+import { RoomPaymentStatusDirective, PaymentStatusDirective } from '@gmrc/directives';
 
 @NgModule({
   imports: [
@@ -30,6 +30,7 @@ import { RoomPaymentStatusDirective } from '@gmrc/directives';
     PenaltiesFormComponent,
     PenaltiesComponent,
     RoomPaymentStatusDirective,
+    PaymentStatusDirective
   ],
   entryComponents: [
     EntryAdvanceSearchComponent,

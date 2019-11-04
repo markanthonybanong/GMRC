@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, FormControl, FormArray, Form, FormGroup } from '@angular/forms';
-import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatDatepicker, MatSelectChange, PageEvent, MatDialog } from '@angular/material';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatDatepicker, MatSelectChange, PageEvent, MatDialog, MatSelect } from '@angular/material';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import * as moment from 'moment';
 import { Moment} from 'moment';
-import { PaymentEnumService, RoomService } from '@gmrc/services';
+import { PaymentEnumService, RoomService, PaymentService, NotificationService } from '@gmrc/services';
 import { PaymentStatus, FilterType, RoomType, DeckStatus } from '@gmrc/enums';
-import { PageRequest, Room, PageData, Tenant, Bedspace, RoomTenant, TenantPayment } from '@gmrc/models';
+import { PageRequest, Room, PageData, RoomTenant, TenantPayment, RoomPayment } from '@gmrc/models';
 import { RoomPaymentDialogComponent } from '@gmrc/shared';
+import { promise } from 'protractor';
 @Component({
   selector: 'app-room-form',
   templateUrl: './room-form.component.html',
@@ -18,8 +19,9 @@ export class RoomFormComponent implements OnInit {
   isLoading = true;
   isSubmitting = false;
   form = this.formBuilder.group({
-    roomNumber: ['', Validators.required],
-    date: [''],
+    roomNumber: [{value: '', disabled: true}, Validators.required],
+    date: ['', Validators.required],
+    monthYear: [''],
     previousReading: ['', Validators.required],
     previousReadingKWUsed: ['', Validators.required],
     presentReading: ['', Validators.required],
@@ -54,13 +56,17 @@ export class RoomFormComponent implements OnInit {
   pageSizeOptions: number[] = [5, 10, 15];
   totalCount: number;
   buttonName = 'Add';
+  model: RoomPayment;
+  disabledShowTenantsButton = true;
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private paymentEnumService: PaymentEnumService,
     private roomService: RoomService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private paymentService: PaymentService,
+    private notificationService: NotificationService,
   ) { }
 
   ngOnInit() {
@@ -74,7 +80,58 @@ export class RoomFormComponent implements OnInit {
     this.form.get('date').setValue(this.monthYear);
     datepicker.close();
   }
-  getRoomPayment(roomPaymentObjectId: string): void {
+  loadFormValue(): void {
+    if (this.model.electricBillBalance.length) {
+      this.electricBillBalanceFormArray.push(
+        this.formBuilder.group({
+          balance: this.model.electricBillBalance[0].balance,
+        })
+      );
+    }
+    if (this.model.waterBillBalance.length) {
+      this.waterBillBalanceFormArray.push(
+        this.formBuilder.group({
+          balance: this.model.waterBillBalance[0].balance,
+        })
+      );
+    }
+    if (this.model.riceCookerBillBalance.length) {
+      this.riceCookerBillBalanceFormArray.push(
+        this.formBuilder.group({
+          balance: this.model.riceCookerBillBalance[0].balance,
+        })
+      );
+    }
+    this.form.patchValue({
+      amountKWUsed: this.model.amountKWUsed,
+      date: this.model.date,
+      electricBillStatus: this.model.electricBillStatus,
+      presentReading: this.model.presentReading,
+      presentReadingKWUsed: this.model.presentReadingKWUsed,
+      previousReading: this.model.previousReading,
+      previousReadingKWUsed: this.model.previousReadingKWUsed,
+      riceCookerBillStatus: this.model.riceCookerBillStatus,
+      roomNumber: this.model.roomNumber,
+      waterBillStatus: this.model.waterBillStatus,
+      _id: this.model._id,
+    });
+    this.calculateTotalKWused();
+    this.calculateTotalAmountElectricBill();
+  }
+  getRoomPaymentByObjectId(roomPaymentObjectId: string): void {
+    this.pageRequest.filters.type = FilterType.ROOMPAYMENTBYOBJECTID;
+    this.pageRequest.filters.roomPaymentObjectId = roomPaymentObjectId;
+    this.paymentService.getRoomPayments<RoomPayment>(this.pageRequest)
+    .then(roomPayment => {
+      this.model = roomPayment.data[0];
+      this.totalCount = this.model.roomTenants[0].names.length;
+      this.roomTenants = this.model.roomTenants;
+      this.loadFormValue();
+      this.buttonName = 'Update';
+      this.tablePagination();
+      this.isLoading = false;
+    })
+    .catch( err => {});
   }
   getRoomNumbers(): void {
     this.pageRequest.filters.type = FilterType.ALLROOMS;
@@ -87,10 +144,11 @@ export class RoomFormComponent implements OnInit {
   }
   isGoingToUpdate(): void {
     const roomPaymentObjectId = this.route.snapshot.paramMap.get('id');
+    this.getRoomNumbers();
     if (roomPaymentObjectId !== null) {
-      this.getRoomPayment(roomPaymentObjectId);
+      this.getRoomPaymentByObjectId(roomPaymentObjectId);
     } else {
-      this.getRoomNumbers();
+      this.form.get('roomNumber').enable();
       this.isLoading = false;
     }
   }
@@ -180,39 +238,39 @@ export class RoomFormComponent implements OnInit {
       return error;
     }
   }
-  setRoomTenants(room: Room): void {
+  getRoomTenants(room: Room): void {
     this.roomTenantsDataSource   = [];
     this.roomTenants             = [];
-    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null, indexes: null};
+    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, rentStatuses: null, indexes: null};
     const tenants: string []     = [];
     const dueDates: number []    = [];
     const rents: number[]        = [];
-    const status: Array<{value: string, balance?: number}>     = [];
-    const arrayIndex: number[]   = [];
+    const rentStatuses: Array<{value: string, balance?: number}>     = [];
+    const arrayIndexes: number[]   = [];
     let   index                  = 0;
     if (room.type === RoomType.BEDSPACE) {
       room.bedspaces.forEach( bedspace => {
         bedspace.decks.forEach( deck  => {
           if (deck.tenant !== null) {
-            status.push({
+            rentStatuses.push({
               value: PaymentStatus.UNPAID,
               balance: null,
             });
             tenants.push(`${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`);
             dueDates.push(deck.dueRentDate);
             rents.push(deck.monthlyRent);
-            arrayIndex.push(index);
+            arrayIndexes.push(index);
             index++;
           }
           if (deck.status === DeckStatus.AWAY && deck.away[0].tenant !== null ) {
             tenants.push(`${deck.away[0].tenant.firstname} ${deck.away[0].tenant.middlename} ${deck.away[0].tenant.lastname}`);
             dueDates.push(deck.away[0].dueRentDate);
             rents.push(deck.away[0].rent);
-            status.push({
+            rentStatuses.push({
               value: PaymentStatus.UNPAID,
               balance: null,
             });
-            arrayIndex.push(index);
+            arrayIndexes.push(index);
             index++;
           }
         });
@@ -223,17 +281,17 @@ export class RoomFormComponent implements OnInit {
       });
       dueDates.push(room.transientPrivateRoomProperties[0].dueRentDate);
       rents.push(room.transientPrivateRoomProperties[0].monthlyRent);
-      status.push({
+      rentStatuses.push({
         value: PaymentStatus.UNPAID,
         balance: null
       });
-      arrayIndex.push(index);
+      arrayIndexes.push(index);
     }
     roomTenant.names         = tenants;
     roomTenant.dueRentDates  = dueDates;
     roomTenant.rents         = rents;
-    roomTenant.statuses      = status;
-    roomTenant.indexes       = arrayIndex;
+    roomTenant.rentStatuses  = rentStatuses;
+    roomTenant.indexes       = arrayIndexes;
     this.totalCount = tenants.length;
     this.roomTenants.push(roomTenant);
     this.tablePagination();
@@ -262,16 +320,16 @@ export class RoomFormComponent implements OnInit {
                                               FilterType.TRANSIENTPRIVATEROOMBYOBJECTID;
       this.pageRequest.filters.roomObjectId = roomByRoomNumber.data[0]._id;
       const roomByRoomType                  = await this.roomService.getRooms<Room>(this.pageRequest);
-      this.setRoomTenants(roomByRoomType.data[0]);
+      this.getRoomTenants(roomByRoomType.data[0]);
     } catch (error) {}
   }
   tablePagination(): void {
     const start     = this.pageSize * this.pageNumber;
     const end       = this.pageSize * (this.pageNumber + 1);
-    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, statuses: null, indexes: null};
+    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, rentStatuses: null, indexes: null};
     roomTenant.names             = this.roomTenants[0].names.slice(start, end);
     roomTenant.dueRentDates      = this.roomTenants[0].dueRentDates.slice(start, end);
-    roomTenant.statuses          = this.roomTenants[0].statuses.slice(start, end);
+    roomTenant.rentStatuses      = this.roomTenants[0].rentStatuses.slice(start, end);
     roomTenant.rents             = this.roomTenants[0].rents.slice(start, end);
     roomTenant.indexes           = this.roomTenants[0].indexes.slice(start, end);
     this.roomTenantsDataSource   = [roomTenant];
@@ -289,16 +347,16 @@ export class RoomFormComponent implements OnInit {
           name:    this.roomTenants[0].names[index],
           dueDate: this.roomTenants[0].dueRentDates[index],
           rent:    this.roomTenants[0].rents[index],
-          status:  this.roomTenants[0].statuses[index].value,
-          rentBalance: [ this.roomTenants[0].statuses[index].balance !== null ? {
-                        balance: this.roomTenants[0].statuses[index].balance
+          status:  this.roomTenants[0].rentStatuses[index].value,
+          rentBalance: [ this.roomTenants[0].rentStatuses[index].balance !== null ? {
+                        balance: this.roomTenants[0].rentStatuses[index].balance
                        } : null]
         }
       }
     );
     dialogRef.afterClosed().subscribe( (result: TenantPayment) => {
       if (result !== undefined) {
-       this.roomTenants[0].statuses.splice(index, 1,
+       this.roomTenants[0].rentStatuses.splice(index, 1,
         {
          value: result.status,
          balance: result.rentBalance.length !== 0 ? result.rentBalance[0].balance : null
@@ -313,6 +371,30 @@ export class RoomFormComponent implements OnInit {
     this.router.navigate(['payment/room']);
   }
   onSubmit() {
-    console.log('FORM VALUE', this.form.value);
+    this.isSubmitting = true;
+    const formValue: RoomPayment = this.form.getRawValue();
+    formValue.roomTenants = this.roomTenants;
+    let promiseForm: Promise<RoomPayment>;
+
+    promiseForm = this.model
+     ? this.paymentService.updateRoomPayment(formValue)
+     : this.paymentService.addRoomPayment(formValue);
+    promiseForm.then( roomPayment => {
+      this.model = roomPayment;
+      const message = this.model ? 'Updated room payment' : 'Added room payment';
+      this.notificationService.notifySuccess(message);
+      this.buttonName = 'Update';
+      this.isSubmitting = false;
+    })
+    .catch( err => {
+      console.log(err);
+      this.notificationService.notifyFailed('Something went wrong');
+      this.isSubmitting = false;
+    });
+  }
+  roomNumbersToggle($event: MatSelect): void {
+    if ($event.value) {
+      this.disabledShowTenantsButton = false;
+    }
   }
 }

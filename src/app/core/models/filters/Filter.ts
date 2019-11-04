@@ -10,4 +10,5 @@ export class Filter {
   tenantObjectId?: string;
   entryFilter?: object;
   entryObjectId?: string;
+  roomPaymentObjectId?: string;
 }
