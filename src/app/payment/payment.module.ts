@@ -30,7 +30,7 @@ import { RoomPaymentStatusDirective, PaymentStatusDirective } from '@gmrc/direct
     PenaltiesFormComponent,
     PenaltiesComponent,
     RoomPaymentStatusDirective,
-    PaymentStatusDirective
+    PaymentStatusDirective,
   ],
   entryComponents: [
     EntryAdvanceSearchComponent,

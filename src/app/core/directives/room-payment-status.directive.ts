@@ -6,7 +6,10 @@ import { PaymentStatus } from '@gmrc/enums';
 })
 export class RoomPaymentStatusDirective implements OnInit, AfterViewInit {
 
-  constructor(private renderer: Renderer2, private elRef: ElementRef) { }
+  constructor(
+    private renderer: Renderer2,
+    private elRef: ElementRef
+    ) { }
 
   ngOnInit() {
   }

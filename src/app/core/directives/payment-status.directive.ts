@@ -10,7 +10,7 @@ export class PaymentStatusDirective implements AfterViewInit {
     private renderer: Renderer2,
     private elRef: ElementRef
   ) { }
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     const paymentStatus = this.elRef.nativeElement.textContent;
     if (paymentStatus === PaymentStatus.BALANCE) {
       this.renderer.setStyle(this.elRef.nativeElement, 'color', 'orange');

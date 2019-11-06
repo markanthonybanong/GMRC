@@ -35,6 +35,7 @@ export class RoomFormComponent implements OnInit {
     waterBillBalance: this.formBuilder.array([]),
     riceCookerBillStatus: [PaymentStatus.UNPAID, Validators.required],
     riceCookerBillBalance: this.formBuilder.array([]),
+    roomTenants: ['', Validators.required],
     _id: null,
   });
   formTitle = 'ADD ROOM PAYMENT';
@@ -113,6 +114,7 @@ export class RoomFormComponent implements OnInit {
       riceCookerBillStatus: this.model.riceCookerBillStatus,
       roomNumber: this.model.roomNumber,
       waterBillStatus: this.model.waterBillStatus,
+      roomTenants: this.model.roomTenants,
       _id: this.model._id,
     });
     this.calculateTotalKWused();
@@ -245,7 +247,7 @@ export class RoomFormComponent implements OnInit {
     const tenants: string []     = [];
     const dueDates: number []    = [];
     const rents: number[]        = [];
-    const rentStatuses: Array<{value: string, balance?: number}>     = [];
+    const rentStatuses: Array<{value: string, balance?: number}> = [];
     const arrayIndexes: number[]   = [];
     let   index                  = 0;
     if (room.type === RoomType.BEDSPACE) {
@@ -292,6 +294,8 @@ export class RoomFormComponent implements OnInit {
     roomTenant.rents         = rents;
     roomTenant.rentStatuses  = rentStatuses;
     roomTenant.indexes       = arrayIndexes;
+    this.form.get('roomTenants').setValue(null);
+    this.form.get('roomTenants').setValue([roomTenant]);
     this.totalCount = tenants.length;
     this.roomTenants.push(roomTenant);
     this.tablePagination();
@@ -373,21 +377,19 @@ export class RoomFormComponent implements OnInit {
   onSubmit() {
     this.isSubmitting = true;
     const formValue: RoomPayment = this.form.getRawValue();
-    formValue.roomTenants = this.roomTenants;
     let promiseForm: Promise<RoomPayment>;
-
     promiseForm = this.model
      ? this.paymentService.updateRoomPayment(formValue)
      : this.paymentService.addRoomPayment(formValue);
     promiseForm.then( roomPayment => {
-      this.model = roomPayment;
       const message = this.model ? 'Updated room payment' : 'Added room payment';
+      this.model = roomPayment;
+      this.form.get('_id').setValue(this.model._id);
       this.notificationService.notifySuccess(message);
       this.buttonName = 'Update';
       this.isSubmitting = false;
     })
     .catch( err => {
-      console.log(err);
       this.notificationService.notifyFailed('Something went wrong');
       this.isSubmitting = false;
     });
