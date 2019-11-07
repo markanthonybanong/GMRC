@@ -1,0 +1,62 @@
+<form [formGroup]="searchFiltersForm">
+  <div class="header-container">
+    <h3 id="label-text-primary">Search Room Payment</h3>
+  </div>
+  <div class="body-container">
+    <div class="first-block">
+      <mat-form-field>
+        <mat-select placeholder="Room number" formControlName="roomNumber">
+          <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+            {{number}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <input class="hidden-date-input" [matDatepicker]="date">
+        <input matInput placeholder="Month/Year" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+        <mat-datepicker #date
+                        startView="multi-year"
+                        (monthSelected)="chosenMonthHandler($event, date)"
+        ></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="second-block">
+      <mat-form-field>
+        <mat-select placeholder="Electric bill status"  formControlName="electricBillStatus">
+          <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+            {{status}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Water bill status"  formControlName="waterBillStatus">
+          <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+            {{status}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="third-block">
+      <mat-form-field>
+        <mat-select placeholder="Rice cooker bill status"  formControlName="riceCookerBillStatus">
+          <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+            {{status}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Rent status"  formControlName="rentStatus">
+          <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+            {{status}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="footer-container">
+    <button mat-raised-button color="primary" [matDialogClose]='searchFiltersForm.value'>
+      <span id="button-text-white">Search</span>
+    </button>
+  </div>
+</form>

@@ -11,4 +11,5 @@ export class Filter {
   entryFilter?: object;
   entryObjectId?: string;
   roomPaymentObjectId?: string;
+  roomPaymentFilter?: object;
 }

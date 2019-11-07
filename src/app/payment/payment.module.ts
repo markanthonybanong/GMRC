@@ -8,7 +8,13 @@ import { EntryFormComponent } from './form/entry-form/entry-form.component';
 import { RoomFormComponent } from './form/room-form/room-form.component';
 import { PenaltiesFormComponent } from './form/penalties-form/penalties-form.component';
 import { PenaltiesComponent } from './payment/penalties/penalties.component';
-import { AngularMaterialModule, SharedModule, EntryAdvanceSearchComponent, RoomPaymentDialogComponent } from '@gmrc/shared';
+import {
+    AngularMaterialModule,
+    SharedModule,
+    EntryAdvanceSearchComponent,
+    RoomPaymentDialogComponent,
+    RoomPaymentAdvanceSearchComponent
+} from '@gmrc/shared';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RoomPaymentStatusDirective, PaymentStatusDirective } from '@gmrc/directives';
 
@@ -35,6 +41,7 @@ import { RoomPaymentStatusDirective, PaymentStatusDirective } from '@gmrc/direct
   entryComponents: [
     EntryAdvanceSearchComponent,
     RoomPaymentDialogComponent,
+    RoomPaymentAdvanceSearchComponent
   ]
 })
 export class PaymentModule { }

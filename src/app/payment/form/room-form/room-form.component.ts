@@ -1,15 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, FormControl, FormArray, Form, FormGroup } from '@angular/forms';
-import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatDatepicker, MatSelectChange, PageEvent, MatDialog, MatSelect } from '@angular/material';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import {
+        MatDatepicker,
+        MatSelectChange,
+        PageEvent,
+        MatDialog,
+        MatSelect } from '@angular/material';
 import * as moment from 'moment';
 import { Moment} from 'moment';
 import { PaymentEnumService, RoomService, PaymentService, NotificationService } from '@gmrc/services';
 import { PaymentStatus, FilterType, RoomType, DeckStatus } from '@gmrc/enums';
 import { PageRequest, Room, PageData, RoomTenant, TenantPayment, RoomPayment } from '@gmrc/models';
 import { RoomPaymentDialogComponent } from '@gmrc/shared';
-import { promise } from 'protractor';
+
 @Component({
   selector: 'app-room-form',
   templateUrl: './room-form.component.html',
@@ -21,7 +25,6 @@ export class RoomFormComponent implements OnInit {
   form = this.formBuilder.group({
     roomNumber: [{value: '', disabled: true}, Validators.required],
     date: ['', Validators.required],
-    monthYear: [''],
     previousReading: ['', Validators.required],
     previousReadingKWUsed: ['', Validators.required],
     presentReading: ['', Validators.required],
