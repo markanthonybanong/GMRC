@@ -1,7 +1,12 @@
 .advance-search{
   margin-top: 40px;
-  button{
-    width: 100%;
+  .container{
+    button{
+      width: 100%;
+    }
+    button:nth-child(2){
+      margin-top: 8px;
+    }
   }
 }
 table{
@@ -66,7 +71,7 @@ table{
   .advance-search {
     display: flex;
     justify-content: flex-end;
-    button{
+    >.container {
       width: 30%;
     }
   }

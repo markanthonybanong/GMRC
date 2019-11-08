@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { MatTableDataSource, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatDialog, MatPaginator, PageEvent } from '@angular/material';
 import { PageRequest, Entry } from '@gmrc/models';
 import { Router } from '@angular/router';
-import { PaymentService, ObjectService } from '@gmrc/services';
+import { PaymentService, ObjectService, LocalStorageService } from '@gmrc/services';
 import { FilterType } from '@gmrc/enums';
 import { EntryAdvanceSearchComponent } from '@gmrc/shared';
 import * as moment from 'moment';
@@ -25,27 +25,45 @@ export class EntryComponent implements OnInit{
     'dateExit',
     'actions'
   ];
-  pageSizeOptions: number[] = [5, 10, 15];
-  pageRequest = new PageRequest(1, this.pageSizeOptions[0]);
+  pageSizeOptions: number[] = [10, 20, 30, 40];
+  pageRequest = new PageRequest(null, null);
   dataSource = new MatTableDataSource<Entry>();
   totalCount: number;
-
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   constructor(
     private router: Router,
     private paymentService: PaymentService,
     private dialog: MatDialog,
-    private objectService: ObjectService
+    private objectService: ObjectService,
+    private localStorageService: LocalStorageService,
   ) { }
 
   ngOnInit() {
     this.pageRequest.filters.type = FilterType.ALLENTRIES;
     this.getEntries();
   }
+  displayPreviousPage(): void {
+    const filterType = this.localStorageService.getItem('entryFilterType');
+    const filter     = this.localStorageService.getItem('entryFilter');
+    const page       = this.localStorageService.getItem('entryPage');
+
+    if ( filterType !== null ) {
+      this.pageRequest.filters.type = filterType;
+    }
+    if ( filter !== null ) {
+      this.pageRequest.filters.entryFilter = filter;
+    }
+    if ( page !== null) {
+      this.paginator.pageIndex = page;
+    }
+  }
   getEntries(): void {
+    this.displayPreviousPage();
     this.paymentService.getEntries<Entry>(this.pageRequest)
      .then( entries => {
         this.totalCount = entries.totalCount;
         this.dataSource.data = entries.data as Entry[];
+        this.dataSource.paginator = this.paginator;
         this.isLoading = false;
      })
      .catch( err => {
@@ -73,14 +91,28 @@ export class EntryComponent implements OnInit{
     );
     dialogRef.afterClosed().subscribe(searchResult => {
       if (searchResult) {
+        const filter = this.objectService.removeNullValuesInSearchResult(
+                        this.removeTenantNameInSearchResult(searchResult)
+                       );
         this.pageRequest.filters.type = FilterType.ADVANCESEARCHENTRY;
-        this.pageRequest.filters.entryFilter = this.objectService.removeNullValuesInSearchResult(
-          this.removeTenantNameInSearchResult(searchResult));
+        this.pageRequest.filters.entryFilter = filter;
+        this.localStorageService.setItem('entryFilterType', FilterType.ADVANCESEARCHENTRY);
+        this.localStorageService.setItem('entryFilter', filter);
         this.getEntries();
       }
     });
   }
   updateEntry(entryObjectId: string): void {
     this.router.navigate([`payment/update-entry/${entryObjectId}`]);
+  }
+  onPaginatorUpdate($event: PageEvent): void {
+    this.localStorageService.setItem('entryPage', $event.pageIndex);
+  }
+  displayAllEntries(): void {
+    this.localStorageService.remove('entryFilterType');
+    this.localStorageService.remove('entryFilter');
+    this.localStorageService.remove('entryPage');
+    this.pageRequest.filters = { type: FilterType.ALLENTRIES };
+    this.getEntries();
   }
 }

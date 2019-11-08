@@ -11,8 +11,7 @@ import { RoomPaymentAdvanceSearchComponent } from '@gmrc/shared';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit  {
-
-  pageSizeOptions: number[] = [10, 20, 30];
+  pageSizeOptions: number[] = [10, 20, 30, 40];
   pageRequest = new PageRequest(null, null);
   dataSource = new MatTableDataSource<RoomPayment>();
   totalCount: number;
@@ -44,23 +43,24 @@ export class RoomComponent implements OnInit  {
     this.router.navigate(['payment/add-room-payment']);
   }
   displayPreviousPage(): void {
-    if (this.localStorageService.getItem('roomPaymentFilterType') !== undefined ) {
-      this.pageRequest.filters.type = this.localStorageService.getItem('roomPaymentFilterType');
+    const filterType = this.localStorageService.getItem('roomPaymentFilterType');
+    const filter     = this.localStorageService.getItem('roomPaymentFilter');
+    const page       = this.localStorageService.getItem('roomPaymentPage');
+
+    if ( filterType !== null ) {
+      this.pageRequest.filters.type = filterType;
     }
-    if (this.localStorageService.getItem('roomPaymentFilter') !== undefined ) {
-      this.pageRequest.filters.roomPaymentFilter = this.localStorageService.getItem('roomPaymentFilter');
+    if ( filter !== null ) {
+      this.pageRequest.filters.roomPaymentFilter = filter;
     }
-    if (this.localStorageService.getItem('roomPaymentPage') !== null) {
-      const page = this.localStorageService.getItem('roomPaymentPage');
+    if ( page !== null) {
       this.paginator.pageIndex = page;
     }
   }
   getRoomPayments(): void {
     this.displayPreviousPage();
-    console.log(this.pageRequest);
     this.paymentService.getRoomPayments<RoomPayment>(this.pageRequest)
       .then( roomPayments => {
-        console.log('THR ROOM PAYMENTS ', roomPayments);
         this.totalCount = roomPayments.totalCount;
         this.dataSource.data = roomPayments.data as RoomPayment[];
         this.dataSource.paginator = this.paginator;
@@ -129,6 +129,7 @@ export class RoomComponent implements OnInit  {
     this.localStorageService.remove('roomPaymentFilterType');
     this.localStorageService.remove('roomPaymentFilter');
     this.localStorageService.remove('roomPaymentPage');
+    this.pageRequest.filters = { type: FilterType.ALLROOMPAYMENTS };
     this.getRoomPayments();
   }
 

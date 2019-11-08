@@ -3,6 +3,9 @@
     <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
       <span id="button-text-white">Advance Search</span>
     </button>
+    <button mat-raised-button color="primary" (click)='displayAllEntries()'>
+      <span id="button-text-white">Display All Entries</span>
+    </button>
     <button mat-raised-button color="primary" (click)='addEntry()'>
       <span id="button-text-white">Add Entry</span>
     </button>
@@ -37,19 +40,11 @@
     </ng-container>
   <ng-container matColumnDef="oneMonthDeposit">
     <th mat-header-cell *matHeaderCellDef>One month deposit</th>
-    <td mat-cell *matCellDef="let element">
-      <span *ngIf="element.oneMonthDeposit === 'Paid'" id="paid">{{element.oneMonthDeposit}}</span>
-      <span *ngIf="element.oneMonthDeposit === 'Unpaid'" id="un-paid">{{element.oneMonthDeposit}}</span>
-      <span *ngIf="element.oneMonthDeposit === 'Balance'" id="balance">{{element.oneMonthDeposit}}</span>
-    </td>
+    <td mat-cell *matCellDef="let element">{{element.oneMonthDeposit}}</td>
   </ng-container>
   <ng-container matColumnDef="oneMonthAdvance">
     <th mat-header-cell *matHeaderCellDef>One month advance</th>
-    <td mat-cell *matCellDef="let element">
-      <span *ngIf="element.oneMonthAdvance === 'Paid'" id="paid">{{element.oneMonthAdvance}}</span>
-      <span *ngIf="element.oneMonthAdvance === 'Unpaid'" id="un-paid">{{element.oneMonthAdvance}}</span>
-      <span *ngIf="element.oneMonthAdvance === 'Balance'" id="balance">{{element.oneMonthAdvance}}</span>
-    </td>
+    <td mat-cell *matCellDef="let element" appPaymentStatus>{{element.oneMonthAdvance}}</td>
   </ng-container>
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -64,5 +59,5 @@
   <mat-spinner *ngIf="isLoading"></mat-spinner>
 </div>
 <footer>
-  <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [length]="totalCount" (page)="onPaginatorUpdate($event)"></mat-paginator>
+  <mat-paginator #paginator [length]="totalCount" [pageSize]="pageSizeOptions[0]" [pageSizeOptions]="pageSizeOptions"  showFirstLastButtons  (page)="onPaginatorUpdate($event)"></mat-paginator>
 </footer>
