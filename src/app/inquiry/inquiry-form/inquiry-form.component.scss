@@ -17,7 +17,6 @@
         margin-right: 5px;
       }
     }
-
   }
 }
 /*MEDIA QUERIES*/
@@ -30,14 +29,19 @@
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
   .form-parent-container{
-    .form{
-      width: 30%;
+    .form {
       mat-form-field{
         width: 48%;
       }
       >.first-block, >.second-block, >.third-block, >.fourth-block {
         display: flex;
         justify-content: space-between;
+      }
+      >.fifth-block{
+        >div{
+          display: flex;
+          justify-content: space-between;
+        }
       }
     }
   }

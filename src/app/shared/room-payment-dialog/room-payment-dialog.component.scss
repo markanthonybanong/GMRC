@@ -1,0 +1,22 @@
+.header-container{
+  display: flex;
+  justify-content: center;
+}
+.body-container{
+  mat-form-field{
+    width: 48%;
+  }
+  >.first-block, >.second-block{
+    display: flex;
+    justify-content: space-between;
+  }
+  >.third-block{
+    mat-form-field{
+      width: 100%;
+    }
+  }
+}
+.footer-container{
+  display: flex;
+  justify-content: flex-end;
+}

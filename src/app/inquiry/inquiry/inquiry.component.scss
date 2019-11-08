@@ -17,6 +17,12 @@ mat-card{
   >body{
     >table{
       width: 100%;
+      #waiting{
+        color: orange;
+      }
+      #settled{
+        color: green;
+      }
       mat-icon:hover{
         cursor: pointer;
       }

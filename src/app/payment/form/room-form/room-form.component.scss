@@ -1,0 +1,111 @@
+.table-grandparent-container{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  mat-card{
+    width: 100%;
+    table{
+      width: 100%;
+      mat-icon:hover{
+        cursor: pointer;
+      }
+      th.mat-header-cell {
+        text-align: center;
+      }
+      th, td.mat-cell{
+        border: none;
+      }
+      td{
+        .table-detail, .table-detail-action{
+          p {
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 4px solid rgba(0, 0, 0, 0.12);
+            // background: pink;
+            padding-bottom: 10px;
+          }
+        }
+        .table-detail-status{
+
+          #balance{
+            border-bottom: 4px solid rgba(0, 0, 0, 0.12);
+            margin-top: 0px;
+            text-align: center;
+          }
+
+        }
+
+      }
+    }
+  }
+}
+
+
+.form-parent-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .form{
+    mat-form-field{
+      width: 100%;
+    }
+    .hidden-date-input {
+      width: 0;
+      border: none;
+      padding: 0;
+    }
+    >.form-header-block{
+      display: flex;
+      justify-content: center;
+    }
+    >.show-tenants-button-container{
+      button{
+        width: 100%;
+      }
+    }
+    >.action-buttons-block{
+      margin-top: 20px;
+      display: flex;
+      justify-content: flex-end;
+      #back-button{
+        margin-right: 5px;
+      }
+    }
+  }
+}
+/*MEDIA QUERIES*/
+@media (max-width: 575px) {}
+@media (min-width: 576px) {}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .form-parent-container{
+    .form {
+      mat-form-field{
+        width: 48%;
+      }
+      >.seventh-block, >.eight-block{
+        mat-form-field{
+          width: 100%;
+        }
+      }
+      >.first-block, >.second-block, >.third-block, >.fourth-block, >.fifth-block, >.seventh-block, >.eight-block {
+        display: flex;
+        justify-content: space-between;
+      }
+      >.sixth-block{
+        mat-form-field{
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {  }

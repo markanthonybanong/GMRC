@@ -29,7 +29,6 @@ export class RoomFormComponent implements OnInit {
     private roomEnumService: RoomEnumService,
     private roomService: RoomService,
     private notificationService: NotificationService,
-    private router: Router,
     private location: Location,
   ) { }
 
@@ -38,7 +37,8 @@ export class RoomFormComponent implements OnInit {
   createTransientPrivateRoomProperties(): FormGroup {
     return this.formBuilder.group({
     status: [RoomStatus.VACANT, Validators.required],
-    dueRent: [''],
+    dueRentDate: [''],
+    monthlyRent: [''],
     });
   }
   getTransientPrivateRoomProperties(): FormArray {

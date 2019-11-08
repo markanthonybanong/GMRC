@@ -30,13 +30,20 @@ mat-form-field{
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
   .container{
-    width: 30%;
     mat-form-field{
       width: 48%;
     }
-    >.first-block, >.second-block, .transient-private-property-container{
+    >.first-block, >.second-block {
       display: flex;
       justify-content: space-between;
+    }
+    >.third-block{
+      >.transient-private-property-container{
+        >.first-block{
+          display: flex;
+          justify-content: space-between;
+        }
+      }
     }
   }
 }

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
-import { RoomType, FilterType } from '@gmrc/enums';
+import { RoomType, FilterType, InquiryStatus } from '@gmrc/enums';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Inquiry, PageRequest, Filter } from '@gmrc/models';
-import { RoomEnumService, InquiryService, NotificationService } from '@gmrc/services';
+import { RoomEnumService, InquiryService, NotificationService, TenantEnumService } from '@gmrc/services';
+import { InquiryEnumService } from '@gmrc/services';
 
 @Component({
   selector: 'app-inquiry-form',
@@ -12,6 +13,13 @@ import { RoomEnumService, InquiryService, NotificationService } from '@gmrc/serv
   styleUrls: ['./inquiry-form.component.scss']
 })
 export class InquiryFormComponent implements OnInit {
+  statuses: Array<string> = ['Waiting', 'Settled'];
+  knownGMRCThrough: Array<string> = [
+    'Through social platforms',
+    'Someone suggested',
+    'Flyers',
+    'etc'
+  ];
   form = this.formBuilder.group({
     name: ['', Validators.required],
     roomNumber: ['', Validators.required],
@@ -20,21 +28,12 @@ export class InquiryFormComponent implements OnInit {
     phoneNumber: ['', Validators.required],
     gender: ['', Validators.required],
     roomType:  ['', Validators.required],
-    deckNumbers: this.formBuilder.array([]),
+    status: [InquiryStatus.WAITING, Validators.required],
+    bedInfos: this.formBuilder.array([]),
     _id: '',
   });
   formTitle = 'ADD INQUIRY';
   isLoading = true;
-  knownGMRCThrough = [
-    'Through social platforms',
-    'Someone suggested',
-    'Flyers',
-    'etc'
-  ];
-  genders = [
-    'Male',
-    'Female'
-  ];
   buttonName = 'Add';
   isSubmitting = false;
   model: Inquiry;
@@ -47,31 +46,35 @@ export class InquiryFormComponent implements OnInit {
     private inquiryService: InquiryService,
     private notificationService: NotificationService,
     private route: ActivatedRoute,
+    private tenantEnumService: TenantEnumService,
+    private inquiryEnumService: InquiryEnumService
     ) { }
 
   ngOnInit() {
     this.isGoingToUpdate();
   }
-  pushDeckNumberFormGroup(): void {
-    const deckNumber = this.form.get('deckNumbers') as FormArray;
-    deckNumber.push(this.deckNumber());
+  get bedInfos(): FormArray {
+    return this.form.get('bedInfos') as FormArray;
   }
-  removeDeckNumberFormGroup(): void {
-    const deckNumber = this.form.get('deckNumbers') as FormArray;
-    if (deckNumber.length) {
-      deckNumber.removeAt(0);
+  pushBedFormGroup(): void {
+    this.bedInfos.push(this.bed());
+  }
+  removeBedFormGroup(): void {
+    if (this.bedInfos.length) {
+      this.bedInfos.removeAt(0);
     }
   }
   roomTypeToggle($even: MatSelectChange): void {
     if ($even.value === RoomType.BEDSPACE) {
-      this.pushDeckNumberFormGroup();
+      this.pushBedFormGroup();
     } else {
-      this.removeDeckNumberFormGroup();
+      this.removeBedFormGroup();
     }
   }
-  deckNumber(): FormGroup {
+  bed(): FormGroup {
     return this.formBuilder.group({
-      number: []
+      bedNumber: ['', Validators.required],
+      deckNumber: ['', Validators.required]
     });
   }
   backToInquiryList(): void {
@@ -99,11 +102,11 @@ export class InquiryFormComponent implements OnInit {
     });
   }
   loadFormValue(): void {
-    if (this.model.deckNumbers.length) {
-      const deckNumbers = this.form.get('deckNumbers') as FormArray;
-      deckNumbers.push(
+    if (this.model.bedInfos.length) {
+      this.bedInfos.push(
         this.formBuilder.group({
-          number: this.model.deckNumbers[0].number,
+          bedNumber: this.model.bedInfos[0].bedNumber,
+          deckNumber: this.model.bedInfos[0].deckNumber,
         })
       );
     }
@@ -114,6 +117,7 @@ export class InquiryFormComponent implements OnInit {
       roomNumber: this.model.roomNumber,
       roomType: this.model.roomType,
       willOccupyIn: this.model.willOccupyIn,
+      status: this.model.status,
       gender: this.model.gender,
       phoneNumber: this.model.phoneNumber
     });

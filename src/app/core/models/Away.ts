@@ -9,4 +9,6 @@ export class Away {
  tenantObjectId: string;
  status: string;
  willReturnIn: string;
+ dueRentDate: number;
+ rent: number;
 }
