@@ -38,6 +38,7 @@ export class InquiryComponent implements OnInit {
     private localStorageService: LocalStorageService
     ) { }
   ngOnInit() {
+    this.pageRequest.filters.type = FilterType.ALLINQUIRIES;
     this.getInquiries();
   }
   addInquiry(): void {
@@ -58,8 +59,8 @@ export class InquiryComponent implements OnInit {
     }
   }
   getInquiries(): void {
-    this.displayPreviousPage();
     console.log(this.pageRequest);
+    this.displayPreviousPage();
     this.inquiryService.getInquiries<Inquiry>(this.pageRequest)
     .then( inquiries => {
       this.totalCount = inquiries.totalCount;
@@ -126,6 +127,7 @@ export class InquiryComponent implements OnInit {
     this.localStorageService.remove('inquiryFilterType');
     this.localStorageService.remove('inquiryFilter');
     this.localStorageService.remove('inquiryPage');
+    this.pageRequest.filters = { type: FilterType.ALLINQUIRIES} ;
     this.getInquiries();
   }
 }

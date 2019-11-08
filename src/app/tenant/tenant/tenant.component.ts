@@ -15,7 +15,16 @@ import { FilterType } from '@gmrc/enums';
 export class TenantComponent implements OnInit {
   dataSource = new MatTableDataSource<Tenant>();
   totalCount: number;
-  displayedColumns: string[] = ['firstname', 'middlename', 'lastname', 'gender', 'typeOfNetWork', 'roomNumber', 'dueRentDate', 'action'];
+  displayedColumns: string[] = [
+    'roomNumber',
+    'dueRentDate',
+    'firstname',
+    'middlename',
+    'lastname',
+    'gender',
+    'typeOfNetWork',
+    'action'
+  ];
   pageSizeOptions: number[] = [10, 20, 30, 40];
   name = new FormControl('');
   isLoading = true;
@@ -32,6 +41,7 @@ export class TenantComponent implements OnInit {
     ) { }
 
   ngOnInit() {
+    this.pageRequest.filters.type = FilterType.ALLTENANTS;
     this.getTenants();
   }
   displayPreviousPage(): void {
@@ -113,6 +123,7 @@ export class TenantComponent implements OnInit {
     this.localStorageService.remove('tenantFilter');
     this.localStorageService.remove('tenantObjectId');
     this.localStorageService.remove('tenantPage');
+    this.pageRequest.filters = { type: FilterType.ALLTENANTS };
     this.getTenants();
  }
 }
