@@ -3,6 +3,9 @@
       <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
         <span id="button-text-white">Advance Search</span>
       </button>
+      <button mat-raised-button color="primary" (click)='displayAllRoomPayments()'>
+        <span id="button-text-white">Display room payments</span>
+      </button>
       <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
         <span id="button-text-white">Print bills</span>
       </button>
@@ -59,5 +62,8 @@
   <mat-spinner *ngIf="isLoading"></mat-spinner>
  </div>
 <footer>
-  <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [length]="totalCount" (page)="onPaginatorUpdate($event)"></mat-paginator>
+  <!-- <mat-paginator #paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [length]="totalCount" (page)="onPaginatorUpdate($event)"></mat-paginator> -->
+  <mat-paginator #paginator [length]="totalCount" [pageSize]="pageSizeOptions[0]" [pageSizeOptions]="pageSizeOptions"  showFirstLastButtons  (page)="onPaginatorUpdate($event)"></mat-paginator>
+
+
 </footer>

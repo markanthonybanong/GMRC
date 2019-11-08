@@ -29,7 +29,6 @@ export class RoomFormComponent implements OnInit {
     private roomEnumService: RoomEnumService,
     private roomService: RoomService,
     private notificationService: NotificationService,
-    private router: Router,
     private location: Location,
   ) { }
 

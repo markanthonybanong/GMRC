@@ -243,15 +243,13 @@ export class RoomFormComponent implements OnInit {
       return error;
     }
   }
-  getRoomTenants(room: Room): void {
-    this.roomTenantsDataSource   = [];
-    this.roomTenants             = [];
+  getRoomTenants(room: Room): RoomTenant {
     const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, rentStatuses: null, indexes: null};
     const tenants: string []     = [];
     const dueDates: number []    = [];
     const rents: number[]        = [];
     const rentStatuses: Array<{value: string, balance?: number}> = [];
-    const arrayIndexes: number[]   = [];
+    const arrayIndexes: number[] = [];
     let   index                  = 0;
     if (room.type === RoomType.BEDSPACE) {
       room.bedspaces.forEach( bedspace => {
@@ -297,28 +295,19 @@ export class RoomFormComponent implements OnInit {
     roomTenant.rents         = rents;
     roomTenant.rentStatuses  = rentStatuses;
     roomTenant.indexes       = arrayIndexes;
-    this.form.get('roomTenants').setValue(null);
-    this.form.get('roomTenants').setValue([roomTenant]);
-    this.totalCount = tenants.length;
-    this.roomTenants.push(roomTenant);
-    this.tablePagination();
+    return roomTenant;
   }
-  // setRoomTenant(roomTenants: RoomTenant) {
-  //   const electricityBalanceFormGroup      = this.electricBillBalanceFormArray.at(0);
-  //   const electricityBalance               = electricityBalanceFormGroup.get('balance').value;
-  //   const waterBalanceFormGroup            = this.waterBillBalanceFormArray.at(0);
-  //   const waterBalnce                      = waterBalanceFormGroup.get('balance').value;
-  //   const riceCookerBalanceFormGroup       = this.riceCookerBillBalanceFormArray.at(0);
-  //   const riceCookerBalnce                 = riceCookerBalanceFormGroup.get('balance').value;
-
-  //   roomTenants.electricBillStatus   = this.form.get('electricBillStatus').value === PaymentStatus.BALANCE
-  //                                       ? electricityBalance : this.form.get('electricBillStatus').value;
-  //   roomTenants.waterBillStatus      = this.form.get('waterBillStatus').value === PaymentStatus.BALANCE
-  //                                       ? waterBalnce : this.form.get('waterBillStatus').value;
-  //   roomTenants.riceCookerBillStatus = this.form.get('riceCookerBillStatus').value === PaymentStatus.BALANCE
-  //                                       ? riceCookerBalnce : this.form.get('riceCookerBillStatus').value;
-
-  // }
+  addRoomTenantsToForm(roomTenant: RoomTenant): void {
+    this.roomTenantsDataSource   = [];
+    this.roomTenants             = [];
+    if (roomTenant.names.length > 0 ) {
+      this.form.get('roomTenants').setValue(null);
+      this.form.get('roomTenants').setValue([roomTenant]);
+      this.roomTenants.push(roomTenant);
+      this.totalCount = roomTenant.names.length;
+      this.tablePagination();
+    }
+  }
   async showTenants(): Promise<void> {
     try {
       const roomByRoomNumber                = await this.getRoomByRoomNumber();
@@ -327,7 +316,7 @@ export class RoomFormComponent implements OnInit {
                                               FilterType.TRANSIENTPRIVATEROOMBYOBJECTID;
       this.pageRequest.filters.roomObjectId = roomByRoomNumber.data[0]._id;
       const roomByRoomType                  = await this.roomService.getRooms<Room>(this.pageRequest);
-      this.getRoomTenants(roomByRoomType.data[0]);
+      this.addRoomTenantsToForm(this.getRoomTenants(roomByRoomType.data[0]));
     } catch (error) {}
   }
   tablePagination(): void {
