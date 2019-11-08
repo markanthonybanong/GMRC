@@ -1,7 +1,12 @@
 <div class="advance-search">
-  <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
-    <span id="button-text-white">Advance Search</span>
-  </button>
+  <div class="container">
+    <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
+        <span id="button-text-white">Advance Search</span>
+    </button>
+    <button mat-raised-button color="primary" (click)='displayAllBedspaceRooms()'>
+        <span id="button-text-white">Display All Bedspace Rooms</span>
+    </button>
+  </div>
 </div>
 <table *ngIf="isLoading === false" mat-table [dataSource]="dataSource">
   <ng-container matColumnDef="roomNumber">
@@ -66,7 +71,7 @@
   <mat-spinner *ngIf="isLoading"></mat-spinner>
 </div>
 <footer>
-  <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [length]="totalCount" (page)="onPaginatorUpdate($event)"></mat-paginator>
+  <mat-paginator #paginator [length]="totalCount" [pageSize]="pageSizeOptions[0]" [pageSizeOptions]="pageSizeOptions"  showFirstLastButtons  (page)="onPaginatorUpdate($event)"></mat-paginator>
 </footer>
 
 

@@ -21,6 +21,9 @@
           <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
             <span id="button-text-white">Advance Search</span>
           </button>
+          <button mat-raised-button color="primary" (click)='displayAllTenants()'>
+              <span id="button-text-white">Display All Tenants</span>
+            </button>
           <button mat-raised-button color="primary" (click)='addTenant()'>
               <span id="button-text-white">Add Tenant</span>
           </button>
@@ -74,6 +77,6 @@
     </div>
   </body>
   <footer>
-    <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [length]="totalCount" (page)="onPaginatorUpdate($event)"></mat-paginator>
+      <mat-paginator #paginator [length]="totalCount" [pageSize]="pageSizeOptions[0]" [pageSizeOptions]="pageSizeOptions"  showFirstLastButtons  (page)="onPaginatorUpdate($event)"></mat-paginator>
   </footer>
 </mat-card>

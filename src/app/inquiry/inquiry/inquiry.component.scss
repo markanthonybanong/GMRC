@@ -9,7 +9,7 @@ mat-card{
       justify-content: center;
     }
     >.second-row{
-      button:nth-child(2){
+      button:nth-child(2), button:nth-child(3){
         margin-top: 8px;
       }
     }
