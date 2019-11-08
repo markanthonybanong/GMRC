@@ -9,7 +9,4 @@ export * from './advanced-search-dialogs/room-payment-advance-search/room-paymen
 export * from './confirmation-dialog/confirmation-dialog.component';
 export * from './advanced-search-dialogs/entry-advance-search/entry-advance-search.component';
 export * from './room-payment-dialog/room-payment-dialog.component';
-export * from './print-dialog/bills-dialog/bills-dialog.component';
-export * from './print-dialog/electric-bill-dialog/electric-bill-dialog.component';
-export * from './print-dialog/promissory-note-dialog/promissory-note-dialog.component';
 
