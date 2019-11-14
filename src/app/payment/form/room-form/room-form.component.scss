@@ -9,35 +9,34 @@
       mat-icon:hover{
         cursor: pointer;
       }
-      th.mat-header-cell {
+      th.mat-header-cell, td {
         text-align: center;
       }
-      th, td.mat-cell{
-        border: none;
-      }
-      td{
-        .table-detail, .table-detail-action{
-          p {
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-bottom: 4px solid rgba(0, 0, 0, 0.12);
-            // background: pink;
-            padding-bottom: 10px;
-          }
-        }
-        .table-detail-status{
+      // th, td.mat-cell{
+      //   border: none;
+      // }
+      // td{
+      //   .table-detail, .table-detail-status, .table-detail-action{
+      //     p {
+      //       height: 50px;
+      //       display: flex;
+      //       justify-content: center;
+      //       align-items: center;
+      //       border-bottom: 4px solid rgba(0, 0, 0, 0.12);
+      //       // background: pink;
+      //       padding-bottom: 10px;
+      //     }
+      //   }
+      //   .table-detail-status{
+      //     #balance{
+      //       border-bottom: 4px solid rgba(0, 0, 0, 0.12);
+      //       margin-top: 0px;
+      //       text-align: center;
+      //     }
 
-          #balance{
-            border-bottom: 4px solid rgba(0, 0, 0, 0.12);
-            margin-top: 0px;
-            text-align: center;
-          }
+      //   }
 
-        }
-
-      }
+      // }
     }
   }
 }

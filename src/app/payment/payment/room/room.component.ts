@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PageRequest, RoomPayment } from '@gmrc/models';
+import { PageRequest, RoomPayment, RoomTenant } from '@gmrc/models';
 import { MatTableDataSource, MatDialog, PageEvent, MatPaginator } from '@angular/material';
 import { PaymentService, ObjectService, LocalStorageService } from '@gmrc/services';
 import { PaymentStatus, FilterType } from '@gmrc/enums';
@@ -18,7 +18,7 @@ export class RoomComponent implements OnInit  {
   isLoading = true;
   displayedColumns: string[] = [
     'roomNumber',
-    'date',
+    'dueDate',
     'electricBillStatus',
     'waterBillStatus',
     'riceCookerBillStatus',
@@ -71,25 +71,28 @@ export class RoomComponent implements OnInit  {
   updateRoomPayment(roomPaymentObjectId: string): void {
     this.router.navigate([`payment/update-room-payment/${roomPaymentObjectId}`]);
   }
-  setRoomStatus(statuses: Array<{value: string, balance?: number}>): Array<string> {
+  setRoomStatus(roomTenants: Array<RoomTenant> ): Array<string> {
     const tenantstatuses: Array<string> = [];
     const roomStatuses:   Array<string> = [];
-    statuses.forEach(status => {
-      tenantstatuses.push(status.value);
+
+    roomTenants.forEach(roomTenant => {
+      tenantstatuses.push(roomTenant.rentStatus.value);
     });
-     if (tenantstatuses.includes(PaymentStatus.PAID)) {
-       roomStatuses.push(PaymentStatus.PAID);
-     }
-     if (tenantstatuses.includes(PaymentStatus.UNPAID)) {
-       roomStatuses.push(PaymentStatus.UNPAID);
-     }
-     if (tenantstatuses.includes(PaymentStatus.BALANCE)) {
-       roomStatuses.push(PaymentStatus.BALANCE);
-     }
-     if (tenantstatuses.includes(PaymentStatus.NONE)) {
-       roomStatuses.push(PaymentStatus.NONE);
-     }
-     return roomStatuses;
+
+    if (tenantstatuses.includes(PaymentStatus.PAID)) {
+      roomStatuses.push(PaymentStatus.PAID);
+    }
+    if (tenantstatuses.includes(PaymentStatus.UNPAID)) {
+      roomStatuses.push(PaymentStatus.UNPAID);
+    }
+    if (tenantstatuses.includes(PaymentStatus.BALANCE)) {
+      roomStatuses.push(PaymentStatus.BALANCE);
+    }
+    if (tenantstatuses.includes(PaymentStatus.NONE)) {
+      roomStatuses.push(PaymentStatus.NONE);
+    }
+
+    return roomStatuses;
   }
   arrangeRoomPaymentFilters(searchResult: object): object {
     const arrangedSearchResult = { firstFilter: {}, secondFilter: {}};
@@ -115,7 +118,7 @@ export class RoomComponent implements OnInit  {
                             this.objectService.removeNullValuesInSearchResult(searchResult)
                           );
         this.pageRequest.filters.type = filterType;
-        this.pageRequest.filters.roomPaymentFilter =  filter;
+        this.pageRequest.filters.roomPaymentFilter = filter;
         this.localStorageService.setItem('roomPaymentFilterType', filterType);
         this.localStorageService.setItem('roomPaymentFilter', filter);
         this.getRoomPayments();
@@ -131,6 +134,9 @@ export class RoomComponent implements OnInit  {
     this.localStorageService.remove('roomPaymentPage');
     this.pageRequest.filters = { type: FilterType.ALLROOMPAYMENTS };
     this.getRoomPayments();
+  }
+  printRoomBills(): void {
+    this.router.navigate(['payment/print-room-bills']);
   }
 
 }

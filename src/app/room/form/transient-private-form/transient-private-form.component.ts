@@ -21,7 +21,7 @@ export class TransientPrivateFormComponent implements OnInit {
   oldTenantObjectId: string = null;
   roomTypes: string[] = [RoomType.PRIVATE, RoomType.TRANSIENT];
   form = this.formBuilder.group({
-    number: ['', Validators.required],
+    number: [{value: '', disabled: true}, Validators.required],
     floor: ['', Validators.required],
     type: ['', Validators.required],
     aircon: ['', Validators.required],

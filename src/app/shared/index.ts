@@ -9,4 +9,3 @@ export * from './advanced-search-dialogs/room-payment-advance-search/room-paymen
 export * from './confirmation-dialog/confirmation-dialog.component';
 export * from './advanced-search-dialogs/entry-advance-search/entry-advance-search.component';
 export * from './room-payment-dialog/room-payment-dialog.component';
-
