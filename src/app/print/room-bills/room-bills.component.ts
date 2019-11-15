@@ -43,44 +43,10 @@ export class RoomBillsComponent implements OnInit {
   groupRoomPaymentsByRoomNumber(roomPayments: Array<RoomPayment>): Array<Array<RoomPayment>> {
     return toArray(groupBy(roomPayments, roomPayment => roomPayment.roomNumber));
   }
-  getTenantsInRooms(roomPayments: Array<Array<RoomPayment>>): Array<Array<string>> {
-    const roomsTenant: Array<Array<string>> = [];
-    let names: Array<string>                = [];
-
-    roomPayments.forEach(monthsRoomPayment => {
-      monthsRoomPayment.forEach(monthRoomPayment => {
-         monthRoomPayment.roomTenants.forEach( roomTenant => {
-         //   names = union(names, roomTenant.names);
-         });
-      });
-      roomsTenant.push(names);
-      names = [];
-    });
-    return roomsTenant;
-  }
-  getDueDatesInRooms(roomPayments: Array<Array<RoomPayment>>): Array<Array<string>> {
-    const roomsDueDates: Array<Array<string>> = [];
-    let dueDates: Array<string>                = [];
-
-    roomPayments.forEach(monthsRoomPayment => {
-      monthsRoomPayment.forEach(monthRoomPayment => {
-         monthRoomPayment.roomTenants.forEach( roomTenant => {
-      //      dueDates = union(dueDates, roomTenant.dueRentDates);
-         });
-    });
-    roomsDueDates.push(dueDates);
-    dueDates = [];
-    });
-    return roomsDueDates;
-  }
   setMonthsRoomPayment(roomPayments: Array<RoomPayment>): void {
     let threeMonthsRoomPayment: Array<RoomPaymentForPrint> = [];
     const groupRoomPayments = this.groupRoomPaymentsByRoomNumber(roomPayments);
-    const tenants           = this.getTenantsInRooms(groupRoomPayments);
-    const dueDates          = this.getDueDatesInRooms(groupRoomPayments);
-    console.log(tenants);
-    console.log(dueDates);
-    let roomPaymentForPrint: RoomPaymentForPrint;
+    console.log(roomPayments);
 
     // this.groupRoomPaymentsByRoomNumber(roomPayments).forEach( (monthsRoomPayment, firstIndex) => {
     //   monthsRoomPayment.forEach( (monthRoomPayment, secondIndex) => {

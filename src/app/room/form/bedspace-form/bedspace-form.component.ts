@@ -382,21 +382,86 @@ export class BedspaceFormComponent implements OnInit {
       this.emptyFormControlInAwayFormGroup(bedIndex, deckIndex);
     }
   }
+  getBedspaceTenantsObjectId(formValue: Bedspace): Array<string> {
+    const tenants: Array<string> = [];
+    formValue.decks.forEach(deck => {
+      if (deck.tenantObjectId !== null) {
+        tenants.push(deck.tenantObjectId);
+      }
+      if (deck.away.length > 0) {
+        if (deck.away[0].tenant !== null) {
+          tenants.push(deck.away[0].tenantObjectId);
+        }
+      }
+    });
+    return tenants;
+  }
+  isTenantsObjectIdNotRepeating(objectIds: Array<string>): boolean {
+    let isNotRepeating = true;
+    for (let firstIndex = 0; firstIndex < objectIds.length; firstIndex++) {
+      for (let secondIndex = 0; secondIndex < objectIds.length; secondIndex++) {
+        if (firstIndex !== secondIndex) {
+          if (objectIds[firstIndex] === objectIds[secondIndex]) {
+            isNotRepeating = false;
+            break;
+          }
+        }
+      }
+      if (isNotRepeating === false) {
+        break;
+      }
+    }
+    return isNotRepeating;
+  }
+  // TODO: use mongo to do checking please!!!!
+  isTenantsObjectIdNotExistYet(bedspaceTenantsObjectId: Array<string>, bedspaces: Array<Bedspace>): Boolean {
+    let isNotExistYet = true;
+    for (let firstIndex = 0; firstIndex < bedspaceTenantsObjectId.length; firstIndex++) {
+      for (let secondIndex = 0; secondIndex < bedspaces.length; secondIndex++) {
+        for (let thirdIndex = 0; thirdIndex < bedspaces[secondIndex].decks.length; thirdIndex++) {
+          if (bedspaces[secondIndex].decks[thirdIndex].tenant !== null ) {
+            if (bedspaceTenantsObjectId[firstIndex] === bedspaces[secondIndex].decks[thirdIndex].tenant._id ) {
+              isNotExistYet = false;
+              break;
+            }
+          }
+          if (bedspaces[secondIndex].decks[thirdIndex].away !== null) {
+            if ( bedspaces[secondIndex].decks[thirdIndex].away[0].tenant !== null ) {
+              if (bedspaceTenantsObjectId[firstIndex] = bedspaces[secondIndex].decks[thirdIndex].away[0].tenant._id) {
+                isNotExistYet = false;
+                break;
+              }
+            }
+          }
+        }
+        if (isNotExistYet = false) {
+          break;
+        }
+      }
+      if (isNotExistYet = false) {
+        break;
+      }
+    }
+    return isNotExistYet;
+  }
   async bedspaceFormOnSubmit(bedIndex: number, updateBedspace: boolean = false): Promise<void> {
     this.isSubmitting                    = true;
     const bedspaceFormGroup              = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
     const bedspace                       = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
     const bedspaceFormValue              = bedspace.getRawValue();
-    bedspaceFormValue['roomObjectId']    = this.form.get('_id').value;
-    const formToSend                     = this.formatBedspaceFormValues(bedspaceFormValue);
-    this.pageRequest.filters.type        = FilterType.BEDBYOBJECTID;
-    this.pageRequest.filters.bedObjectId = formToSend._id;
-    try {
-        // tslint:disable-next-line: no-shadowed-variable
-        const bedspace         = updateBedspace
+    const bedspaceTenantsObjectId        = this.getBedspaceTenantsObjectId(bedspaceFormValue);
+    if (this.isTenantsObjectIdNotRepeating(bedspaceTenantsObjectId)) {
+      bedspaceFormValue['roomObjectId']    = this.form.get('_id').value;
+      const formToSend                     = this.formatBedspaceFormValues(bedspaceFormValue);
+      this.pageRequest.filters.type        = FilterType.BEDSPACEROOMBYOBJECTID;
+      this.pageRequest.filters.roomObjectId = this.form.get('_id').value;
+      try {
+        const currentRoomBedspace = await this.roomService.getRooms<Room>(this.pageRequest);
+        if (this.isTenantsObjectIdNotExistYet(bedspaceTenantsObjectId, currentRoomBedspace.data[0].bedspaces)) {
+          //tslint:disable-next-line: no-shadowed-variable
+          const bedspace  = updateBedspace
                                   ? await this.roomService.updateBedspace(formToSend)
                                   : await this.roomService.addBedspace(formToSend);
-        if (bedspace) {
           this.disableBedspaceDueRentDates(bedIndex, bedspace);
           const notificationMessage = updateBedspace
                                        ? `Bed number ${bedspace.number} updated`
@@ -405,8 +470,16 @@ export class BedspaceFormComponent implements OnInit {
           this.notificationService.notifySuccess(notificationMessage);
           this.tenants = [];
           this.isSubmitting = false;
+        } else {
+          this.notificationService.notifyFailed('Something went wrong');
+          this.isSubmitting = false;
         }
-    } catch (error) {
+      } catch (error) {
+        console.log('bedspace form ', error);
+        this.notificationService.notifyFailed('Something went wrong');
+        this.isSubmitting = false;
+      }
+    } else {
       this.notificationService.notifyFailed('Something went wrong');
       this.isSubmitting = false;
     }

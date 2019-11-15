@@ -15,23 +15,13 @@
     </div>
     <div [formGroupName]="i">
       <mat-form-field>
-        <input matInput type="text" placeholder="Tenant name"  formControlName="name" (click)="setTenantOldObjectId(i)" (input)="searchTenant(tenant.get('name').value)" [matAutocomplete]="auto">
+        <input matInput type="text" placeholder="Tenant name"  formControlName="name" (input)="searchTenant(tenant.get('name').value)" [matAutocomplete]="auto">
       </mat-form-field>
       <mat-autocomplete #auto="matAutocomplete">
         <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id, i)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
           {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
         </mat-option>
       </mat-autocomplete>
-    </div>
-    <div class="action-buttons-block">
-      <div>
-        <button mat-raised-button color="primary" (click)="tenantFormOnSubmit(i)" [disabled]='!tenant.valid || isSubmitting' *ngIf="tenant.get('fromServer').value === false">
-          <span id="button-text-white">Save</span>
-        </button>
-        <button mat-raised-button color="primary" (click)="tenantFormOnSubmit(i, true)" [disabled]="!tenant.get('name').value || isSubmitting" *ngIf="tenant.get('fromServer').value === true">
-          <span id="button-text-white">Update</span>
-        </button>
-      </div>
     </div>
   </mat-card>
 </div>

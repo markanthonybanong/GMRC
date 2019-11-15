@@ -9,7 +9,8 @@ export class Room {
   transientPrivateRoomProperties: [{
     status: string,
     dueRentDate: number,
-    monthlyRent: number
+    monthlyRent: number,
+    tenants: Array<Tenant>;
   }];
   bedspaces: Bedspace[];
   tenantsArr: Tenant[];

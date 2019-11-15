@@ -20,6 +20,7 @@ export class RoomService {
   updateBedspace(body: Bedspace) {
     return this.apiService.put<Bedspace>('room/updateBedspace', body);
   }
+
   removeBedSpace(bedToRemove: object) {
     return this.apiService.put<Bedspace>('room/removeBedspace/', bedToRemove);
   }
