@@ -143,6 +143,7 @@ export class BedspaceFormComponent implements OnInit {
     .catch ( err => {
     });
   }
+
   get bedNumber(): number {
     const bed =  this.getBedspacesFormArray().length !== 0 ?
                  this.getBedspacesFormArray().at(this.getBedspacesFormArray().length - 1) as FormGroup : false;
@@ -348,20 +349,24 @@ export class BedspaceFormComponent implements OnInit {
     });
     return away;
   }
-  formatBedspaceFormValues(bedspaceFormGroup: Bedspace): Bedspace {
-    const modifiedDecks = [];
-    let deckObject = {};
+  formatBedspaceFormValues(bedspaceFormGroup: Bedspace, deckIndex: number): Bedspace {
+    const modifiedDecks  = [];
+    let deckObject       = {};
+    const decksFormArray = bedspaceFormGroup.decks;
     if (bedspaceFormGroup.decks.length > 0) {
-      bedspaceFormGroup.decks.forEach( element => {
-        deckObject = {};
-        deckObject['number'] = element.number;
-        deckObject['status'] = element.status;
-        deckObject['tenant'] =  element.tenantObjectId !== null ? element.tenantObjectId : null;
-        deckObject['dueRentDate'] = element.dueRentDate;
-        deckObject['monthlyRent'] = element.monthlyRent;
-        deckObject['away'] = element.away.length > 0 ? this.formatAwayFormValues(element.away) : null;
-        modifiedDecks.push(deckObject);
-      });
+      for (let index = 0; index <  decksFormArray.length; index++) {
+        if (deckIndex === index) {
+          deckObject = {};
+          deckObject['number']      = decksFormArray[index].number;
+          deckObject['status']      = decksFormArray[index].status;
+          deckObject['tenant']      = decksFormArray[index].tenantObjectId !== null ? decksFormArray[index].tenantObjectId : null;
+          deckObject['dueRentDate'] = decksFormArray[index].dueRentDate;
+          deckObject['monthlyRent'] = decksFormArray[index].monthlyRent;
+          deckObject['away']        = decksFormArray[index].away.length > 0 ? this.formatAwayFormValues(decksFormArray[index].away) : null;
+          modifiedDecks.push(deckObject);
+          break;
+        }
+      }
     }
     bedspaceFormGroup.decks = modifiedDecks;
     return bedspaceFormGroup;
@@ -396,31 +401,49 @@ export class BedspaceFormComponent implements OnInit {
     });
     return tenants;
   }
-  // TODO: use mongo to do checking please!!!!
-  async bedspaceFormOnSubmit(bedIndex: number, updateBedspace: boolean = false): Promise<void> {
-    this.isSubmitting                     = true;
-    const bedspaceFormGroup               = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
-    const bedspace                        = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
-    const bedspaceFormValue               = bedspace.getRawValue();
-    const bedspaceTenantsObjectId         = this.getBedspaceTenantsObjectId(bedspaceFormValue);
-    bedspaceFormValue['roomObjectId']     = this.form.get('_id').value;
-    const formToSend                      = this.formatBedspaceFormValues(bedspaceFormValue);
-    this.pageRequest.filters.type         = FilterType.BEDSPACEROOMBYOBJECTID;
-    this.pageRequest.filters.roomObjectId = this.form.get('_id').value;
+  displayAddDeckIcon(): Boolean {
+    const deckFormGroup = this.getDeckInDecksFormArrayInBedspacesFormArray(0, 0);
+    return deckFormGroup !== undefined && deckFormGroup.get('fromServer').value === true ? true : false;
+  }
+  addBed(): void {
+    const bedFormGroup = this.getBedspacesFormArray().at(0) as FormGroup;
+    const roomObjectId = this.form.get('_id').value;
+    const bedNumber    =  bedFormGroup.get('number').value;
     try {
-      //tslint:disable-next-line: no-shadowed-variable
+      console.log('bedNumber', bedNumber);
+      console.log('roomObject ', roomObjectId);
+    } catch (error) {
 
-      const bedspace  = updateBedspace
-                              ? await this.roomService.updateBedspace(formToSend)
-                              : await this.roomService.addBedspace(formToSend);
-      this.disableBedspaceDueRentDates(bedIndex, bedspace);
-      const notificationMessage = updateBedspace
-                                   ? `Bed number ${bedspace.number} updated`
-                                   : `Bed number ${bedspace.number} added`;
-      this.patchDataInBedspaceFormGroup(bedspaceFormGroup, bedspace);
-      this.notificationService.notifySuccess(notificationMessage);
-      this.tenants = [];
-      this.isSubmitting = false;
+    }
+  }
+  async bedspaceFormOnSubmit(bedIndex: number, deckIndex: number, updateBedspace: boolean = false): Promise<void> {
+    this.isSubmitting                         = true;
+    const bedspaceFormGroup                   = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
+    const bedspaceFormValue                   = bedspaceFormGroup.getRawValue();
+    bedspaceFormValue['roomObjectId']         = this.form.get('_id').value;
+    const formToSend                          = this.formatBedspaceFormValues(bedspaceFormValue, deckIndex);
+    const deckFormGroup                       = this.getDeckInDecksFormArrayInBedspacesFormArray(bedIndex, deckIndex);
+    try {
+      this.pageRequest.filters.type           = FilterType.ROOMSBYTENANTOBJECTID;
+      this.pageRequest.filters.tenantObjectId = deckFormGroup.get('tenantObjectId').value;
+      const rooms = await this.roomService.getRooms(this.pageRequest);
+      if (rooms.data.length === 0) {
+        console.log('fomr to send ', formToSend);
+        const bedspace = updateBedspace
+                            ? await this.roomService.updateBedspace(formToSend)
+                            : await this.roomService.addBedspace(formToSend);
+        this.disableBedspaceDueRentDates(bedIndex, bedspace);
+        const notificationMessage = updateBedspace
+                                      ? `Deck number ${bedspace.decks[deckIndex].number} updated`
+                                      : `Deck number ${bedspace.decks[deckIndex].number} added`;
+        this.patchDataInBedspaceFormGroup(bedspaceFormGroup, bedspace);
+        this.notificationService.notifySuccess(notificationMessage);
+        this.tenants = [];
+        this.isSubmitting = false;
+      } else {
+        this.notificationService.notifySuccess('Tenant already added');
+        this.isSubmitting = false;
+      }
     } catch (error) {
       console.log('bedspace form ', error);
       this.notificationService.notifyFailed('Something went wrong');

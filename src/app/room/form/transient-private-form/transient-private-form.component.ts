@@ -149,13 +149,6 @@ export class TransientPrivateFormComponent implements OnInit {
     const tenantFormGroup = this.getTenantsFormArray().at(tenantIndex) as FormGroup;
     tenantFormGroup.get('_id').patchValue(tenantObjectId);
   }
-  getTenantsObjectId(): Array<string> {
-    const tenantsObjectId: Array<string> = [];
-    this.getTenantsFormArray().controls.forEach(tenantFormGroup => {
-      tenantsObjectId.push((tenantFormGroup.get('_id').value));
-    });
-    return tenantsObjectId;
-  }
   setTenantOldObjectId(tenantIndex: number): void  {
     const tenantFormGroup = this.getTenantsFormArray().at(tenantIndex) as FormGroup;
     const tenantObjectId = tenantFormGroup.get('_id').value;
@@ -169,49 +162,37 @@ export class TransientPrivateFormComponent implements OnInit {
     const tenantObjectId = tenantFormGroup.get('_id').value;
     return tenantObjectId === null ? true : false;
   }
-
-  addTenantsObjectIdToForm(tenantsObjectId: Array<string>): void {
-    const transientPrivateRoomProperties = this.transientPrivateRoomPropertiesFormArray as FormArray;
-    const transientPrivateRoomPropFormGroup = transientPrivateRoomProperties.at(0) as FormGroup;
-    transientPrivateRoomPropFormGroup.get('tenants').setValue(tenantsObjectId);
-  }
   async tenantFormOnSubmit(tenantIndex: number, updateTenant: boolean = false): Promise<void> {
+    this.isSubmitting = true;
     try {
-      const tenantFormGroup = this.getTenantsFormArray().at(tenantIndex) as FormGroup;
-      const tenantObjectId  = tenantFormGroup.get('_id').value;
-      this.pageRequest.filters.type = FilterType.ROOMSBYTENANTOBJECTID;
+      const tenantFormGroup                   = this.getTenantsFormArray().at(tenantIndex) as FormGroup;
+      const tenantObjectId                    = tenantFormGroup.get('_id').value;
+      this.pageRequest.filters.type           = FilterType.ROOMSBYTENANTOBJECTID;
       this.pageRequest.filters.tenantObjectId = tenantObjectId;
-      console.log('page req ', this.pageRequest);
-
-      const room = await this.roomService.getRooms<Room>(this.pageRequest);
-      if (room.data.length === 0 ) {
+      const rooms                             = await this.roomService.getRooms<Room>(this.pageRequest);
+      if (rooms.data.length === 0 ) {
         const tenant = {
           roomObjectId: this.form.get('_id').value,
           oldTenantObjectId: this.oldTenantObjectId,
           tenantObjectId: tenantObjectId,
         };
-        console.log('tenant to send ', tenant);
-
-        // tslint:disable-next-line: no-shadowed-variable
         const room                = updateTenant
                                       ? await this.roomService.updateTenantInTransientPrivateRoom(tenant)
                                       : await this.roomService.addTenantInTransientPrivateRoom(tenant);
-        if (room) {
-          const notificationMessage = updateTenant
+        const notificationMessage = updateTenant
                                       ? `Updated tenant in room number ${room.number}`
                                       : `Added tenant in room number ${room.number}`;
                                       this.notificationService.notifySuccess(notificationMessage);
                                       tenantFormGroup.get('fromServer').setValue(true);
                                       this.tenants = [];
-        }
+        this.isSubmitting = false;
       } else {
         this.notificationService.notifySuccess('Tenant already added');
+        this.isSubmitting = false;
       }
-
     } catch (error) {
-      console.log('the error', error);
-
       this.notificationService.notifyFailed('Something went wrong');
+      this.isSubmitting = false;
     }
   }
   async formOnSubmit(): Promise<void> {

@@ -11,17 +11,25 @@
         <mat-icon class="material-icons" color="warn" (click)="removeBedspaceFormGroup(bedIndex, bed.get('number').value)">
             cancel
         </mat-icon>
-        <mat-icon class="material-icons" color="primary" (click)="addDeck(bedIndex)">
+       <mat-icon *ngIf="displayAddDeckIcon()" class="material-icons" color="primary" (click)="addDeck(bedIndex)">
             add_circle
         </mat-icon>
       </div>
     </div>
     <div [formGroupName]="bedIndex">
-      <mat-form-field >
+     <div class="first-block">
+        <mat-form-field >
           <input matInput type="text" placeholder="Bed number" formControlName="number">
-      </mat-form-field>
-      <!--DECKS BLOCK-->
-      <div formArrayName="decks" class="decks-block" *ngFor="let deck of bed.get('decks').controls; let deckIndex = index">
+        </mat-form-field>
+     </div>
+     <div class="bed-action-button-block">
+        <button mat-raised-button color="primary" (click)="addBed()">
+          <span id="button-text-white">Save</span>
+        </button>
+      </div>
+    </div>
+    <!--DECKS BLOCK-->
+    <div formArrayName="decks" class="decks-block" *ngFor="let deck of bed.get('decks').controls; let deckIndex = index">
         <div [formGroupName]="deckIndex" class="deck-form-group">
           <div class="remove-deck-button">
             <mat-icon class="material-icons" color="warn" (click)="removeDeckFormGroup(bedIndex, deckIndex, deck.get('number').value, {bedObjectId: bed.get('_id').value, deckObjectId: deck.get('_id').value, fromServer: deck.get('fromServer').value})">
@@ -59,6 +67,14 @@
             <mat-form-field>
               <input matInput type="number" placeholder="Monthly rent"  formControlName="monthlyRent">
             </mat-form-field>
+          </div>
+          <div class="tenant-action-buttons-block">
+            <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, deckIndex)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === false">
+              <span id="button-text-white">Save</span>
+            </button>
+            <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, deckIndex, true)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === true">
+              <span id="button-text-white">Update</span>
+            </button>
           </div>
           <!--TENANT AWAY BLOCK -->
           <div formArrayName="away" *ngFor="let awayField of deck.get('away').controls; let awayFieldIndex = index" class="tenant-away-block">
@@ -123,21 +139,20 @@
                   <input matInput type="number" placeholder="Rent"  formControlName="rent">
                 </mat-form-field>
               </div>
+              <div class="away-tenant-action-buttons-block">
+                <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === false">
+                  <span id="button-text-white">Save</span>
+                </button>
+                <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, true)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === true">
+                  <span id="button-text-white">Update</span>
+                </button>
+              </div>
             </div>
           </div>
           <!--END OF TENANT AWAY BLOCK-->
         </div>
-      </div>
-      <!--END OF DECKS BLOCK-->
     </div>
-    <div class="action-buttons-block">
-      <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === false">
-        <span id="button-text-white">Save</span>
-      </button>
-      <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, true)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === true">
-        <span id="button-text-white">Update</span>
-      </button>
-    </div>
+    <!--END OF DECKS BLOCK-->
   </mat-card>
 </div>
 <div class="parent-container">
