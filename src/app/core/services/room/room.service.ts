@@ -39,4 +39,7 @@ export class RoomService {
   removeTenantInTransientPrivateRoom(body: TenantData) {
     return this.apiService.put<Room>('room/removeTenantInTransientPrivateRoom', body);
   }
+  getTransientPrivateRoomByTenantsObjectId(body: object) {
+    return this.apiService.post<Array<Room>>('room/getTransientPrivateRoomByTenantsObjectId', body);
+  }
 }
