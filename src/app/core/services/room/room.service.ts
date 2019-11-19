@@ -11,8 +11,8 @@ export class RoomService {
   addRoom(body: Room) {
     return this.apiService.post<Room>('room/createRoom', body);
   }
-  addBed(body: {number: number, roomObjectId: string}) {
-    return this.apiService.post<Room>('room/createBed', body);
+  addBed(body: Bedspace) {
+    return this.apiService.post<Bedspace>('room/createBed', body);
   }
   updateRoom(body: Room) {
     return this.apiService.put<Room>('room/updateRoom', body);

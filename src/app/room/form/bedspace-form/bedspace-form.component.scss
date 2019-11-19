@@ -20,6 +20,13 @@
         justify-content: center;
       }
     }
+    >.bed-block{
+      >.bed-action-button-block{
+        display: flex;
+        justify-content: flex-end;
+        background: pink;
+      }
+    }
     .decks-block{
       .remove-deck-button{
         display: flex;

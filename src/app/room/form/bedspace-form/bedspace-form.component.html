@@ -9,148 +9,148 @@
       </div>
       <div class="action-buttons-block">
         <mat-icon class="material-icons" color="warn" (click)="removeBedspaceFormGroup(bedIndex, bed.get('number').value)">
-            cancel
+          cancel
         </mat-icon>
-       <mat-icon *ngIf="displayAddDeckIcon()" class="material-icons" color="primary" (click)="addDeck(bedIndex)">
-            add_circle
+       <mat-icon class="material-icons" color="primary" (click)="addDeckInBedspaceFormGoup(bedIndex)" *ngIf="displayAddDeckIcon(bedIndex)">
+          add_circle
         </mat-icon>
       </div>
     </div>
-    <div [formGroupName]="bedIndex">
-     <div class="first-block">
+    <div [formGroupName]="bedIndex" class="bed-block">
+      <div class="first-block">
         <mat-form-field >
           <input matInput type="text" placeholder="Bed number" formControlName="number">
         </mat-form-field>
-     </div>
-     <div class="bed-action-button-block">
-        <button mat-raised-button color="primary" (click)="addBed()">
+      </div>
+      <div class="bed-action-button-block">
+        <button mat-raised-button color="primary" (click)="addBedInBedspaceFormGroup(bedIndex)" *ngIf="displayAddBedButton(bedIndex)">
           <span id="button-text-white">Save</span>
         </button>
       </div>
-    </div>
-    <!--DECKS BLOCK-->
-    <div formArrayName="decks" class="decks-block" *ngFor="let deck of bed.get('decks').controls; let deckIndex = index">
-        <div [formGroupName]="deckIndex" class="deck-form-group">
-          <div class="remove-deck-button">
-            <mat-icon class="material-icons" color="warn" (click)="removeDeckFormGroup(bedIndex, deckIndex, deck.get('number').value, {bedObjectId: bed.get('_id').value, deckObjectId: deck.get('_id').value, fromServer: deck.get('fromServer').value})">
-              remove_circle_outline
-            </mat-icon>
-          </div>
-          <div class="first-block">
-            <mat-form-field>
-              <input matInput  type="number" placeholder="Deck number" formControlName="number">
-            </mat-form-field>
-            <mat-form-field>
-              <mat-select placeholder="Deck status" (selectionChange)="deckStatusToggle($event, bedIndex, deckIndex)" formControlName="status">
-                <mat-option *ngFor="let status of roomEnumService.deckStatus;" [value]="status">
-                  {{status}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="second-block">
-            <mat-form-field>
-              <input matInput type="text" placeholder="Tenant" formControlName="tenant"  (input)="searchTenantNameFieldInput(deck.get('tenant').value)"  [matAutocomplete]="auto" >
-              <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let selectedTenant of tenants"  [value]="selectedTenant.firstname+' '+selectedTenant.middlename+' '+selectedTenant.lastname" (click)="patchTenantObjectId('DeckFormGroup', {tenantObjectId: selectedTenant._id, bedIndex: bedIndex, deckIndex: deckIndex})">
-                  {{ selectedTenant.firstname+" "+selectedTenant.middlename+" "+selectedTenant.lastname }}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <mat-form-field>
-              <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
-            </mat-form-field>
-          </div>
-          <div class="clear-float">
-          </div>
-          <div class="third-block">
-            <mat-form-field>
-              <input matInput type="number" placeholder="Monthly rent"  formControlName="monthlyRent">
-            </mat-form-field>
-          </div>
-          <div class="tenant-action-buttons-block">
-            <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, deckIndex)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === false">
-              <span id="button-text-white">Save</span>
-            </button>
-            <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, deckIndex, true)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === true">
-              <span id="button-text-white">Update</span>
-            </button>
-          </div>
-          <!--TENANT AWAY BLOCK -->
-          <div formArrayName="away" *ngFor="let awayField of deck.get('away').controls; let awayFieldIndex = index" class="tenant-away-block">
-            <div [formGroupName]="awayFieldIndex" class="tenant-away-container">
-              <div class="first-block">
-                <mat-form-field>
-                  <input matInput [matDatepicker]="tenantWillReturnIn" placeholder="Will return in" formControlName="willReturnIn">
-                  <mat-datepicker-toggle matSuffix [for]="tenantWillReturnIn"></mat-datepicker-toggle>
-                  <mat-datepicker #tenantWillReturnIn></mat-datepicker>
-                </mat-form-field>
-                <mat-form-field>
-                  <mat-select placeholder="Deck status" formControlName="status" (selectionChange)="setAwayFormGroupToNull(bedIndex, deckIndex, $event)">
-                      <mat-option *ngFor="let status of roomEnumService.transientBedspaceStatus;" [value]="status">
-                        {{status}}
-                      </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <div class="second-block">
-                <mat-form-field>
-                  <input matInput [matDatepicker]="inDate" placeholder="In date" formControlName="inDate">
-                  <mat-datepicker-toggle matSuffix [for]="inDate"></mat-datepicker-toggle>
-                  <mat-datepicker #inDate></mat-datepicker>
-                </mat-form-field>
-                <mat-form-field>
-                  <input matInput [matDatepicker]="outDate" placeholder="Out date" formControlName="outDate">
-                  <mat-datepicker-toggle matSuffix [for]="outDate"></mat-datepicker-toggle>
-                  <mat-datepicker #outDate></mat-datepicker>
-                </mat-form-field>
-              </div>
-              <div class="third-block">
-                <mat-form-field>
-                  <input matInput [ngxTimepicker]="inTime" formControlName="inTime" placeholder="In time">
-                  <ngx-material-timepicker #inTime></ngx-material-timepicker>
-                </mat-form-field>
-                <mat-form-field>
-                  <input matInput [ngxTimepicker]="outTime" formControlName="outTime" placeholder="Out time">
-                  <ngx-material-timepicker #outTime></ngx-material-timepicker>
-                </mat-form-field>
-              </div>
-              <div class="fourth-block">
+      <!--DECKS BLOCK-->
+      <div formArrayName="decks" class="decks-block" *ngFor="let deck of bed.get('decks').controls; let deckIndex = index">
+          <div [formGroupName]="deckIndex" class="deck-form-group">
+            <div class="remove-deck-button">
+              <mat-icon class="material-icons" color="warn" (click)="removeDeckFormGroup(bedIndex, deckIndex, deck.get('number').value, {bedObjectId: bed.get('_id').value, deckObjectId: deck.get('_id').value, fromServer: deck.get('fromServer').value})">
+                remove_circle_outline
+              </mat-icon>
+            </div>
+            <div class="first-block">
+              <mat-form-field>
+                <input matInput  type="number" placeholder="Deck number" formControlName="number">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-select placeholder="Deck status" (selectionChange)="deckStatusToggle($event, bedIndex, deckIndex)" formControlName="status">
+                  <mat-option *ngFor="let status of roomEnumService.deckStatus;" [value]="status">
+                    {{status}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="second-block">
+              <mat-form-field>
+                <input matInput type="text" placeholder="Tenant" formControlName="tenant"  (input)="searchTenantNameFieldInput(deck.get('tenant').value)"  [matAutocomplete]="auto" >
+                <mat-autocomplete #auto="matAutocomplete">
+                  <mat-option *ngFor="let selectedTenant of tenants"  [value]="selectedTenant.firstname+' '+selectedTenant.middlename+' '+selectedTenant.lastname" (click)="patchTenantObjectId('DeckFormGroup', {tenantObjectId: selectedTenant._id, bedIndex: bedIndex, deckIndex: deckIndex})">
+                    {{ selectedTenant.firstname+" "+selectedTenant.middlename+" "+selectedTenant.lastname }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
+              </mat-form-field>
+            </div>
+            <div class="clear-float">
+            </div>
+            <div class="third-block">
+              <mat-form-field>
+                <input matInput type="number" placeholder="Monthly rent"  formControlName="monthlyRent">
+              </mat-form-field>
+            </div>
+            <div class="tenant-action-buttons-block">
+              <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, deckIndex)" [disabled]="isSubmitting" *ngIf="deck.get('fromServer').value === false">
+                <span id="button-text-white">Save</span>
+              </button>
+              <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, deckIndex, true)" [disabled]="isSubmitting" *ngIf="deck.get('fromServer').value === true">
+                <span id="button-text-white">Update</span>
+              </button>
+            </div>
+            <!--TENANT AWAY BLOCK -->
+            <div formArrayName="away" *ngFor="let awayField of deck.get('away').controls; let awayFieldIndex = index" class="tenant-away-block">
+              <div [formGroupName]="awayFieldIndex" class="tenant-away-container">
                 <div class="first-block">
                   <mat-form-field>
-                      <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenantNameFieldInput(awayField.get('tenant').value)" [matAutocomplete]="auto">
+                    <input matInput [matDatepicker]="tenantWillReturnIn" placeholder="Will return in" formControlName="willReturnIn">
+                    <mat-datepicker-toggle matSuffix [for]="tenantWillReturnIn"></mat-datepicker-toggle>
+                    <mat-datepicker #tenantWillReturnIn></mat-datepicker>
                   </mat-form-field>
-                  <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId('AwayFormGroup', {tenantObjectId:tenant._id, index:awayFieldIndex, bedIndex: bedIndex, deckIndex: deckIndex})" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
-                      {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
-                    </mat-option>
-                  </mat-autocomplete>
+                  <mat-form-field>
+                    <mat-select placeholder="Deck status" formControlName="status" (selectionChange)="setAwayFormGroupToNull(bedIndex, deckIndex, $event)">
+                        <mat-option *ngFor="let status of roomEnumService.transientBedspaceStatus;" [value]="status">
+                          {{status}}
+                        </mat-option>
+                    </mat-select>
+                  </mat-form-field>
                 </div>
                 <div class="second-block">
                   <mat-form-field>
-                    <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
+                    <input matInput [matDatepicker]="inDate" placeholder="In date" formControlName="inDate">
+                    <mat-datepicker-toggle matSuffix [for]="inDate"></mat-datepicker-toggle>
+                    <mat-datepicker #inDate></mat-datepicker>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="outDate" placeholder="Out date" formControlName="outDate">
+                    <mat-datepicker-toggle matSuffix [for]="outDate"></mat-datepicker-toggle>
+                    <mat-datepicker #outDate></mat-datepicker>
                   </mat-form-field>
                 </div>
-              </div>
-              <div class="clear-float">
-              </div>
-              <div class="fifth-block">
-                <mat-form-field>
-                  <input matInput type="number" placeholder="Rent"  formControlName="rent">
-                </mat-form-field>
-              </div>
-              <div class="away-tenant-action-buttons-block">
-                <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === false">
-                  <span id="button-text-white">Save</span>
-                </button>
-                <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, true)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === true">
-                  <span id="button-text-white">Update</span>
-                </button>
+                <div class="third-block">
+                  <mat-form-field>
+                    <input matInput [ngxTimepicker]="inTime" formControlName="inTime" placeholder="In time">
+                    <ngx-material-timepicker #inTime></ngx-material-timepicker>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <input matInput [ngxTimepicker]="outTime" formControlName="outTime" placeholder="Out time">
+                    <ngx-material-timepicker #outTime></ngx-material-timepicker>
+                  </mat-form-field>
+                </div>
+                <div class="fourth-block">
+                  <div class="first-block">
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenantNameFieldInput(awayField.get('tenant').value)" [matAutocomplete]="auto">
+                    </mat-form-field>
+                    <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId('AwayFormGroup', {tenantObjectId:tenant._id, index:awayFieldIndex, bedIndex: bedIndex, deckIndex: deckIndex})" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+                        {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </div>
+                  <div class="second-block">
+                    <mat-form-field>
+                      <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="clear-float">
+                </div>
+                <div class="fifth-block">
+                  <mat-form-field>
+                    <input matInput type="number" placeholder="Rent"  formControlName="rent">
+                  </mat-form-field>
+                </div>
+                <div class="away-tenant-action-buttons-block">
+                  <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === false">
+                    <span id="button-text-white">Save</span>
+                  </button>
+                  <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, true)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === true">
+                    <span id="button-text-white">Update</span>
+                  </button>
+                </div>
               </div>
             </div>
+            <!--END OF TENANT AWAY BLOCK-->
           </div>
-          <!--END OF TENANT AWAY BLOCK-->
-        </div>
+      </div>
     </div>
     <!--END OF DECKS BLOCK-->
   </mat-card>

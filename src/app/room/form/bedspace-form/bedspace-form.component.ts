@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { RoomEnumService, RoomService, NotificationService, TenantService, BedService } from '@gmrc/services';
 import { RoomType, FilterType, DeckStatus, PatchTo, RoomStatus } from '@gmrc/enums';
@@ -40,6 +40,7 @@ export class BedspaceFormComponent implements OnInit {
     private notificationService: NotificationService,
     private tenantService: TenantService,
     private bedService: BedService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -401,22 +402,31 @@ export class BedspaceFormComponent implements OnInit {
     });
     return tenants;
   }
-  displayAddDeckIcon(): Boolean {
-    const deckFormGroup = this.getDeckInDecksFormArrayInBedspacesFormArray(0, 0);
-    return deckFormGroup !== undefined && deckFormGroup.get('fromServer').value === true ? true : false;
+  displayAddDeckIcon(bedIndex): Boolean {
+    const bedFormGroup = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
+    return bedFormGroup.get('fromServer').value === true ? true : false;
   }
-  addBed(): void {
-    const bedFormGroup = this.getBedspacesFormArray().at(0) as FormGroup;
+  displayAddBedButton(bedIndex: number): Boolean {
+    const bedFormGroup = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
+    return bedFormGroup.get('fromServer').value === true ? false : true;
+  }
+  async addBedInBedspaceFormGroup(bedIndex: number): Promise<void> {
+    this.isSubmitting  = true;
+    const bedFormGroup = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
     const roomObjectId = this.form.get('_id').value;
-    const bedNumber    =  bedFormGroup.get('number').value;
+    const number    =  bedFormGroup.get('number').value;
+    console.log('bed number ', number);
     try {
-      console.log('bedNumber', bedNumber);
-      console.log('roomObject ', roomObjectId);
+      const bedspace = await this.roomService.addBed({roomObjectId: roomObjectId, number: number});
+      this.notificationService.notifySuccess(`Bed number ${bedspace.number} added`);
+      this.isSubmitting = false;
     } catch (error) {
-
+      console.log('error bed button', error);
+      this.notificationService.notifyFailed('Something went wrong');
+      this.isSubmitting = false;
     }
   }
-  async bedspaceFormOnSubmit(bedIndex: number, deckIndex: number, updateBedspace: boolean = false): Promise<void> {
+  async addDeckInBedspaceFormGoup(bedIndex: number, deckIndex: number, updateBedspace: boolean = false): Promise<void> {
     this.isSubmitting                         = true;
     const bedspaceFormGroup                   = this.getBedspacesFormArray().at(bedIndex) as FormGroup;
     const bedspaceFormValue                   = bedspaceFormGroup.getRawValue();
@@ -463,5 +473,9 @@ export class BedspaceFormComponent implements OnInit {
        this.notificationService.notifyFailed('Something went wrong');
        this.isSubmitting = false;
     });
+  }
+  // tslint:disable-next-line: use-life-cycle-interface
+  ngAfterContentChecked() {
+    this.cdr.detectChanges();
   }
 }
