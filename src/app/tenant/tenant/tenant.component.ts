@@ -54,7 +54,7 @@ export class TenantComponent implements OnInit {
       this.pageRequest.filters.type = filterType;
     }
     if ( filter !== null ) {
-      this.pageRequest.filters.roomPaymentFilter = filter;
+      this.pageRequest.filters.tenantFilter = filter;
     }
     if ( tenantObjectId !== null ) {
       this.pageRequest.filters.tenantObjectId = tenantObjectId;
@@ -100,10 +100,11 @@ export class TenantComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe(searchResult => {
       if (searchResult) {
-        const filter = this.objectService.removeNullValuesInSearchResult(searchResult);
+        const filterType = FilterType.ADVANCESEARCHTENANT;
+        const filter     = this.objectService.removeNullValuesInSearchResult(searchResult);
         this.pageRequest.filters.type = FilterType.ADVANCESEARCHTENANT;
         this.pageRequest.filters.tenantFilter = filter;
-        this.localStorageService.setItem('tenantFilterType', FilterType);
+        this.localStorageService.setItem('tenantFilterType', filterType);
         this.localStorageService.setItem('tenantFilter', filter);
         this.getTenants();
       }

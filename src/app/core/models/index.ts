@@ -15,3 +15,5 @@ export * from './Entry';
 export * from './RoomTenant';
 export * from './RoomPayment';
 export * from './RoomPaymentForPrint';
+export * from './DeckToSend';
+export * from './AwayToSend';

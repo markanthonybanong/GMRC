@@ -11,7 +11,7 @@
         <mat-icon class="material-icons" color="warn" (click)="removeBedspaceFormGroup(bedIndex, bed.get('number').value)">
           cancel
         </mat-icon>
-       <mat-icon class="material-icons" color="primary" (click)="addDeckInBedspaceFormGoup(bedIndex)" *ngIf="displayAddDeckIcon(bedIndex)">
+       <mat-icon class="material-icons" color="primary" (click)="addDeck(bedIndex)" *ngIf="displayAddDeckIcon(bedIndex)">
           add_circle
         </mat-icon>
       </div>
@@ -68,10 +68,10 @@
               </mat-form-field>
             </div>
             <div class="tenant-action-buttons-block">
-              <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, deckIndex)" [disabled]="isSubmitting" *ngIf="deck.get('fromServer').value === false">
+              <button mat-raised-button color="primary" (click)="addDeckInBedspaceFormGoup(bedIndex, deckIndex)" [disabled]="isSubmitting" *ngIf="deck.get('fromServer').value === false">
                 <span id="button-text-white">Save</span>
               </button>
-              <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, deckIndex, true)" [disabled]="isSubmitting" *ngIf="deck.get('fromServer').value === true">
+              <button mat-raised-button color="primary" (click)="addDeckInBedspaceFormGoup(bedIndex, deckIndex, true)" [disabled]="isSubmitting" *ngIf="deck.get('fromServer').value === true">
                 <span id="button-text-white">Update</span>
               </button>
             </div>
@@ -139,10 +139,10 @@
                   </mat-form-field>
                 </div>
                 <div class="away-tenant-action-buttons-block">
-                  <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === false">
+                  <button mat-raised-button color="primary" (click)="addUpdateAwayInDeckFormGroup(bedIndex, deckIndex)" [disabled]="isSubmitting" *ngIf="awayField.get('fromServer').value === false">
                     <span id="button-text-white">Save</span>
                   </button>
-                  <button mat-raised-button color="primary" (click)="bedspaceFormOnSubmit(bedIndex, true)" [disabled]="!isBedspaceValid(bedIndex) || isSubmitting" *ngIf="bed.get('fromServer').value === true">
+                  <button mat-raised-button color="primary" (click)="addUpdateAwayInDeckFormGroup(bedIndex, deckIndex, true)" [disabled]="isSubmitting" *ngIf="awayField.get('fromServer').value === true">
                     <span id="button-text-white">Update</span>
                   </button>
                 </div>

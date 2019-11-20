@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { Room, Bedspace, PageData, PageRequest, TenantData } from '@gmrc/models';
+import { Room, Bedspace, PageData, PageRequest, TenantData, DeckToSend } from '@gmrc/models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,19 +11,21 @@ export class RoomService {
   addRoom(body: Room) {
     return this.apiService.post<Room>('room/createRoom', body);
   }
-  addBed(body: Bedspace) {
-    return this.apiService.post<Bedspace>('room/createBed', body);
-  }
   updateRoom(body: Room) {
     return this.apiService.put<Room>('room/updateRoom', body);
   }
-  addBedspace(body: Bedspace) {
-    return this.apiService.post<Bedspace>('room/createBedspace', body);
+  addBed(body: Bedspace) {
+    return this.apiService.post<Bedspace>('room/createBed', body);
   }
-  updateBedspace(body: Bedspace) {
-    return this.apiService.put<Bedspace>('room/updateBedspace', body);
+  addDeckInBed(body: Bedspace) {
+    return this.apiService.post<Bedspace>('room/createDeckInBed', body);
   }
-
+  updateDeckInBed(body: Bedspace) {
+    return this.apiService.put<Bedspace>('room/updateDeckInBed', body);
+  }
+  addUpdateAwayInDeck(body: object) {
+    return this.apiService.put<Bedspace>('room/addUpdateAwayInDeck', body);
+  }
   removeBedSpace(bedToRemove: object) {
     return this.apiService.put<Bedspace>('room/removeBedspace/', bedToRemove);
   }

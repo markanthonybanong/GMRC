@@ -154,7 +154,6 @@ export class TransientPrivateFormComponent implements OnInit {
     const tenantObjectId = tenantFormGroup.get('_id').value;
     if (tenantObjectId !== null) {
       this.oldTenantObjectId = tenantFormGroup.get('_id').value;
-      console.log('old object id ', this.oldTenantObjectId);
     }
   }
   isTenantFormFormGroupHaveTenantObjectId(tenantIndex: number): boolean {

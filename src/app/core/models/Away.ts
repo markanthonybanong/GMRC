@@ -6,7 +6,7 @@ export class Away {
  outDate: string;
  outTime: string;
  tenant: Tenant;
- tenantObjectId: string;
+ tenantObjectId?: string;
  status: string;
  willReturnIn: string;
  dueRentDate: number;
