@@ -112,16 +112,12 @@
     <div class="seventh-block">
       <div>
         <mat-form-field>
-            <mat-select placeholder="Water bill status"  formControlName="waterBillStatus" (selectionChange)="waterBillStatusToggle($event)">
-              <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
-                {{status}}
-              </mat-option>
-            </mat-select>
+          <input matInput type="number" placeholder="Water Bill" formControlName="waterBill">
         </mat-form-field>
       </div>
       <div>
         <mat-form-field>
-          <mat-select placeholder="Rice cooker bill status"  formControlName="riceCookerBillStatus" (selectionChange)="riceCookerBillStatusToggle($event)">
+          <mat-select placeholder="Water bill status"  formControlName="waterBillStatus" (selectionChange)="waterBillStatusToggle($event)">
             <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
               {{status}}
             </mat-option>
@@ -137,6 +133,24 @@
           </mat-form-field>
         </div>
       </div>
+    </div>
+    <div class="ninth-block">
+      <div>
+        <mat-form-field>
+          <input matInput type="number" placeholder="Rice Cooker Bill" formControlName="riceCookerBill">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-select placeholder="Rice cooker bill status"  formControlName="riceCookerBillStatus" (selectionChange)="riceCookerBillStatusToggle($event)">
+            <mat-option *ngFor="let status of paymentEnumService.paymentStatuses;" [value]="status">
+              {{status}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="tenth-block">
       <div formArrayName="riceCookerBillBalance" *ngFor="let property of form.get('riceCookerBillBalance').controls; let i = index;">
         <div [formGroupName]="i">
           <mat-form-field>

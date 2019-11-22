@@ -7,8 +7,6 @@ import { PenaltiesComponent } from './payment/penalties/penalties.component';
 import { EntryFormComponent } from './form/entry-form/entry-form.component';
 import { RoomFormComponent } from './form/room-form/room-form.component';
 import { PenaltiesFormComponent } from './form/penalties-form/penalties-form.component';
-import { RoomBillsComponent } from '../print/room-bills/room-bills.component';
-
 
 const routes: Routes = [
   {
@@ -27,7 +25,6 @@ const routes: Routes = [
   { path: 'update-room-payment/:id', component: RoomFormComponent },
   { path: 'add-penalties', component: PenaltiesFormComponent },
   { path: 'update-panalties', component: PenaltiesFormComponent },
-  { path: 'print-room-bills', component: RoomBillsComponent }
 ];
 
 @NgModule({

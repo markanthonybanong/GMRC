@@ -35,8 +35,10 @@ export class RoomFormComponent implements OnInit {
     electricBillStatus: [PaymentStatus.UNPAID, Validators.required],
     electricBillBalance: this.formBuilder.array([]),
     waterBillStatus: [PaymentStatus.UNPAID, Validators.required],
+    waterBill: ['', Validators.required],
     waterBillBalance: this.formBuilder.array([]),
     riceCookerBillStatus: [PaymentStatus.UNPAID, Validators.required],
+    riceCookerBill: ['', Validators.required],
     riceCookerBillBalance: this.formBuilder.array([]),
     roomTenants: ['', Validators.required],
     _id: null,
@@ -110,13 +112,16 @@ export class RoomFormComponent implements OnInit {
       amountKWUsed: this.model.amountKWUsed,
       date: this.model.date,
       electricBillStatus: this.model.electricBillStatus,
+      totalAmountElectricBill: this.model.totalAmountElectricBill,
       presentReading: this.model.presentReading,
       presentReadingKWUsed: this.model.presentReadingKWUsed,
       previousReading: this.model.previousReading,
       previousReadingKWUsed: this.model.previousReadingKWUsed,
       riceCookerBillStatus: this.model.riceCookerBillStatus,
+      riceCookerBill: this.model.riceCookerBill,
       roomNumber: this.model.roomNumber,
       waterBillStatus: this.model.waterBillStatus,
+      waterBill: this.model.waterBill,
       roomTenants: this.model.roomTenants,
       _id: this.model._id,
     });
@@ -128,8 +133,6 @@ export class RoomFormComponent implements OnInit {
     this.pageRequest.filters.roomPaymentObjectId = roomPaymentObjectId;
     this.paymentService.getRoomPayments<RoomPayment>(this.pageRequest)
     .then(roomPayment => {
-      console.log(roomPayment.data[0]);
-
       this.model = roomPayment.data[0];
       this.totalCount = this.model.roomTenants.length;
       this.roomTenants = this.model.roomTenants;
@@ -279,7 +282,7 @@ export class RoomFormComponent implements OnInit {
         });
       });
     } else {
-      room.tenantsArr.forEach( (tenant, arrIndex) => {
+      room.transientPrivateRoomProperties[0].tenants.forEach( (tenant, arrIndex) => {
         const roomTenant: RoomTenant = {name: null, dueRentDate: null, rent: null, rentStatus: {value: null}, index: null};
         if ( arrIndex === 0 ) {
           roomTenant.name               = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;

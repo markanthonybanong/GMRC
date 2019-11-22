@@ -2,7 +2,6 @@ import { RoomTenant } from './RoomTenant';
 export class RoomPayment {
   amountKWUsed: number;
   date: string;
-  dateInDateFormat: Date;
   electricBillBalance: Array<{balance: number}>;
   electricBillStatus: string;
   presentReading: Date;
@@ -15,5 +14,9 @@ export class RoomPayment {
   waterBillBalance: Array<{balance: number}>;
   waterBillStatus: string;
   roomTenants: Array<RoomTenant>;
+  total: number;
+  totalAmountElectricBill: number;
+  waterBill: number;
+  riceCookerBill: number;
   _id: string;
  }

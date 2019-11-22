@@ -40,7 +40,7 @@
                 <input matInput  type="number" placeholder="Deck number" formControlName="number">
               </mat-form-field>
               <mat-form-field>
-                <mat-select placeholder="Deck status" (selectionChange)="deckStatusToggle($event, bedIndex, deckIndex)" formControlName="status">
+                <mat-select placeholder="Deck status" formControlName="status">
                   <mat-option *ngFor="let status of roomEnumService.deckStatus;" [value]="status">
                     {{status}}
                   </mat-option>
@@ -76,8 +76,8 @@
               </button>
             </div>
             <!--TENANT AWAY BLOCK -->
-            <div formArrayName="away" *ngFor="let awayField of deck.get('away').controls; let awayFieldIndex = index" class="tenant-away-block">
-              <div [formGroupName]="awayFieldIndex" class="tenant-away-container">
+            <div formArrayName="away" *ngFor="let away of deck.get('away').controls; let awayIndex = index" class="tenant-away-block">
+              <div [formGroupName]="awayIndex" class="tenant-away-container">
                 <div class="first-block">
                   <mat-form-field>
                     <input matInput [matDatepicker]="tenantWillReturnIn" placeholder="Will return in" formControlName="willReturnIn">
@@ -85,7 +85,7 @@
                     <mat-datepicker #tenantWillReturnIn></mat-datepicker>
                   </mat-form-field>
                   <mat-form-field>
-                    <mat-select placeholder="Deck status" formControlName="status" (selectionChange)="setAwayFormGroupToNull(bedIndex, deckIndex, $event)">
+                    <mat-select placeholder="Deck status" formControlName="status">
                         <mat-option *ngFor="let status of roomEnumService.transientBedspaceStatus;" [value]="status">
                           {{status}}
                         </mat-option>
@@ -117,10 +117,10 @@
                 <div class="fourth-block">
                   <div class="first-block">
                     <mat-form-field>
-                        <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenantNameFieldInput(awayField.get('tenant').value)" [matAutocomplete]="auto">
+                        <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenantNameFieldInput(away.get('tenant').value)" [matAutocomplete]="auto">
                     </mat-form-field>
                     <mat-autocomplete #auto="matAutocomplete">
-                      <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId('AwayFormGroup', {tenantObjectId:tenant._id, index:awayFieldIndex, bedIndex: bedIndex, deckIndex: deckIndex})" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+                      <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId('AwayFormGroup', {tenantObjectId:tenant._id, index:awayIndex, bedIndex: bedIndex, deckIndex: deckIndex})" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
                         {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
                       </mat-option>
                     </mat-autocomplete>
@@ -139,10 +139,10 @@
                   </mat-form-field>
                 </div>
                 <div class="away-tenant-action-buttons-block">
-                  <button mat-raised-button color="primary" (click)="addUpdateAwayInDeckFormGroup(bedIndex, deckIndex)" [disabled]="isSubmitting" *ngIf="awayField.get('fromServer').value === false">
+                  <button mat-raised-button color="primary" (click)="addUpdateAwayInDeckFormGroup(bedIndex, deckIndex)" [disabled]="!away.valid || isSubmitting" *ngIf="away.get('fromServer').value === false">
                     <span id="button-text-white">Save</span>
                   </button>
-                  <button mat-raised-button color="primary" (click)="addUpdateAwayInDeckFormGroup(bedIndex, deckIndex, true)" [disabled]="isSubmitting" *ngIf="awayField.get('fromServer').value === true">
+                  <button mat-raised-button color="primary" (click)="addUpdateAwayInDeckFormGroup(bedIndex, deckIndex, true)" [disabled]="!away.valid || isSubmitting" *ngIf="away.get('fromServer').value === true">
                     <span id="button-text-white">Update</span>
                   </button>
                 </div>

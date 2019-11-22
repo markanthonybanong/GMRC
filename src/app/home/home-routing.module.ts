@@ -6,6 +6,7 @@ import { TenantModule } from '../tenant/tenant.module';
 import { InquiryModule } from '../inquiry/inquiry.module';
 import { AuthGuardService } from '@gmrc/services';
 import { PaymentModule } from '../payment/payment.module';
+import { PrintModule } from '../print/print.module';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
       { path: 'room', loadChildren: () => RoomModule, canActivate: [AuthGuardService] },
       { path: 'tenant', loadChildren: () => TenantModule, canActivate: [AuthGuardService] },
       { path: 'payment', loadChildren: () => PaymentModule, canActivate: [AuthGuardService] },
+      { path: 'print', loadChildren: () => PrintModule, canActivate: [AuthGuardService] },
     ]
   }
 ];
