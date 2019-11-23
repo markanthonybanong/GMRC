@@ -14,7 +14,7 @@ mat-card{
       }
     }
   }
-  >body{
+  >body
     >table{
       width: 100%;
       #waiting{
@@ -46,9 +46,6 @@ mat-card{
       }
     }
   }
-
-}
-
 /*MEDIA QUERIES*/
 /*MAX-WIDTH*/
 @media (max-width: 768px) {

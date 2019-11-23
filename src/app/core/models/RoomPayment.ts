@@ -18,5 +18,6 @@ export class RoomPayment {
   totalAmountElectricBill: number;
   waterBill: number;
   riceCookerBill: number;
+  roomType: string;
   _id: string;
  }

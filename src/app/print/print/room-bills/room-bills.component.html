@@ -4,84 +4,303 @@
 <div class="body" *ngIf="isLoading ===false">
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="roomNumber">
-      <th mat-header-cell *matHeaderCellDef>Room numbers</th>
+      <th mat-header-cell *matHeaderCellDef>ROOMS</th>
       <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
     </ng-container>
     <ng-container matColumnDef="tenants">
-      <th mat-header-cell *matHeaderCellDef>Tenants</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>TENANTS</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngFor="let tenant of element.tenants">
+          {{tenant.name}}
+        </p>
+      </td>
     </ng-container>
     <ng-container matColumnDef="dueDates">
-      <th mat-header-cell *matHeaderCellDef>Due dates</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>DUE DATES</th>
+      <td mat-cell *matCellDef="let element">
+          <p *ngFor="let tenant of element.tenants">
+              {{tenant.dueRentDate}}
+          </p>
+      </td>
     </ng-container>
+
     <ng-container matColumnDef="monthMinusThreeAdvanceRentals">
-      <th mat-header-cell *matHeaderCellDef>Advance rentals</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>ADVANCE RENTALS</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.monthMinusThree !== null; else nullAdvanceRental">
+          <p *ngFor="let rental of element.monthMinusThree.advanceRental">
+            <span>{{ rental.value}}</span>
+            <span *ngIf="rental.rentStatus.value !== null"> - {{ rental.rentStatus.value}}</span>
+            <span *ngIf="rental.rentStatus.balance !== null">
+                - {{rental.rentStatus.balance}}
+            </span>
+          </p>
+        </div>
+        <ng-template #nullAdvanceRental>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusThreeCurrent">
-      <th mat-header-cell *matHeaderCellDef>Current</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>CURRENT</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngIf="element.monthMinusThree !== null; else nullCurrent">
+          <span>{{ element.monthMinusThree.electricBill.value}}</span>
+          <span> - {{element.monthMinusThree.electricBill.status}}</span>
+          <span *ngIf="element.monthMinusThree.electricBill.balance !== null">
+              - {{element.monthMinusThree.electricBill.balance}}
+          </span>
+        </p>
+        <ng-template #nullCurrent>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusThreeWater">
-      <th mat-header-cell *matHeaderCellDef>Water</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>WATER</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngIf="element.monthMinusThree !== null; else nullWater">
+          <span>{{ element.monthMinusThree.waterBill.value}}</span>
+          <span> - {{element.monthMinusThree.waterBill.status}}</span>
+          <span *ngIf="element.monthMinusThree.waterBill.balance !== null">
+              - {{element.monthMinusThree.waterBill.balance}}
+          </span>
+        </p>
+        <ng-template #nullWater>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusThreeRiceCooker">
-        <th mat-header-cell *matHeaderCellDef>Rice cooker</th>
-        <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>RICE COOKER</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngIf="element.monthMinusThree !== null; else nullRiceCooker">
+          <span>{{ element.monthMinusThree.riceCookerBill.value}}</span>
+          <span> - {{element.monthMinusThree.riceCookerBill.status}}</span>
+          <span *ngIf="element.monthMinusThree.riceCookerBill.balance !== null">
+              - {{element.monthMinusThree.riceCookerBill.balance}}
+          </span>
+        </p>
+        <ng-template #nullRiceCooker>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="monthMinusTwoAdvanceRentals">
-        <th mat-header-cell *matHeaderCellDef>Advance rentals</th>
-        <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>ADVANCE RENTALS</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.monthMinusTwo !== null; else nullAdvanceRental">
+          <p *ngFor="let rental of element.monthMinusTwo.advanceRental">
+            <span>{{ rental.value}}</span>
+            <span *ngIf="rental.rentStatus.value !== null"> - {{ rental.rentStatus.value}}</span>
+            <span *ngIf="rental.rentStatus.balance !== null">
+                - {{rental.rentStatus.balance}}
+            </span>
+          </p>
+        </div>
+        <ng-template #nullAdvanceRental>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusTwoCurrent">
-      <th mat-header-cell *matHeaderCellDef>Current</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>CURRENT</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngIf="element.monthMinusTwo !== null; else nullCurrent">
+          <span>{{ element.monthMinusTwo.electricBill.value}}</span>
+          <span> - {{element.monthMinusTwo.electricBill.status}}</span>
+          <span *ngIf="element.monthMinusTwo.electricBill.balance !== null">
+              - {{element.monthMinusTwo.electricBill.balance}}
+          </span>
+        </p>
+        <ng-template #nullCurrent>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusTwoWater">
-      <th mat-header-cell *matHeaderCellDef>Water</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+        <th mat-header-cell *matHeaderCellDef>WATER</th>
+        <td mat-cell *matCellDef="let element">
+          <p *ngIf="element.monthMinusTwo !== null; else nullWater">
+            <span>{{ element.monthMinusTwo.waterBill.value}}</span>
+            <span> - {{element.monthMinusTwo.waterBill.status}}</span>
+            <span *ngIf="element.monthMinusTwo.waterBill.balance !== null">
+                - {{element.monthMinusTwo.waterBill.balance}}
+            </span>
+          </p>
+          <ng-template #nullWater>
+            NULL
+          </ng-template>
+        </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusTwoRiceCooker">
-      <th mat-header-cell *matHeaderCellDef>Rice cooker</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+        <th mat-header-cell *matHeaderCellDef>RICE COOKER</th>
+        <td mat-cell *matCellDef="let element">
+          <p *ngIf="element.monthMinusTwo !== null; else nullRiceCooker">
+            <span>{{ element.monthMinusTwo.riceCookerBill.value}}</span>
+            <span> - {{element.monthMinusTwo.riceCookerBill.status}}</span>
+            <span *ngIf="element.monthMinusTwo.riceCookerBill.balance !== null">
+                - {{element.monthMinusTwo.riceCookerBill.balance}}
+            </span>
+          </p>
+          <ng-template #nullRiceCooker>
+            NULL
+          </ng-template>
+        </td>
     </ng-container>
+
     <ng-container matColumnDef="monthMinusOneAdvanceRentals">
-      <th mat-header-cell *matHeaderCellDef>Advance rentals</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>ADVANCE RENTALS</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.monthMinusOne !== null; else nullAdvanceRental">
+          <p *ngFor="let rental of element.monthMinusOne.advanceRental">
+            <span>{{ rental.value}}</span>
+            <span *ngIf="rental.rentStatus.value !== null"> - {{ rental.rentStatus.value}}</span>
+            <span *ngIf="rental.rentStatus.balance !== null">
+                - {{rental.rentStatus.balance}}
+            </span>
+          </p>
+        </div>
+        <ng-template #nullAdvanceRental>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusOneCurrent">
-      <th mat-header-cell *matHeaderCellDef>Current</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>CURRENT</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngIf="element.monthMinusOne !== null; else nullCurrent">
+          <span>{{ element.monthMinusOne.electricBill.value}}</span>
+          <span> - {{element.monthMinusOne.electricBill.status}}</span>
+          <span *ngIf="element.monthMinusOne.electricBill.balance !== null">
+              - {{element.monthMinusOne.electricBill.balance}}
+          </span>
+        </p>
+        <ng-template #nullCurrent>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusOneWater">
-      <th mat-header-cell *matHeaderCellDef>Water</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>WATER</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngIf="element.monthMinusOne !== null; else nullWater">
+          <span>{{ element.monthMinusOne.waterBill.value}}</span>
+          <span> - {{element.monthMinusOne.waterBill.status}}</span>
+          <span *ngIf="element.monthMinusOne.waterBill.balance !== null">
+              - {{element.monthMinusOne.waterBill.balance}}
+          </span>
+        </p>
+        <ng-template #nullWater>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusOneRiceCooker">
-        <th mat-header-cell *matHeaderCellDef>Rice cooker</th>
-        <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>RICE COOKER</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngIf="element.monthMinusOne !== null; else nullRiceCooker">
+          <span>{{ element.monthMinusOne.riceCookerBill.value}}</span>
+          <span> - {{element.monthMinusOne.riceCookerBill.status}}</span>
+          <span *ngIf="element.monthMinusOne.riceCookerBill.balance !== null">
+              - {{element.monthMinusOne.riceCookerBill.balance}}
+          </span>
+        </p>
+        <ng-template #nullRiceCooker>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="currentMonthAdvanceRentals">
-      <th mat-header-cell *matHeaderCellDef>Advance rentals</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>ADVANCE RENTALS</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.currentMonth !== null; else nullAdvanceRental">
+          <p *ngFor="let rental of element.currentMonth.advanceRental">
+            <span>{{ rental.value}}</span>
+            <span *ngIf="rental.rentStatus.value !== null"> - {{ rental.rentStatus.value}}</span>
+            <span *ngIf="rental.rentStatus.balance !== null">
+                - {{rental.rentStatus.balance}}
+            </span>
+          </p>
+        </div>
+        <ng-template #nullAdvanceRental>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
     <ng-container matColumnDef="currentMonthCurrent">
-      <th mat-header-cell *matHeaderCellDef>Current</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+        <th mat-header-cell *matHeaderCellDef>CURRENT</th>
+        <td mat-cell *matCellDef="let element">
+          <p *ngIf="element.currentMonth !== null; else nullCurrent">
+            <span>{{ element.currentMonth.electricBill.value}}</span>
+            <span> - {{element.currentMonth.electricBill.status}}</span>
+            <span *ngIf="element.currentMonth.electricBill.balance !== null">
+                - {{element.currentMonth.electricBill.balance}}
+            </span>
+          </p>
+          <ng-template #nullCurrent>
+            NULL
+          </ng-template>
+        </td>
     </ng-container>
     <ng-container matColumnDef="currentMonthWater">
-      <th mat-header-cell *matHeaderCellDef>Water</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef>WATER</th>
+      <td mat-cell *matCellDef="let element">
+        <p *ngIf="element.currentMonth !== null; else nullWater">
+          <span>{{ element.currentMonth.waterBill.value}}</span>
+          <span> - {{element.currentMonth.waterBill.status}}</span>
+          <span *ngIf="element.currentMonth.waterBill.balance !== null">
+              - {{element.currentMonth.waterBill.balance}}
+          </span>
+        </p>
+        <ng-template #nullWater>
+          NULL
+        </ng-template>
+      </td>
     </ng-container>
-    <ng-container matColumnDef="currentMonthRiceCooker">
-      <th mat-header-cell *matHeaderCellDef>Rice cooker</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <ng-container matColumnDef="currentMonthRiceCooker">
+        <th mat-header-cell *matHeaderCellDef>RICE COOKER</th>
+        <td mat-cell *matCellDef="let element">
+          <p *ngIf="element.currentMonth !== null; else nullRiceCooker">
+            <span>{{ element.currentMonth.riceCookerBill.value}}</span>
+            <span> - {{element.currentMonth.riceCookerBill.status}}</span>
+            <span *ngIf="element.currentMonth.riceCookerBill.balance !== null">
+                - {{element.currentMonth.riceCookerBill.balance}}
+            </span>
+          </p>
+          <ng-template #nullRiceCooker>
+            NULL
+          </ng-template>
+        </td>
+      </ng-container>
+      <!-- Header row first group -->
+    <ng-container matColumnDef="header-row-first-group">
+      <th mat-header-cell *matHeaderCellDef
+          [style.text-align]="center"
+          [attr.colspan]="3">
+        ROOMS - TENANTS - DUEDATES
+      </th>
+    </ng-container>
+    <!-- Header row second group -->
+    <ng-container matColumnDef="header-row-second-group">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">{{monthMinusThree}}</th>
+    </ng-container>
+    <!-- Header row third group -->
+    <ng-container matColumnDef="header-row-third-group">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">{{monthMinusTwo}}</th>
+    </ng-container>
+    <!-- Header row fourth group -->
+    <ng-container matColumnDef="header-row-fourth-group">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">{{monthMinusOne}}</th>
+    </ng-container>
+    <!-- Header row fourth group -->
+    <ng-container matColumnDef="header-row-fifth-group">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">{{currentMonth}}</th>
     </ng-container>
 
+    <tr mat-header-row *matHeaderRowDef="['header-row-first-group', 'header-row-second-group', 'header-row-third-group', 'header-row-fourth-group', 'header-row-fifth-group']"></tr>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>

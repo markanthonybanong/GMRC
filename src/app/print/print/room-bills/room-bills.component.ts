@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PaymentService } from '@gmrc/services';
 import { PageRequest, RoomPayment, RoomPaymentForPrint, RoomTenant, MonthRoomPayment } from '@gmrc/models';
-import { FilterType } from '@gmrc/enums';
+import { FilterType, RoomType } from '@gmrc/enums';
 import * as moment from 'moment';
 import { MatTableDataSource } from '@angular/material';
 import groupBy from 'lodash/groupBy';
@@ -72,6 +72,7 @@ export class RoomBillsComponent implements OnInit {
         } else if (monthRoomPayment.date === moment().format('MM/YYYY')) {
           currentMonthTenants = monthRoomPayment.roomTenants;
         }
+
     });
 
     return unionBy(monthMinusThreeTenants, monthMinusTwoTenants, monthMinusOneTenants, currentMonthTenants, 'name');
@@ -113,7 +114,8 @@ export class RoomBillsComponent implements OnInit {
                                               }
                                           };
     const monthsRoomPaymentInRoom = roomPayments[roomPaymentsIndex];
-    const monthRoomPayment  = find(monthsRoomPaymentInRoom, {date: date});
+    const monthRoomPayment: RoomPayment  = find(monthsRoomPaymentInRoom, {date: date});
+
 
     if (monthRoomPayment !== undefined) {
       roomTenants.forEach( (roomTenant, roomTenantIndex) => {
@@ -132,10 +134,10 @@ export class RoomBillsComponent implements OnInit {
             monthPayment.advanceRental.push(advanceRental);
           }
         });
-        if (isTenantNotFound) {
+        if (isTenantNotFound && monthRoomPayment.roomType === RoomType.BEDSPACE) {
           const advanceRental = {
             name: roomTenant.name,
-            value: null,
+            value: 0,
             rentStatus: {
               value: null,
               balance: null,
@@ -167,16 +169,16 @@ export class RoomBillsComponent implements OnInit {
    return monthPayment;
   }
   get monthMinusThree(): string {
-    return moment().subtract(3, 'months').format('MM/YYYY');
+    return moment().subtract(3, 'months').format('MMMM YYYY');
   }
   get monthMinusTwo(): string {
-    return moment().subtract(2, 'months').format('MM/YYYY');
+    return moment().subtract(2, 'months').format('MMMM YYYY');
   }
   get monthMinusOne(): string {
-    return moment().subtract(1, 'months').format('MM/YYYY');
+    return moment().subtract(1, 'months').format('MMMM YYYY');
   }
   get currentMonth(): string {
-    return moment().format('MM/YYYY');
+    return moment().format('MMMM YYYY');
   }
   setMonthsRoomPayment(roomPayments: Array<RoomPayment>): void {
     const roomPaymentsForPrint: Array<RoomPaymentForPrint> = [];
@@ -192,7 +194,7 @@ export class RoomBillsComponent implements OnInit {
                                                           monthMinusTwo: null,
                                                           monthMinusOne: null,
                                                           currentMonth: null,
-                                                        };
+                                                       };
 
       const roomTenants                   = this.getAllRoomTenantsInFourMonths(roomPaymentsByRoomNumber, index);
       roomPaymentForPrint.roomNumber      = roomNumbers[index];
@@ -203,25 +205,25 @@ export class RoomBillsComponent implements OnInit {
                                                                       roomPaymentsByRoomNumber,
                                                                       roomTenants,
                                                                       index,
-                                                                      this.monthMinusThree
+                                                                      moment().subtract(3, 'months').format('MM/YYYY'),
                                                                     );
       roomPaymentForPrint.monthMinusTwo   = this.getMonthRoomPayment(
                                                                       roomPaymentsByRoomNumber,
                                                                       roomTenants,
                                                                       index,
-                                                                      this.monthMinusTwo
+                                                                      moment().subtract(2, 'months').format('MM/YYYY'),
                                                                     );
       roomPaymentForPrint.monthMinusOne   = this.getMonthRoomPayment(
                                                                       roomPaymentsByRoomNumber,
                                                                       roomTenants,
                                                                       index,
-                                                                      this.monthMinusOne
+                                                                      moment().subtract(1, 'months').format('MM/YYYY'),
                                                                     );
       roomPaymentForPrint.currentMonth   = this.getMonthRoomPayment(
                                                                       roomPaymentsByRoomNumber,
                                                                       roomTenants,
                                                                       index,
-                                                                      this.currentMonth
+                                                                      moment().format('MM/YYYY'),
                                                                     );
       roomPaymentsForPrint.push(roomPaymentForPrint);
     });

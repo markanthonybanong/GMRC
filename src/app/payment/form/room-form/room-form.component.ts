@@ -41,6 +41,7 @@ export class RoomFormComponent implements OnInit {
     riceCookerBill: ['', Validators.required],
     riceCookerBillBalance: this.formBuilder.array([]),
     roomTenants: ['', Validators.required],
+    roomType: [''],
     _id: null,
   });
   formTitle = 'ADD ROOM PAYMENT';
@@ -123,6 +124,7 @@ export class RoomFormComponent implements OnInit {
       waterBillStatus: this.model.waterBillStatus,
       waterBill: this.model.waterBill,
       roomTenants: this.model.roomTenants,
+      roomType: this.model.roomType,
       _id: this.model._id,
     });
     this.calculateTotalKWused();
@@ -254,10 +256,24 @@ export class RoomFormComponent implements OnInit {
     const roomTenants: Array<RoomTenant> = [];
     let roomTennantIndex = 0;
     if ( room.type === RoomType.BEDSPACE ) {
+
       room.bedspaces.forEach( bedspace => {
         bedspace.decks.forEach( deck => {
-          const roomTenant: RoomTenant      = {name: null, dueRentDate: null, rent: null, rentStatus: {value: null}, index: null};
-          const awayRoomTenant: RoomTenant  = {name: null, dueRentDate: null, rent: null, rentStatus: {value: null}, index: null};
+          const roomTenant: RoomTenant      = {
+                                                name: null,
+                                                dueRentDate: null,
+                                                rent: null,
+                                                rentStatus: {value: null},
+                                                index: null,
+
+                                              };
+          const awayRoomTenant: RoomTenant  = {
+                                                name: null,
+                                                dueRentDate: null,
+                                                rent: null,
+                                                rentStatus: {value: null},
+                                                index: null,
+                                              };
           if ( deck.tenant !== null ) {
             roomTenant.name                 = `${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`;
             roomTenant.dueRentDate          = deck.dueRentDate;
@@ -283,7 +299,13 @@ export class RoomFormComponent implements OnInit {
       });
     } else {
       room.transientPrivateRoomProperties[0].tenants.forEach( (tenant, arrIndex) => {
-        const roomTenant: RoomTenant = {name: null, dueRentDate: null, rent: null, rentStatus: {value: null}, index: null};
+        const roomTenant: RoomTenant = {
+                                          name: null,
+                                          dueRentDate: null,
+                                          rent: null,
+                                          rentStatus: {value: null},
+                                          index: null,
+                                        };
         if ( arrIndex === 0 ) {
           roomTenant.name               = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
           roomTenant.dueRentDate        = room.transientPrivateRoomProperties[0].dueRentDate;
@@ -315,6 +337,17 @@ export class RoomFormComponent implements OnInit {
       this.roomTenants.push(roomTenant);
     });
   }
+ addRoomType(room: Room): void {
+  if (room.type === RoomType.BEDSPACE) {
+    this.form.get('roomType').setValue(RoomType.BEDSPACE);
+  } else if (room.type === RoomType.PRIVATE) {
+    this.form.get('roomType').setValue(RoomType.PRIVATE);
+  } else if (room.type === RoomType.SEMIPRIVATE) {
+    this.form.get('roomType').setValue(RoomType.SEMIPRIVATE);
+  } else if (room.type === RoomType.TRANSIENT) {
+    this.form.get('roomType').setValue(RoomType.TRANSIENT);
+  }
+ }
   async showTenants(): Promise<void> {
     try {
       const roomByRoomNumber                = await this.getRoomByRoomNumber();
@@ -324,6 +357,7 @@ export class RoomFormComponent implements OnInit {
       this.pageRequest.filters.roomObjectId = roomByRoomNumber.data[0]._id;
       const roomByRoomType                  = await this.roomService.getRooms<Room>(this.pageRequest);
       const roomTenants                     = this.getRoomTenants(roomByRoomType.data[0]);
+      this.addRoomType(roomByRoomType.data[0]);
       this.addRoomTenantsToForm(roomTenants);
       this.addRoomTenantsToRoomTenantsArray(roomTenants);
       this.totalCount = this.roomTenants.length;
