@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatSelectChange } from '@angular/material';
 import { FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 import { PaymentEnumService } from '@gmrc/services';
 import { PaymentStatus } from '@gmrc/enums';
-import { TenantPayment } from '@gmrc/models';
+import { RoomTenant } from '@gmrc/models';
 
 @Component({
   selector: 'app-room-payment-dialog',
@@ -13,21 +13,21 @@ import { TenantPayment } from '@gmrc/models';
 export class RoomPaymentDialogComponent implements OnInit {
   form = this.formBuilder.group({
     name: {value: this.data.name, disabled: true},
-    dueDate: {value: this.data.dueDate, disabled: true},
+    dueDate: {value: this.data.dueRentDate, disabled: true},
     rent: {value: this.data.rent, disabled: true},
+    status: this.data.rentStatus.value,
     rentBalance: this.formBuilder.array([]),
-    status: this.data.status
   });
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: TenantPayment,
+    @Inject(MAT_DIALOG_DATA) public data,
     private formBuilder: FormBuilder,
     private paymentEnumService: PaymentEnumService,
   ) { }
 
   ngOnInit() {
-    if (this.data.rentBalance[0] !== null) {
+    if (this.data.rentStatus.balance !== null) {
       this.rentBalanceFormArray.push(this.formBuilder.group({
-        balance: this.data.rentBalance[0].balance,
+        balance: this.data.rentStatus.balance,
       }));
     }
   }

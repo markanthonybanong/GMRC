@@ -1,6 +1,7 @@
 export class Filter {
   tenantName?: string;
   roomObjectId?: string;
+  bedObjectId?: string;
   type?: string;
   inquiryFilter?: object;
   roomFilter?: object;
@@ -12,4 +13,6 @@ export class Filter {
   entryObjectId?: string;
   roomPaymentObjectId?: string;
   roomPaymentFilter?: object;
+  unsettleBillObjectId?: string;
+  unsettleBillFilter?: object;
 }

@@ -1,5 +1,6 @@
 export enum RoomType {
-  TRANSIENT = 'Transient',
-  BEDSPACE  = 'Bedspace',
-  PRIVATE   = 'Private'
+  BEDSPACE    = 'Bedspace',
+  TRANSIENT   = 'Transient',
+  PRIVATE     = 'Private',
+  SEMIPRIVATE = 'Semi-Private'
 }

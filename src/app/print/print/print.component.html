@@ -1,0 +1,22 @@
+<mat-card>
+  <div class="header">
+    <div class="first-block">
+      <h1 id="label-text-primary">PRINT</h1>
+    </div>
+    <div class="second-block">
+      <button mat-raised-button color="primary" [routerLink]="'/print/room-bills'">
+        <span id="button-text-white">Room Bills</span>
+      </button>
+      <button mat-raised-button color="primary" [routerLink]="'/print/electric-bills'">
+        <span id="button-text-white">Electric Bills</span>
+      </button>
+      <button mat-raised-button color="primary" [routerLink]="'/print/promisory-note'">
+        <span id="button-text-white">Promisory Note</span>
+      </button>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="route-area">
+    <router-outlet></router-outlet>
+  </div>
+</mat-card>

@@ -1,0 +1,67 @@
+.form-parent-container{
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  mat-form-field{
+    width: 100%;
+  }
+  >.form{
+    >.header-block{
+      display: flex;
+      justify-content: center;
+    }
+    >.fifth-block{
+      mat-icon:hover{
+        cursor: pointer;
+      }
+      .remove-tenant-block{
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+    >.action-buttons-block{
+      display: flex;
+      justify-content: flex-end;
+      #back-button{
+        margin-right: 5px;
+      }
+    }
+    #add-tenant-button{
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  }
+}
+/*MEDIA QUERIES*/
+@media (max-width: 575px) {
+}
+@media (min-width: 576px) {
+}
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+  .parent-tenant-form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em;
+  }
+}
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+}
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+  .form{
+    mat-form-field{
+      width: 48%;
+    }
+    >.first-block, >.second-block, >.third-block, >.fourth-block{
+      display: flex;
+      justify-content: space-between;
+    }
+    >.fifth-block{
+      mat-form-field{
+        width: 100%;
+      }
+    }
+  }
+ }

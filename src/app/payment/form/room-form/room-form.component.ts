@@ -11,7 +11,7 @@ import * as moment from 'moment';
 import { Moment} from 'moment';
 import { PaymentEnumService, RoomService, PaymentService, NotificationService } from '@gmrc/services';
 import { PaymentStatus, FilterType, RoomType, DeckStatus } from '@gmrc/enums';
-import { PageRequest, Room, PageData, RoomTenant, TenantPayment, RoomPayment } from '@gmrc/models';
+import { PageRequest, Room, PageData, RoomTenant, RoomPayment } from '@gmrc/models';
 import { RoomPaymentDialogComponent } from '@gmrc/shared';
 
 @Component({
@@ -35,10 +35,13 @@ export class RoomFormComponent implements OnInit {
     electricBillStatus: [PaymentStatus.UNPAID, Validators.required],
     electricBillBalance: this.formBuilder.array([]),
     waterBillStatus: [PaymentStatus.UNPAID, Validators.required],
+    waterBill: ['', Validators.required],
     waterBillBalance: this.formBuilder.array([]),
     riceCookerBillStatus: [PaymentStatus.UNPAID, Validators.required],
+    riceCookerBill: ['', Validators.required],
     riceCookerBillBalance: this.formBuilder.array([]),
     roomTenants: ['', Validators.required],
+    roomType: [''],
     _id: null,
   });
   formTitle = 'ADD ROOM PAYMENT';
@@ -110,14 +113,18 @@ export class RoomFormComponent implements OnInit {
       amountKWUsed: this.model.amountKWUsed,
       date: this.model.date,
       electricBillStatus: this.model.electricBillStatus,
+      totalAmountElectricBill: this.model.totalAmountElectricBill,
       presentReading: this.model.presentReading,
       presentReadingKWUsed: this.model.presentReadingKWUsed,
       previousReading: this.model.previousReading,
       previousReadingKWUsed: this.model.previousReadingKWUsed,
       riceCookerBillStatus: this.model.riceCookerBillStatus,
+      riceCookerBill: this.model.riceCookerBill,
       roomNumber: this.model.roomNumber,
       waterBillStatus: this.model.waterBillStatus,
+      waterBill: this.model.waterBill,
       roomTenants: this.model.roomTenants,
+      roomType: this.model.roomType,
       _id: this.model._id,
     });
     this.calculateTotalKWused();
@@ -129,12 +136,14 @@ export class RoomFormComponent implements OnInit {
     this.paymentService.getRoomPayments<RoomPayment>(this.pageRequest)
     .then(roomPayment => {
       this.model = roomPayment.data[0];
-      this.totalCount = this.model.roomTenants[0].names.length;
+      this.totalCount = this.model.roomTenants.length;
       this.roomTenants = this.model.roomTenants;
       this.loadFormValue();
       this.buttonName = 'Update';
       this.tablePagination();
+      this.disabledShowTenantsButton = false;
       this.isLoading = false;
+
     })
     .catch( err => {});
   }
@@ -243,71 +252,103 @@ export class RoomFormComponent implements OnInit {
       return error;
     }
   }
-  getRoomTenants(room: Room): RoomTenant {
-    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, rentStatuses: null, indexes: null};
-    const tenants: string []     = [];
-    const dueDates: number []    = [];
-    const rents: number[]        = [];
-    const rentStatuses: Array<{value: string, balance?: number}> = [];
-    const arrayIndexes: number[] = [];
-    let   index                  = 0;
-    if (room.type === RoomType.BEDSPACE) {
+  getRoomTenants(room: Room): Array<RoomTenant> {
+    const roomTenants: Array<RoomTenant> = [];
+    let roomTennantIndex = 0;
+    if ( room.type === RoomType.BEDSPACE ) {
       room.bedspaces.forEach( bedspace => {
-        bedspace.decks.forEach( deck  => {
-          if (deck.tenant !== null) {
-            rentStatuses.push({
-              value: PaymentStatus.UNPAID,
-              balance: null,
-            });
-            tenants.push(`${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`);
-            dueDates.push(deck.dueRentDate);
-            rents.push(deck.monthlyRent);
-            arrayIndexes.push(index);
-            index++;
+        bedspace.decks.forEach( deck => {
+          const roomTenant: RoomTenant      = {
+                                                name: null,
+                                                dueRentDate: null,
+                                                rent: null,
+                                                rentStatus: {value: null},
+                                                index: null,
+
+                                              };
+          const awayRoomTenant: RoomTenant  = {
+                                                name: null,
+                                                dueRentDate: null,
+                                                rent: null,
+                                                rentStatus: {value: null},
+                                                index: null,
+                                              };
+          if ( deck.tenant !== null ) {
+            roomTenant.name                 = `${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`;
+            roomTenant.dueRentDate          = deck.dueRentDate;
+            roomTenant.rent                 = deck.monthlyRent;
+            roomTenant.rentStatus.value     = PaymentStatus.UNPAID;
+            roomTenant.rentStatus.balance   = null;
+            roomTenant.index                = roomTennantIndex;
+            roomTenants.push(roomTenant);
+            roomTennantIndex++;
           }
           if (deck.status === DeckStatus.AWAY && deck.away[0].tenant !== null ) {
-            tenants.push(`${deck.away[0].tenant.firstname} ${deck.away[0].tenant.middlename} ${deck.away[0].tenant.lastname}`);
-            dueDates.push(deck.away[0].dueRentDate);
-            rents.push(deck.away[0].rent);
-            rentStatuses.push({
-              value: PaymentStatus.UNPAID,
-              balance: null,
-            });
-            arrayIndexes.push(index);
-            index++;
+            // tslint:disable-next-line: max-line-length
+            awayRoomTenant.name             = `${deck.away[0].tenant.firstname} ${deck.away[0].tenant.middlename} ${deck.away[0].tenant.lastname}`;
+            awayRoomTenant.dueRentDate      = deck.away[0].dueRentDate;
+            awayRoomTenant.rent             = deck.away[0].rent;
+            awayRoomTenant.rentStatus.value = PaymentStatus.UNPAID;
+            roomTenant.rentStatus.balance   = null;
+            awayRoomTenant.index            = roomTennantIndex;
+            roomTenants.push(awayRoomTenant);
+            roomTennantIndex++;
           }
         });
       });
     } else {
-      room.tenantsArr.forEach( tenant => {
-        tenants.push(`${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`);
+      room.transientPrivateRoomProperties[0].tenants.forEach( (tenant, arrIndex) => {
+        const roomTenant: RoomTenant = {
+                                          name: null,
+                                          dueRentDate: null,
+                                          rent: null,
+                                          rentStatus: {value: null},
+                                          index: null,
+                                        };
+        if ( arrIndex === 0 ) {
+          roomTenant.name               = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
+          roomTenant.dueRentDate        = room.transientPrivateRoomProperties[0].dueRentDate;
+          roomTenant.rent               = room.transientPrivateRoomProperties[0].monthlyRent;
+          roomTenant.rentStatus.value   = PaymentStatus.UNPAID;
+          roomTenant.rentStatus.balance = null;
+          roomTenant.index              = roomTennantIndex;
+          roomTenants.push(roomTenant);
+        } else {
+          roomTenant.name               = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
+          roomTenant.dueRentDate        = null;
+          roomTenant.rent               = null;
+          roomTenant.index              = roomTennantIndex;
+          roomTenants.push(roomTenant);
+        }
+        roomTennantIndex++;
       });
-      dueDates.push(room.transientPrivateRoomProperties[0].dueRentDate);
-      rents.push(room.transientPrivateRoomProperties[0].monthlyRent);
-      rentStatuses.push({
-        value: PaymentStatus.UNPAID,
-        balance: null
-      });
-      arrayIndexes.push(index);
     }
-    roomTenant.names         = tenants;
-    roomTenant.dueRentDates  = dueDates;
-    roomTenant.rents         = rents;
-    roomTenant.rentStatuses  = rentStatuses;
-    roomTenant.indexes       = arrayIndexes;
-    return roomTenant;
+    return roomTenants;
   }
-  addRoomTenantsToForm(roomTenant: RoomTenant): void {
+  addRoomTenantsToForm(roomTenant: Array<RoomTenant>): void {
     this.roomTenantsDataSource   = [];
     this.roomTenants             = [];
-    if (roomTenant.names.length > 0 ) {
+    if (roomTenant.length > 0 ) {
       this.form.get('roomTenants').setValue(null);
-      this.form.get('roomTenants').setValue([roomTenant]);
-      this.roomTenants.push(roomTenant);
-      this.totalCount = roomTenant.names.length;
-      this.tablePagination();
+      this.form.get('roomTenants').setValue(roomTenant);
     }
   }
+  addRoomTenantsToRoomTenantsArray(roomTenants: Array<RoomTenant>): void {
+    roomTenants.forEach( roomTenant => {
+      this.roomTenants.push(roomTenant);
+    });
+  }
+ addRoomType(room: Room): void {
+  if (room.type === RoomType.BEDSPACE) {
+    this.form.get('roomType').setValue(RoomType.BEDSPACE);
+  } else if (room.type === RoomType.PRIVATE) {
+    this.form.get('roomType').setValue(RoomType.PRIVATE);
+  } else if (room.type === RoomType.SEMIPRIVATE) {
+    this.form.get('roomType').setValue(RoomType.SEMIPRIVATE);
+  } else if (room.type === RoomType.TRANSIENT) {
+    this.form.get('roomType').setValue(RoomType.TRANSIENT);
+  }
+ }
   async showTenants(): Promise<void> {
     try {
       const roomByRoomNumber                = await this.getRoomByRoomNumber();
@@ -316,19 +357,18 @@ export class RoomFormComponent implements OnInit {
                                               FilterType.TRANSIENTPRIVATEROOMBYOBJECTID;
       this.pageRequest.filters.roomObjectId = roomByRoomNumber.data[0]._id;
       const roomByRoomType                  = await this.roomService.getRooms<Room>(this.pageRequest);
-      this.addRoomTenantsToForm(this.getRoomTenants(roomByRoomType.data[0]));
+      const roomTenants                     = this.getRoomTenants(roomByRoomType.data[0]);
+      this.addRoomType(roomByRoomType.data[0]);
+      this.addRoomTenantsToForm(roomTenants);
+      this.addRoomTenantsToRoomTenantsArray(roomTenants);
+      this.totalCount = this.roomTenants.length;
+      this.tablePagination();
     } catch (error) {}
   }
   tablePagination(): void {
     const start     = this.pageSize * this.pageNumber;
     const end       = this.pageSize * (this.pageNumber + 1);
-    const roomTenant: RoomTenant = {names: null, dueRentDates: null, rents: null, rentStatuses: null, indexes: null};
-    roomTenant.names             = this.roomTenants[0].names.slice(start, end);
-    roomTenant.dueRentDates      = this.roomTenants[0].dueRentDates.slice(start, end);
-    roomTenant.rentStatuses      = this.roomTenants[0].rentStatuses.slice(start, end);
-    roomTenant.rents             = this.roomTenants[0].rents.slice(start, end);
-    roomTenant.indexes           = this.roomTenants[0].indexes.slice(start, end);
-    this.roomTenantsDataSource   = [roomTenant];
+    this.roomTenantsDataSource   = this.roomTenants.slice(start, end);
   }
   onPaginatorUpdate($event: PageEvent): void {
     this.pageNumber = $event.pageIndex;
@@ -336,29 +376,30 @@ export class RoomFormComponent implements OnInit {
     this.tablePagination();
   }
   updateTenantPayment(index: number): void {
+    console.log(this.roomTenants[index].dueRentDate);
     const dialogRef = this.dialog.open(
       RoomPaymentDialogComponent,
       {
         data: {
-          name:    this.roomTenants[0].names[index],
-          dueDate: this.roomTenants[0].dueRentDates[index],
-          rent:    this.roomTenants[0].rents[index],
-          status:  this.roomTenants[0].rentStatuses[index].value,
-          rentBalance: [ this.roomTenants[0].rentStatuses[index].balance !== null ? {
-                        balance: this.roomTenants[0].rentStatuses[index].balance
-                       } : null]
+          name:    this.roomTenants[index].name,
+          dueRentDate: this.roomTenants[index].dueRentDate,
+          rent:    this.roomTenants[index].rent,
+          rentStatus: {
+            value: this.roomTenants[index].rentStatus.value,
+            balance: this.roomTenants[index].rentStatus.balance !== null
+            ? this.roomTenants[index].rentStatus.balance
+            : null,
+          }
         }
       }
     );
-    dialogRef.afterClosed().subscribe( (result: TenantPayment) => {
+    dialogRef.afterClosed().subscribe( (result) => {
       if (result !== undefined) {
-       this.roomTenants[0].rentStatuses.splice(index, 1,
-        {
-         value: result.status,
-         balance: result.rentBalance.length !== 0 ? result.rentBalance[0].balance : null
-        }
-        );
-       this.roomTenantsDataSource = [this.roomTenants[0]];
+        this.roomTenants[index].rentStatus.value = result.status;
+         if (result.rentBalance.length !== 0 ) {
+          this.roomTenants[index].rentStatus.balance = result.rentBalance[0].balance;
+         }
+       this.roomTenantsDataSource = this.roomTenants;
        this.tablePagination();
       }
     });

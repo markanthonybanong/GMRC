@@ -7,7 +7,8 @@ import {
   AngularMaterialModule,
   ConfirmationDialogComponent,
   TransientPrivateAdvanceSearchComponent,
-  BedspaceAdvanceSearchComponent
+  BedspaceAdvanceSearchComponent,
+  UnsettleBillAdvanceSearchComponent
 } from '@gmrc/shared';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
@@ -16,6 +17,8 @@ import { BedspaceComponent } from './room/bedspace/bedspace.component';
 import { RoomFormComponent } from './form/room-form/room-form.component';
 import { TransientPrivateFormComponent } from './form/transient-private-form/transient-private-form.component';
 import { BedspaceFormComponent } from './form/bedspace-form/bedspace-form.component';
+import { UnsettleBillComponent } from './room/unsettle-bill/unsettle-bill.component';
+import { UnsettleBillFormComponent } from './form/unsettle-bill-form/unsettle-bill-form.component';
 
 @NgModule({
   imports: [
@@ -33,12 +36,15 @@ import { BedspaceFormComponent } from './form/bedspace-form/bedspace-form.compon
     TransientPrivateComponent,
     BedspaceComponent,
     TransientPrivateFormComponent,
-    BedspaceFormComponent
+    BedspaceFormComponent,
+    UnsettleBillComponent,
+    UnsettleBillFormComponent
   ],
   entryComponents: [
     ConfirmationDialogComponent,
     TransientPrivateAdvanceSearchComponent,
-    BedspaceAdvanceSearchComponent
+    BedspaceAdvanceSearchComponent,
+    UnsettleBillAdvanceSearchComponent
   ],
   providers: []
 })

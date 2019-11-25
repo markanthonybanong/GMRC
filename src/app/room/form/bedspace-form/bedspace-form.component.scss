@@ -20,6 +20,12 @@
         justify-content: center;
       }
     }
+    >.bed-block{
+      >.bed-action-button-block{
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
     .decks-block{
       .remove-deck-button{
         display: flex;
@@ -30,20 +36,25 @@
       }
       >.deck-form-group{
         padding: 5px;
+        >.tenant-action-buttons-block{
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 5px;
+        }
         >.tenant-away-block{
           border: 4px solid #255070;
           .tenant-away-container{
             padding: 5px;
+            >.away-tenant-action-buttons-block {
+              display: flex;
+              justify-content: flex-end;
+              margin-bottom: 5px;
+            }
           }
-
         }
       }
       margin-bottom: 8px;
       border: 4px solid gray;
-    }
-    >.action-buttons-block{
-      display: flex;
-      justify-content: flex-end;
     }
   }
 }

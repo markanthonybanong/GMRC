@@ -45,11 +45,11 @@ export class BedspaceComponent implements OnInit {
     const filter     = this.localStorageService.getItem('bedspaceRoomFilter');
     const page       = this.localStorageService.getItem('bedspaceRoomPage');
 
+    if ( filter !== null ) {
+      this.pageRequest.filters  = filter;
+    }
     if ( filterType !== null ) {
       this.pageRequest.filters.type = filterType;
-    }
-    if ( filter !== null ) {
-      this.pageRequest.filters.roomPaymentFilter = filter;
     }
     if ( page !== null) {
       this.paginator.pageIndex = page;
@@ -93,11 +93,10 @@ export class BedspaceComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe(searchResult => {
       if (searchResult) {
-        const filterType = FilterType.ADVANCESEARCHBEDSPACEROOMS;
-        const filter     = this.mergeSearchResult(searchResult);
-        this.pageRequest.filters.type = filterType;
+        const filter = this.mergeSearchResult(searchResult);
         this.pageRequest.filters = filter;
-        this.localStorageService.setItem('bedspaceRoomFilterType', filterType);
+        this.pageRequest.filters.type = FilterType.ADVANCESEARCHBEDSPACEROOMS;
+        this.localStorageService.setItem('bedspaceRoomFilterType', FilterType.ADVANCESEARCHBEDSPACEROOMS);
         this.localStorageService.setItem('bedspaceRoomFilter', filter);
         this.getBedspaceRooms();
       }

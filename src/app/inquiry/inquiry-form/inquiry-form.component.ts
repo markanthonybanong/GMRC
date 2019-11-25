@@ -129,8 +129,9 @@ export class InquiryFormComponent implements OnInit {
     .then(inquiry => {
       this.model = inquiry.data[0];
       this.loadFormValue();
+      this.formTitle  = 'UPDATE INQUIRY';
       this.buttonName = 'Update';
-      this.isLoading = false;
+      this.isLoading  = false;
     })
     .catch(err => {
     });

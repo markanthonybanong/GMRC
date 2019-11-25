@@ -1,0 +1,38 @@
+<form [formGroup]="searchFiltersForm">
+  <div class="header-container">
+    <h3 id="label-text-primary">Search Unsettle Bill</h3>
+  </div>
+  <div class="body-container">
+    <div class="first-block">
+      <mat-form-field>
+        <mat-select placeholder="Room numbers" formControlName="roomNumber">
+          <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+              {{number}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Room type" formControlName="roomType">
+          <mat-option *ngFor="let type of roomEnumService.roomType;" [value]="type">
+              {{type}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="second-block">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenant(searchFiltersForm.get('tenant').value)" [matAutocomplete]="auto">
+      </mat-form-field>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+          {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+    <div class="footer-container">
+      <button mat-raised-button color="primary" [matDialogClose]='searchFiltersForm.value'>
+        <span id="button-text-white">Search</span>
+      </button>
+    </div>
+  </div>
+</form>

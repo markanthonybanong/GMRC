@@ -9,34 +9,8 @@
       mat-icon:hover{
         cursor: pointer;
       }
-      th.mat-header-cell {
+      th.mat-header-cell, td {
         text-align: center;
-      }
-      th, td.mat-cell{
-        border: none;
-      }
-      td{
-        .table-detail, .table-detail-action{
-          p {
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-bottom: 4px solid rgba(0, 0, 0, 0.12);
-            // background: pink;
-            padding-bottom: 10px;
-          }
-        }
-        .table-detail-status{
-
-          #balance{
-            border-bottom: 4px solid rgba(0, 0, 0, 0.12);
-            margin-top: 0px;
-            text-align: center;
-          }
-
-        }
-
       }
     }
   }
@@ -89,16 +63,16 @@
       mat-form-field{
         width: 48%;
       }
-      >.seventh-block, >.eight-block{
+      >.seventh-block, >.eight-block, >.ninth-block{
         mat-form-field{
           width: 100%;
         }
       }
-      >.first-block, >.second-block, >.third-block, >.fourth-block, >.fifth-block, >.seventh-block, >.eight-block {
+      >.first-block, >.second-block, >.third-block, >.fourth-block, >.fifth-block, >.seventh-block, >.ninth-block {
         display: flex;
         justify-content: space-between;
       }
-      >.sixth-block{
+      >.sixth-block, >.eight-block, >.tenth-block{
         mat-form-field{
           width: 100%;
         }

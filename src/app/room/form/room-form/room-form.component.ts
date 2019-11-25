@@ -80,6 +80,7 @@ export class RoomFormComponent implements OnInit {
       this.buttonName = 'Update';
     })
     .catch ( (err) => {
+      console.log('room form error ', err);
       this.notificationService.notifyFailed('Something went wrong');
       this.isSubmitting = false;
     });

@@ -8,7 +8,6 @@ import { EntryFormComponent } from './form/entry-form/entry-form.component';
 import { RoomFormComponent } from './form/room-form/room-form.component';
 import { PenaltiesFormComponent } from './form/penalties-form/penalties-form.component';
 
-
 const routes: Routes = [
   {
     path: '',
@@ -25,7 +24,7 @@ const routes: Routes = [
   { path: 'add-room-payment', component: RoomFormComponent },
   { path: 'update-room-payment/:id', component: RoomFormComponent },
   { path: 'add-penalties', component: PenaltiesFormComponent },
-  { path: 'update-panalties', component: PenaltiesFormComponent},
+  { path: 'update-panalties', component: PenaltiesFormComponent },
 ];
 
 @NgModule({

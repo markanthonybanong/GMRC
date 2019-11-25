@@ -5,14 +5,18 @@
   <div class="body-container">
     <div class="first-block">
       <mat-form-field>
+        <mat-select placeholder="Room numbers" formControlName="roomNumber">
+          <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+              {{number}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
         <mat-select placeholder="Room type" formControlName="roomType">
           <mat-option *ngFor="let type of roomEnumService.roomType;" [value]="type">
               {{type}}
           </mat-option>
         </mat-select>
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput type="number" placeholder="Room number" formControlName="roomNumber">
       </mat-form-field>
     </div>
     <div class="second-block">

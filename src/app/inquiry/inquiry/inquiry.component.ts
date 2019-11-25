@@ -59,7 +59,6 @@ export class InquiryComponent implements OnInit {
     }
   }
   getInquiries(): void {
-    console.log(this.pageRequest);
     this.displayPreviousPage();
     this.inquiryService.getInquiries<Inquiry>(this.pageRequest)
     .then( inquiries => {

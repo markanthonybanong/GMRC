@@ -4,19 +4,10 @@
         <span id="button-text-white">Advance Search</span>
       </button>
       <button mat-raised-button color="primary" (click)='displayAllRoomPayments()'>
-        <span id="button-text-white">Display all room payments</span>
-      </button>
-      <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
-        <span id="button-text-white">Print bills</span>
-      </button>
-      <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
-        <span id="button-text-white">Print electric bills</span>
-      </button>
-      <button mat-raised-button color="primary" (click)='onAdvanceSearch()'>
-        <span id="button-text-white">Print promisory note</span>
+        <span id="button-text-white">Display All Room Payments</span>
       </button>
       <button mat-raised-button color="primary" (click)='addRoomPayment()'>
-          <span id="button-text-white">Add room payment</span>
+          <span id="button-text-white">Add Room Payment</span>
         </button>
    </div>
  </div>
@@ -25,7 +16,7 @@
     <th mat-header-cell *matHeaderCellDef>Room number</th>
     <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
   </ng-container>
-  <ng-container matColumnDef="date">
+  <ng-container matColumnDef="dueDate">
     <th mat-header-cell *matHeaderCellDef>Date</th>
     <td mat-cell *matCellDef="let element">{{element.date}}</td>
   </ng-container>
@@ -44,7 +35,7 @@
    <ng-container matColumnDef="rentStatus">
     <th mat-header-cell *matHeaderCellDef>Rent status</th>
     <td mat-cell *matCellDef="let element">
-      <span *ngFor="let status of setRoomStatus(element.roomTenants[0].rentStatuses)">
+      <span *ngFor="let status of setRoomStatus(element.roomTenants)">
         <p appPaymentStatus>{{status}}</p>
       </span>
     </td>

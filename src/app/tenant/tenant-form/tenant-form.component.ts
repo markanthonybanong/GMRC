@@ -13,16 +13,16 @@ import { FilterType } from '@gmrc/enums';
 export class TenantFormComponent implements OnInit {
   form = this.formBuilder.group({
     firstname: ['', Validators.required],
-    middlename: ['', Validators.required],
+    middlename: [''],
     lastname: ['', Validators.required],
-    age: ['', Validators.required],
+    age: [''],
     gender: ['', Validators.required],
     typeOfNetwork: ['', Validators.required],
-    contactNumber: ['', Validators.required],
-    emergencyContactNumber: ['', Validators.required],
+    contactNumber: [''],
+    emergencyContactNumber: [''],
     roomNumber: '',
     dueRentDate: '',
-    address: ['', Validators.required],
+    address: [''],
     _id: [''],
   });
   model: Tenant;

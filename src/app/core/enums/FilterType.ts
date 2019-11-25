@@ -10,6 +10,7 @@ export enum FilterType {
   BEDSPACEROOMS = 'bedspaceRooms',
   BEDSPACEROOMBYOBJECTID = 'bedspaceRoomByObjectId',
   ADVANCESEARCHBEDSPACEROOMS = 'advanceSearchBedspaceRooms',
+  ROOMSBYTENANTOBJECTID = 'roomsByTenantObjectId',
   ALLTENANTS = 'allTenants',
   TENANTBYKEYSTROKE = 'tenantByKeyStroke',
   TENANTBYOBJECTID = 'tenantByObjectId',
@@ -20,4 +21,8 @@ export enum FilterType {
   ALLROOMPAYMENTS = 'allRoomPayments',
   ROOMPAYMENTBYOBJECTID = 'roomPaymentByObjectId',
   ADVANCESEARCHROOMPAYMENT = 'advanceSearchRoomPayment',
+  ROOMPAYMENTSINFOURMONTHS = 'roomPaymentsInFourMonths',
+  ALLUNSETTLEBILLS = 'allUnsettleBills',
+  UNSETTLEBILLBYOBJECTID = 'unsettleBillByObjectId',
+  ADVANCESEARCHUNSETTLEBILL = 'advanceSearchUnsettleBill',
 }
