@@ -256,7 +256,6 @@ export class RoomFormComponent implements OnInit {
     const roomTenants: Array<RoomTenant> = [];
     let roomTennantIndex = 0;
     if ( room.type === RoomType.BEDSPACE ) {
-
       room.bedspaces.forEach( bedspace => {
         bedspace.decks.forEach( deck => {
           const roomTenant: RoomTenant      = {
@@ -316,6 +315,8 @@ export class RoomFormComponent implements OnInit {
           roomTenants.push(roomTenant);
         } else {
           roomTenant.name               = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
+          roomTenant.dueRentDate        = null;
+          roomTenant.rent               = null;
           roomTenant.index              = roomTennantIndex;
           roomTenants.push(roomTenant);
         }
@@ -375,12 +376,13 @@ export class RoomFormComponent implements OnInit {
     this.tablePagination();
   }
   updateTenantPayment(index: number): void {
+    console.log(this.roomTenants[index].dueRentDate);
     const dialogRef = this.dialog.open(
       RoomPaymentDialogComponent,
       {
         data: {
           name:    this.roomTenants[index].name,
-          dueDate: this.roomTenants[index].dueRentDate,
+          dueRentDate: this.roomTenants[index].dueRentDate,
           rent:    this.roomTenants[index].rent,
           rentStatus: {
             value: this.roomTenants[index].rentStatus.value,

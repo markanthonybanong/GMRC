@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PaymentService } from '@gmrc/services';
 import { PageRequest, RoomPayment, RoomPaymentForPrint, RoomTenant, MonthRoomPayment } from '@gmrc/models';
 import { FilterType, RoomType } from '@gmrc/enums';
@@ -8,6 +8,8 @@ import groupBy from 'lodash/groupBy';
 import toArray from 'lodash/toArray';
 import find from 'lodash/find';
 import unionBy from 'lodash/unionBy';
+import * as jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 @Component({
   selector: 'app-room-bills',
   templateUrl: './room-bills.component.html',
@@ -44,6 +46,7 @@ export class RoomBillsComponent implements OnInit {
     'currentMonthWater',
     'currentMonthRiceCooker'
   ];
+  disableDownloadButton = false;
   constructor(
     private paymentService: PaymentService
   ) { }
@@ -121,7 +124,8 @@ export class RoomBillsComponent implements OnInit {
       roomTenants.forEach( (roomTenant, roomTenantIndex) => {
         let isTenantNotFound = true;
         monthRoomPayment.roomTenants.forEach((roomPaymentTenant, roomPaymentTenantIndex) => {
-          if (roomTenant.name === roomPaymentTenant.name) {
+
+          if (roomTenant.name === roomPaymentTenant.name && roomPaymentTenant.rent !== null) {
             const advanceRental = {
                                     name: roomPaymentTenant.name,
                                     value: roomPaymentTenant.rent,
@@ -227,11 +231,7 @@ export class RoomBillsComponent implements OnInit {
                                                                     );
       roomPaymentsForPrint.push(roomPaymentForPrint);
     });
-
     this.dataSource.data = roomPaymentsForPrint;
-    console.log('room payments for prints ', roomPaymentsForPrint);
-    // console.log('room tenants ', this.getRoomTenantsForEachMonth(roomPaymentsByRoomNumber, 1));
-
   }
   getRoomPayments(): void {
     this.paymentService.getRoomPayments<RoomPayment>(this.pageRequest)
@@ -240,5 +240,17 @@ export class RoomBillsComponent implements OnInit {
         this.isLoading = false;
       })
       .catch( err => {});
+  }
+  downloadRoomBills(): void {
+    const a = document.getElementById('table').offsetWidth;
+    const b = document.getElementById('table').offsetHeight;
+
+    this.disableDownloadButton = true;
+		html2canvas(document.querySelector('#roomBillsToPrint'), {scale: 1}).then(canvas => {
+      const pdf    = new jsPDF('l', 'mm', 'a4');
+			pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0);
+      pdf.save(`room-bills-${this.currentMonth}`);
+      this.disableDownloadButton = false;
+		});
   }
 }

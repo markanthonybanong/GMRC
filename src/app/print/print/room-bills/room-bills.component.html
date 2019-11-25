@@ -1,23 +1,28 @@
 <div *ngIf="isLoading" class="form-spinner-container">
   <mat-spinner></mat-spinner>
 </div>
-<div class="body" *ngIf="isLoading ===false">
-  <table mat-table [dataSource]="dataSource">
+<div class="body" *ngIf="isLoading ===false" id="roomBillsToPrint">
+  <header>
+    <h1>{{currentMonth}}</h1>
+    <p>KINDLY SETTLE ALL YOUR BILLS ON OR BEFORE YOUR DUE DATE EXCEPT FOR YOUR ELECTRICITY BILLS
+      WHICH IS EVERY FIRST WEEK OF THE MONTH</p>
+  </header>
+  <table mat-table [dataSource]="dataSource" id="table">
     <ng-container matColumnDef="roomNumber">
-      <th mat-header-cell *matHeaderCellDef>ROOMS</th>
-      <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      <th mat-header-cell *matHeaderCellDef id="pink-column">ROOMS</th>
+      <td mat-cell *matCellDef="let element" id="pink-column">{{element.roomNumber}}</td>
     </ng-container>
     <ng-container matColumnDef="tenants">
-      <th mat-header-cell *matHeaderCellDef>TENANTS</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="orange-column">TENANTS</th>
+      <td mat-cell *matCellDef="let element" id="orange-column">
         <p *ngFor="let tenant of element.tenants">
           {{tenant.name}}
         </p>
       </td>
     </ng-container>
     <ng-container matColumnDef="dueDates">
-      <th mat-header-cell *matHeaderCellDef>DUE DATES</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="sky-blue-column">DUE DATES</th>
+      <td mat-cell *matCellDef="let element" id="sky-blue-column">
           <p *ngFor="let tenant of element.tenants">
               {{tenant.dueRentDate}}
           </p>
@@ -25,8 +30,8 @@
     </ng-container>
 
     <ng-container matColumnDef="monthMinusThreeAdvanceRentals">
-      <th mat-header-cell *matHeaderCellDef>ADVANCE RENTALS</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="light-green-column">ADVANCE RENTALS</th>
+      <td mat-cell *matCellDef="let element" id="light-green-column">
         <div *ngIf="element.monthMinusThree !== null; else nullAdvanceRental">
           <p *ngFor="let rental of element.monthMinusThree.advanceRental">
             <span>{{ rental.value}}</span>
@@ -42,8 +47,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusThreeCurrent">
-      <th mat-header-cell *matHeaderCellDef>CURRENT</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="light-green-column">CURRENT</th>
+      <td mat-cell *matCellDef="let element" id="light-green-column">
         <p *ngIf="element.monthMinusThree !== null; else nullCurrent">
           <span>{{ element.monthMinusThree.electricBill.value}}</span>
           <span> - {{element.monthMinusThree.electricBill.status}}</span>
@@ -57,8 +62,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusThreeWater">
-      <th mat-header-cell *matHeaderCellDef>WATER</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="light-green-column">WATER</th>
+      <td mat-cell *matCellDef="let element" id="light-green-column">
         <p *ngIf="element.monthMinusThree !== null; else nullWater">
           <span>{{ element.monthMinusThree.waterBill.value}}</span>
           <span> - {{element.monthMinusThree.waterBill.status}}</span>
@@ -72,8 +77,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusThreeRiceCooker">
-      <th mat-header-cell *matHeaderCellDef>RICE COOKER</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="light-green-column">RICE COOKER</th>
+      <td mat-cell *matCellDef="let element" id="light-green-column">
         <p *ngIf="element.monthMinusThree !== null; else nullRiceCooker">
           <span>{{ element.monthMinusThree.riceCookerBill.value}}</span>
           <span> - {{element.monthMinusThree.riceCookerBill.status}}</span>
@@ -88,8 +93,8 @@
     </ng-container>
 
     <ng-container matColumnDef="monthMinusTwoAdvanceRentals">
-      <th mat-header-cell *matHeaderCellDef>ADVANCE RENTALS</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="gray-column">ADVANCE RENTALS</th>
+      <td mat-cell *matCellDef="let element" id="gray-column">
         <div *ngIf="element.monthMinusTwo !== null; else nullAdvanceRental">
           <p *ngFor="let rental of element.monthMinusTwo.advanceRental">
             <span>{{ rental.value}}</span>
@@ -105,8 +110,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusTwoCurrent">
-      <th mat-header-cell *matHeaderCellDef>CURRENT</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="gray-column">CURRENT</th>
+      <td mat-cell *matCellDef="let element" id="gray-column">
         <p *ngIf="element.monthMinusTwo !== null; else nullCurrent">
           <span>{{ element.monthMinusTwo.electricBill.value}}</span>
           <span> - {{element.monthMinusTwo.electricBill.status}}</span>
@@ -120,8 +125,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusTwoWater">
-        <th mat-header-cell *matHeaderCellDef>WATER</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef id="gray-column">WATER</th>
+        <td mat-cell *matCellDef="let element" id="gray-column">
           <p *ngIf="element.monthMinusTwo !== null; else nullWater">
             <span>{{ element.monthMinusTwo.waterBill.value}}</span>
             <span> - {{element.monthMinusTwo.waterBill.status}}</span>
@@ -135,8 +140,8 @@
         </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusTwoRiceCooker">
-        <th mat-header-cell *matHeaderCellDef>RICE COOKER</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef id="gray-column">RICE COOKER</th>
+        <td mat-cell *matCellDef="let element" id="gray-column">
           <p *ngIf="element.monthMinusTwo !== null; else nullRiceCooker">
             <span>{{ element.monthMinusTwo.riceCookerBill.value}}</span>
             <span> - {{element.monthMinusTwo.riceCookerBill.status}}</span>
@@ -151,8 +156,8 @@
     </ng-container>
 
     <ng-container matColumnDef="monthMinusOneAdvanceRentals">
-      <th mat-header-cell *matHeaderCellDef>ADVANCE RENTALS</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="brown-column">ADVANCE RENTALS</th>
+      <td mat-cell *matCellDef="let element" id="brown-column">
         <div *ngIf="element.monthMinusOne !== null; else nullAdvanceRental">
           <p *ngFor="let rental of element.monthMinusOne.advanceRental">
             <span>{{ rental.value}}</span>
@@ -168,8 +173,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusOneCurrent">
-      <th mat-header-cell *matHeaderCellDef>CURRENT</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="brown-column">CURRENT</th>
+      <td mat-cell *matCellDef="let element" id="brown-column">
         <p *ngIf="element.monthMinusOne !== null; else nullCurrent">
           <span>{{ element.monthMinusOne.electricBill.value}}</span>
           <span> - {{element.monthMinusOne.electricBill.status}}</span>
@@ -183,8 +188,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusOneWater">
-      <th mat-header-cell *matHeaderCellDef>WATER</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="brown-column">WATER</th>
+      <td mat-cell *matCellDef="let element" id="brown-column">
         <p *ngIf="element.monthMinusOne !== null; else nullWater">
           <span>{{ element.monthMinusOne.waterBill.value}}</span>
           <span> - {{element.monthMinusOne.waterBill.status}}</span>
@@ -198,8 +203,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="monthMinusOneRiceCooker">
-      <th mat-header-cell *matHeaderCellDef>RICE COOKER</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="brown-column">RICE COOKER</th>
+      <td mat-cell *matCellDef="let element" id="brown-column">
         <p *ngIf="element.monthMinusOne !== null; else nullRiceCooker">
           <span>{{ element.monthMinusOne.riceCookerBill.value}}</span>
           <span> - {{element.monthMinusOne.riceCookerBill.status}}</span>
@@ -214,8 +219,8 @@
     </ng-container>
 
     <ng-container matColumnDef="currentMonthAdvanceRentals">
-      <th mat-header-cell *matHeaderCellDef>ADVANCE RENTALS</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="violet-column">ADVANCE RENTALS</th>
+      <td mat-cell *matCellDef="let element" id="violet-column">
         <div *ngIf="element.currentMonth !== null; else nullAdvanceRental">
           <p *ngFor="let rental of element.currentMonth.advanceRental">
             <span>{{ rental.value}}</span>
@@ -231,8 +236,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="currentMonthCurrent">
-        <th mat-header-cell *matHeaderCellDef>CURRENT</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef id="violet-column">CURRENT</th>
+        <td mat-cell *matCellDef="let element" id="violet-column">
           <p *ngIf="element.currentMonth !== null; else nullCurrent">
             <span>{{ element.currentMonth.electricBill.value}}</span>
             <span> - {{element.currentMonth.electricBill.status}}</span>
@@ -246,8 +251,8 @@
         </td>
     </ng-container>
     <ng-container matColumnDef="currentMonthWater">
-      <th mat-header-cell *matHeaderCellDef>WATER</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef id="violet-column">WATER</th>
+      <td mat-cell *matCellDef="let element" id="violet-column">
         <p *ngIf="element.currentMonth !== null; else nullWater">
           <span>{{ element.currentMonth.waterBill.value}}</span>
           <span> - {{element.currentMonth.waterBill.status}}</span>
@@ -261,8 +266,8 @@
       </td>
     </ng-container>
       <ng-container matColumnDef="currentMonthRiceCooker">
-        <th mat-header-cell *matHeaderCellDef>RICE COOKER</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef id="violet-column">RICE COOKER</th>
+        <td mat-cell *matCellDef="let element" id="violet-column">
           <p *ngIf="element.currentMonth !== null; else nullRiceCooker">
             <span>{{ element.currentMonth.riceCookerBill.value}}</span>
             <span> - {{element.currentMonth.riceCookerBill.status}}</span>
@@ -279,25 +284,26 @@
     <ng-container matColumnDef="header-row-first-group">
       <th mat-header-cell *matHeaderCellDef
           [style.text-align]="center"
-          [attr.colspan]="3">
+          [attr.colspan]="3"
+          id="first-row">
         ROOMS - TENANTS - DUEDATES
       </th>
     </ng-container>
     <!-- Header row second group -->
     <ng-container matColumnDef="header-row-second-group">
-      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">{{monthMinusThree}}</th>
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4" id="light-green-column">{{monthMinusThree}}</th>
     </ng-container>
     <!-- Header row third group -->
     <ng-container matColumnDef="header-row-third-group">
-      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">{{monthMinusTwo}}</th>
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4" id="gray-column">{{monthMinusTwo}}</th>
     </ng-container>
     <!-- Header row fourth group -->
     <ng-container matColumnDef="header-row-fourth-group">
-      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">{{monthMinusOne}}</th>
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4" id="brown-column">{{monthMinusOne}}</th>
     </ng-container>
     <!-- Header row fourth group -->
     <ng-container matColumnDef="header-row-fifth-group">
-      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4">{{currentMonth}}</th>
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="4" id="violet-column">{{currentMonth}}</th>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="['header-row-first-group', 'header-row-second-group', 'header-row-third-group', 'header-row-fourth-group', 'header-row-fifth-group']"></tr>
@@ -305,3 +311,14 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
+<!-- h1 : {'color': 'red'} -->
+<div class="footer">
+  <button
+  mat-raised-button
+  color="primary"
+  [disabled]='dataSource.length === 0 || disableDownloadButton'
+  (click)="downloadRoomBills()">
+    <span id="button-text-white">Download</span>
+  </button>
+</div>
+

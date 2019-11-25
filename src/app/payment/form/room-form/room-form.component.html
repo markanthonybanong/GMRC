@@ -26,7 +26,7 @@
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>Action</th>
         <td mat-cell *matCellDef="let element">
-           <mat-icon id="label-text-primary" (click)="updateTenantPayment(element.index)">edit</mat-icon>
+           <mat-icon *ngIf="form.get('roomType').value === 'Bedspace' || element.index === 0" id="label-text-primary" (click)="updateTenantPayment(element.index)">edit</mat-icon>
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="columns"></tr>

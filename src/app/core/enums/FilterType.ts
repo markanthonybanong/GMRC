@@ -21,5 +21,7 @@ export enum FilterType {
   ALLROOMPAYMENTS = 'allRoomPayments',
   ROOMPAYMENTBYOBJECTID = 'roomPaymentByObjectId',
   ADVANCESEARCHROOMPAYMENT = 'advanceSearchRoomPayment',
-  ROOMPAYMENTSINFOURMONTHS = 'roomPaymentsInFourMonths'
+  ROOMPAYMENTSINFOURMONTHS = 'roomPaymentsInFourMonths',
+  ALLUNSETTLEBILLS = 'allUnsettleBills',
+  UNSETTLEBILLBYOBJECTID = 'unsettleBillByObjectId',
 }

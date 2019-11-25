@@ -1,5 +1,14 @@
 .body{
   margin-top: 40px;
+  header{
+    h1, p{
+      text-align: center;
+    }
+    p{
+      font-size: 13px;
+      font-weight: bold;
+    }
+  }
   table {
     width: 100%;
     th.mat-header-cell:first-child, td.mat-cell:first-child {
@@ -18,9 +27,6 @@
       }
 
     }
-    // th.mat-header-cell  {
-    //   border-top: 1px solid rgba(0, 0, 0, 0.12);
-    // }
     th.mat-header-cell, td.mat-cell {
       color: black;
       text-align: center;
@@ -28,10 +34,41 @@
       font-weight: bolder;
       border-right: 1px solid rgba(0, 0, 0, 0.12);;
     }
-
+    #first-row {
+      background: yellow;
+    }
+    #pink-column{
+      background: pink;;
+    }
+    #orange-column{
+      background: orange;
+    }
+    #red-column{
+      background: red;
+    }
+    #light-green-column{
+      background: lightgreen;
+    }
+    #sky-blue-column{
+      background: skyblue;
+    }
+    #gray-column{
+      background: gray;
+    }
+    #brown-column{
+      background: brown;
+    }
+    #violet-column{
+      background: violet;
+    }
 
   }
 
+}
+.footer{
+  margin-top: 23px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 
