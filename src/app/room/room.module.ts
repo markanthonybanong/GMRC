@@ -7,7 +7,8 @@ import {
   AngularMaterialModule,
   ConfirmationDialogComponent,
   TransientPrivateAdvanceSearchComponent,
-  BedspaceAdvanceSearchComponent
+  BedspaceAdvanceSearchComponent,
+  UnsettleBillAdvanceSearchComponent
 } from '@gmrc/shared';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
@@ -42,7 +43,8 @@ import { UnsettleBillFormComponent } from './form/unsettle-bill-form/unsettle-bi
   entryComponents: [
     ConfirmationDialogComponent,
     TransientPrivateAdvanceSearchComponent,
-    BedspaceAdvanceSearchComponent
+    BedspaceAdvanceSearchComponent,
+    UnsettleBillAdvanceSearchComponent
   ],
   providers: []
 })

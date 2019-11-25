@@ -13,6 +13,7 @@ import { EntryAdvanceSearchComponent } from './advanced-search-dialogs/entry-adv
 import { RoomPaymentDialogComponent } from './room-payment-dialog/room-payment-dialog.component';
 // tslint:disable-next-line: max-line-length
 import { RoomPaymentAdvanceSearchComponent } from './advanced-search-dialogs/room-payment-advance-search/room-payment-advance-search.component';
+import { UnsettleBillAdvanceSearchComponent } from './advanced-search-dialogs/unsettle-bill-advance-search/unsettle-bill-advance-search.component';
 
 
 // TODO: use the ts config.
@@ -35,6 +36,7 @@ import { RoomPaymentAdvanceSearchComponent } from './advanced-search-dialogs/roo
     EntryAdvanceSearchComponent,
     RoomPaymentDialogComponent,
     RoomPaymentAdvanceSearchComponent,
+    UnsettleBillAdvanceSearchComponent,
   ],
 
   providers: []

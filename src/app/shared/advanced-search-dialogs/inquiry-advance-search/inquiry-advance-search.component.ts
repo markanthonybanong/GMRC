@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { RoomEnumService } from '@gmrc/services';
+import { RoomEnumService, RoomService, TenantService } from '@gmrc/services';
+import { PageRequest, Room, Tenant } from '@gmrc/models';
+import { FilterType } from '@gmrc/enums';
 
 @Component({
   selector: 'app-inquiry-advance-search',
@@ -13,9 +15,27 @@ export class InquiryAdvanceSearchComponent implements OnInit {
     roomNumber: null,
     willOccupyIn: null,
   });
-  constructor(private formBuilder: FormBuilder, private roomEnumService: RoomEnumService) { }
+  pageRequest = new PageRequest(null, null);
+  roomNumbers: Array<number> = [];
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private roomEnumService: RoomEnumService,
+    private roomService: RoomService,
+    private tenantService: TenantService
+    ) { }
 
   ngOnInit() {
+    this.getRoomNumbers();
+  }
+  async getRoomNumbers(): Promise<void> {
+    try {
+      this.pageRequest.filters.type = FilterType.ALLROOMS;
+      const rooms = await this.roomService.getRooms<Room>(this.pageRequest);
+      rooms.data.forEach(room => {
+        this.roomNumbers.push(room.number);
+      });
+    } catch (error) {}
   }
 
 }

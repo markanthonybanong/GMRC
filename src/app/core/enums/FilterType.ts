@@ -24,4 +24,5 @@ export enum FilterType {
   ROOMPAYMENTSINFOURMONTHS = 'roomPaymentsInFourMonths',
   ALLUNSETTLEBILLS = 'allUnsettleBills',
   UNSETTLEBILLBYOBJECTID = 'unsettleBillByObjectId',
+  ADVANCESEARCHUNSETTLEBILL = 'advanceSearchUnsettleBill',
 }

@@ -3,8 +3,8 @@ import { PageRequest, UnsettleBill } from '@gmrc/models';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { FilterType } from '@gmrc/enums';
 import { Router } from '@angular/router';
-import { RoomService, NotificationService } from '@gmrc/services';
-import { ConfirmationDialogComponent } from 'src/app/shared';
+import { RoomService, NotificationService, ObjectService } from '@gmrc/services';
+import { ConfirmationDialogComponent, UnsettleBillAdvanceSearchComponent } from 'src/app/shared';
 
 @Component({
   selector: 'app-unsettle-bill',
@@ -16,7 +16,6 @@ export class UnsettleBillComponent implements OnInit {
     'roomNumber',
     'roomType',
     'tenants',
-    'dueDate',
     'rentBalance',
     'electricBillBalance',
     'waterBillBalance',
@@ -33,7 +32,8 @@ export class UnsettleBillComponent implements OnInit {
     private router: Router,
     private roomService: RoomService,
     private dialog: MatDialog,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private objectService: ObjectService
   ) { }
 
   ngOnInit() {
@@ -47,7 +47,6 @@ export class UnsettleBillComponent implements OnInit {
       this.dataSource.data      = unsettleBills.data as UnsettleBill[];
       this.dataSource.paginator = this.paginator;
       this.isLoading            = false;
-
     } catch (error) {
     }
   }
@@ -76,5 +75,23 @@ export class UnsettleBillComponent implements OnInit {
         });
       }
     });
+  }
+  onAdvanceSearch(): void {
+    const dialogRef = this.dialog.open(
+      UnsettleBillAdvanceSearchComponent,
+      {}
+    );
+    dialogRef.afterClosed().subscribe(searchResult => {
+      if (searchResult) {
+        const filterType = FilterType.ADVANCESEARCHUNSETTLEBILL;
+        this.pageRequest.filters.type = filterType;
+        this.pageRequest.filters.unsettleBillFilter = searchResult;
+        this.getUnsettleBills();
+      }
+    });
+  }
+  displayAllUnsettleBills(): void {
+    this.pageRequest.filters.type = FilterType.ALLUNSETTLEBILLS;
+    this.getUnsettleBills();
   }
 }

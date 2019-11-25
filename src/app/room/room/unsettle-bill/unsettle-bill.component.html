@@ -28,10 +28,6 @@
       </p>
     </td>
   </ng-container>
-  <ng-container matColumnDef="dueDate">
-    <th mat-header-cell *matHeaderCellDef>Due date</th>
-    <td mat-cell *matCellDef="let element">{{element.dueDate}}</td>
-  </ng-container>
   <ng-container matColumnDef="rentBalance">
     <th mat-header-cell *matHeaderCellDef>Rent balance</th>
     <td mat-cell *matCellDef="let element">{{element.rentBalance}}</td>
@@ -50,7 +46,7 @@
   </ng-container>
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let element">
+    <td mat-cell *matCellDef="let element" class="actions-container">
       <mat-icon id="label-text-primary" (click)="updateUnsettleBill(element._id)">edit</mat-icon>
       <mat-icon id="delete" (click)="deleteUnsettleBill(element._id)">delete_forever</mat-icon>
     </td>

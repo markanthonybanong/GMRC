@@ -14,4 +14,5 @@ export class Filter {
   roomPaymentObjectId?: string;
   roomPaymentFilter?: object;
   unsettleBillObjectId?: string;
+  unsettleBillFilter?: object;
 }

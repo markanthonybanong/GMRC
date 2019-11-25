@@ -17,7 +17,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'private-transient', pathMatch: 'full' },
       { path: 'private-transient', component: TransientPrivateComponent },
       { path: 'bedspace', component: BedspaceComponent },
-      { path: 'unsettle-bills', component: UnsettleBillComponent}
+      { path: 'unsettle-bill', component: UnsettleBillComponent}
     ]
   },
   { path: 'add', component: RoomFormComponent },

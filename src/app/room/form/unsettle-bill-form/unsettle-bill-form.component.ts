@@ -74,6 +74,7 @@ export class UnsettleBillFormComponent implements OnInit {
       roomNumber: this.model.roomNumber,
       roomType: this.model.roomType,
       dueDate: this.model.dueDate,
+      dateExit: this.model.dateExit,
       rentBalance: this.model.rentBalance,
       electricBillBalance: this.model.electricBillBalance,
       waterBillBalance: this.model.waterBillBalance,
@@ -81,18 +82,18 @@ export class UnsettleBillFormComponent implements OnInit {
       _id: this.model._id
     });
   }
-  getUnsettleBillByObjecetId(objectId: string): void {
-    this.pageRequest.filters.type = FilterType.UNSETTLEBILLBYOBJECTID;
-    this.pageRequest.filters.unsettleBillObjectId = objectId;
-    this.roomService.getUnsettleBills<UnsettleBill>(this.pageRequest)
-    .then(unsettleBill => {
-      this.model = unsettleBill.data[0];
+  async getUnsettleBillByObjecetId(objectId: string): Promise<void> {
+    try {
+      this.pageRequest.filters.type = FilterType.UNSETTLEBILLBYOBJECTID;
+      this.pageRequest.filters.unsettleBillObjectId = objectId;
+      const unsettleBill = await this.roomService.getUnsettleBills<UnsettleBill>(this.pageRequest);
+      this.model         = unsettleBill.data[0];
       this.loadFormValue();
-      this.buttonName = 'Update';
-      this.isLoading = false;
-    })
-    .catch(err => {
-    });
+      this.buttonName    = 'Update';
+      this.isLoading     = false;
+
+    } catch (error) {
+    }
   }
   isGoingToUpdate(): void {
     const unsettleBillObjectId = this.route.snapshot.paramMap.get('id');
@@ -103,14 +104,14 @@ export class UnsettleBillFormComponent implements OnInit {
       this.isLoading = false;
     }
   }
-  getRoomNumbers(): void {
-    this.pageRequest.filters.type = FilterType.ALLROOMS;
-    this.roomService.getRooms<Room>(this.pageRequest).then( rooms => {
+  async getRoomNumbers(): Promise<void> {
+    try {
+      this.pageRequest.filters.type = FilterType.ALLROOMS;
+      const rooms = await this.roomService.getRooms<Room>(this.pageRequest);
       rooms.data.forEach(room => {
         this.roomNumbers.push(room.number);
       });
-    })
-    .catch( err => {});
+    } catch (error) {}
   }
   addTenant(): void {
     this.tenantsFormArray.push(this.createTenant());
@@ -179,25 +180,21 @@ export class UnsettleBillFormComponent implements OnInit {
     this.isSubmitting = true;
     try {
       const formToSend          = this.setTenantsObjectId(this.form.value);
-      console.log('form to send bill ', formToSend);
-
       const unsettleBill        = this.model ? await this.roomService.updateUnsettleBill(this.form.value)
                                              : await this.roomService.addUnsettleBill(this.form.value);
       const notificationMessage = this.model ? `Updated unsettle bill for room number ${unsettleBill.roomNumber}`
                                              : `Added unsettle bill for room number ${unsettleBill.roomNumber}`;
       this.notificationService.notifySuccess(notificationMessage);
-      this.model = unsettleBill;
-      this.buttonName = 'Update';
-      this.isSubmitting = false;
+      this.model                = unsettleBill;
+      this.buttonName           = 'Update';
+      this.isSubmitting         = false;
 
     } catch (error) {
       this.notificationService.notifyFailed('Something went wrong');
-      console.log(error);
-
       this.isSubmitting = false;
     }
   }
   routeToUnsettleBills(): void {
-    this.router.navigate(['room/unsettle-bills']);
+    this.router.navigate(['room/unsettle-bill']);
   }
 }

@@ -6,6 +6,7 @@ export class UnsettleBill {
   tenants: Array<Tenant>;
   tenantsObjectId: Array<string>;
   dueDate: number;
+  dateExit: Date;
   rentBalance: number;
   electricBillBalance: number;
   waterBillBalance: number;
