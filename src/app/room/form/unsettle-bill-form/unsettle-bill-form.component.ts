@@ -82,7 +82,7 @@ export class UnsettleBillFormComponent implements OnInit {
       _id: this.model._id
     });
   }
-  async getUnsettleBillByObjecetId(objectId: string): Promise<void> {
+  async getUnsettleBillByObjectId(objectId: string): Promise<void> {
     try {
       this.pageRequest.filters.type = FilterType.UNSETTLEBILLBYOBJECTID;
       this.pageRequest.filters.unsettleBillObjectId = objectId;
@@ -90,6 +90,7 @@ export class UnsettleBillFormComponent implements OnInit {
       this.model         = unsettleBill.data[0];
       this.loadFormValue();
       this.buttonName    = 'Update';
+      this.formTitle     = 'UPDATE UNSETTLE BILL';
       this.isLoading     = false;
 
     } catch (error) {
@@ -99,7 +100,7 @@ export class UnsettleBillFormComponent implements OnInit {
     const unsettleBillObjectId = this.route.snapshot.paramMap.get('id');
     this.getRoomNumbers();
     if (unsettleBillObjectId !== null) {
-      this.getUnsettleBillByObjecetId(unsettleBillObjectId);
+      this.getUnsettleBillByObjectId(unsettleBillObjectId);
     } else {
       this.isLoading = false;
     }
@@ -153,33 +154,31 @@ export class UnsettleBillFormComponent implements OnInit {
       }
     });
   }
-  searchTenant(inputTenantName: string): void {
+  async searchTenant(inputTenantName: string): Promise<void> {
     if (inputTenantName.length !== 0 ) {
-      this.pageRequest.filters.tenantName = inputTenantName;
-      this.pageRequest.filters.type = FilterType.TENANTBYKEYSTROKE;
-      this.tenantService.getTenants<Tenant>(this.pageRequest)
-      .then( tenant => {
-        this.tenants = tenant.data;
-      }).catch( error => {
-     });
+      try {
+        this.pageRequest.filters.tenantName = inputTenantName;
+        this.pageRequest.filters.type       = FilterType.TENANTBYKEYSTROKE;
+        const tenants                       = await this.tenantService.getTenants<Tenant>(this.pageRequest);
+        this.tenants                        = tenants.data;
+      } catch (error) {}
     }
   }
   patchTenantObjectId(tenantObjectId: string, tenantIndex: number): void {
     const tenantFormGroup = this.tenantsFormArray.at(tenantIndex) as FormGroup;
     tenantFormGroup.get('_id').setValue(tenantObjectId);
   }
-  setTenantsObjectId(form: UnsettleBill): UnsettleBill {
+  setTenantsObjectId(form: UnsettleBill): void {
     const tenantsObjectId: Array<string> = [];
     form.tenants.forEach(tenant => {
       tenantsObjectId.push(tenant._id);
     });
     form.tenantsObjectId = tenantsObjectId;
-    return form;
   }
   async onSubmit(): Promise<void> {
     this.isSubmitting = true;
     try {
-      const formToSend          = this.setTenantsObjectId(this.form.value);
+      this.setTenantsObjectId(this.form.value);
       const unsettleBill        = this.model ? await this.roomService.updateUnsettleBill(this.form.value)
                                              : await this.roomService.addUnsettleBill(this.form.value);
       const notificationMessage = this.model ? `Updated unsettle bill for room number ${unsettleBill.roomNumber}`

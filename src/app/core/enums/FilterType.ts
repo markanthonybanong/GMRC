@@ -25,4 +25,7 @@ export enum FilterType {
   ALLUNSETTLEBILLS = 'allUnsettleBills',
   UNSETTLEBILLBYOBJECTID = 'unsettleBillByObjectId',
   ADVANCESEARCHUNSETTLEBILL = 'advanceSearchUnsettleBill',
+  ALLPENALTIES = 'allPenalties',
+  PENALTYBYOBJECTID = 'penaltyByObjectId',
+  ADVANCESEARCHPENALTY = 'advanceSearchPenalty',
 }

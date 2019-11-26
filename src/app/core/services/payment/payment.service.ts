@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Entry, PageRequest, PageData, RoomPayment } from '@gmrc/models';
+import { Entry, PageRequest, PageData, RoomPayment, Penalty } from '@gmrc/models';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -28,5 +28,17 @@ export class PaymentService {
   }
   updateRoomPayment(body: RoomPayment) {
     return this.apiService.put<RoomPayment>(`payment/updateRoomPayment/${body._id}`, body);
+  }
+  addPenalty(body: Penalty) {
+    return this.apiService.post<Penalty>('payment/createPenalty', body);
+  }
+  updatePenalty(body: Penalty) {
+    return this.apiService.put<Penalty>('payment/updatePenalty', body);
+  }
+  getPenalties<T>(pageRequest: PageRequest) {
+    return this.apiService.post<PageData<T>>('payment/penalty/page', pageRequest);
+  }
+  removePenalty(objectId: string) {
+    return this.apiService.delete<Penalty>(`payment/removePenalty/${objectId}`);
   }
 }

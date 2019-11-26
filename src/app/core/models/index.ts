@@ -15,7 +15,6 @@ export * from './Entry';
 export * from './RoomTenant';
 export * from './RoomPayment';
 export * from './RoomPaymentForPrint';
-export * from './DeckToSend';
-export * from './AwayToSend';
 export * from './MonthRoomPayment';
 export * from './UnsettleBill';
+export * from './Penalty';

@@ -14,6 +14,7 @@ import { RoomPaymentDialogComponent } from './room-payment-dialog/room-payment-d
 // tslint:disable-next-line: max-line-length
 import { RoomPaymentAdvanceSearchComponent } from './advanced-search-dialogs/room-payment-advance-search/room-payment-advance-search.component';
 import { UnsettleBillAdvanceSearchComponent } from './advanced-search-dialogs/unsettle-bill-advance-search/unsettle-bill-advance-search.component';
+import { PenaltyAdvanceSearchComponent } from './advanced-search-dialogs/penalty-advance-search/penalty-advance-search.component';
 
 
 // TODO: use the ts config.
@@ -37,6 +38,7 @@ import { UnsettleBillAdvanceSearchComponent } from './advanced-search-dialogs/un
     RoomPaymentDialogComponent,
     RoomPaymentAdvanceSearchComponent,
     UnsettleBillAdvanceSearchComponent,
+    PenaltyAdvanceSearchComponent,
   ],
 
   providers: []

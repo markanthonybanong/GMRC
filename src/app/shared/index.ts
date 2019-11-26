@@ -10,3 +10,4 @@ export * from './confirmation-dialog/confirmation-dialog.component';
 export * from './advanced-search-dialogs/entry-advance-search/entry-advance-search.component';
 export * from './room-payment-dialog/room-payment-dialog.component';
 export * from './advanced-search-dialogs/unsettle-bill-advance-search/unsettle-bill-advance-search.component';
+export * from './advanced-search-dialogs/penalty-advance-search/penalty-advance-search.component';

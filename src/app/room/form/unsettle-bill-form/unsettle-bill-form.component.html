@@ -1,82 +1,82 @@
 <div *ngIf="isLoading" class="form-spinner-container">
   <mat-spinner></mat-spinner>
 </div>
- <div class="form-parent-container" *ngIf="isLoading === false">
-  <mat-card [formGroup]="form" class="form">
-    <div class="header-block">
-      <h5 id="label-text-primary">{{formTitle}}</h5>
-    </div>
-    <div class="first-block">
-      <mat-form-field>
-        <mat-select placeholder="Room number"  formControlName="roomNumber">
-          <mat-option *ngFor="let number of roomNumbers;" [value]="number">
-            {{number}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-select placeholder="Room type"  formControlName="roomType">
-          <mat-option *ngFor="let roomType of roomEnumService.roomType;" [value]="roomType">
-            {{roomType}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="second-block">
-      <mat-form-field>
-        <input matInput type="number" placeholder="Due date" formControlName="dueDate">
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput [matDatepicker]="dateExit" placeholder="Date exit" formControlName="dateExit">
-        <mat-datepicker-toggle matSuffix [for]="dateExit"></mat-datepicker-toggle>
-        <mat-datepicker #dateExit></mat-datepicker>
-        </mat-form-field>
-    </div>
-    <div class="third-block">
-      <mat-form-field>
-        <input matInput type="number" placeholder="Rent balance" formControlName="rentBalance">
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput type="number" placeholder="Electric bill balance" formControlName="electricBillBalance">
-      </mat-form-field>
-    </div>
-    <div class="fourth-block">
-      <mat-form-field>
-        <input matInput type="number" placeholder="Water bill balance" formControlName="waterBillBalance">
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput type="number" placeholder="Rice cooker bill balance" formControlName="riceCookerBillBalance">
-      </mat-form-field>
-    </div>
-    <div class="fifth-block" formArrayName="tenants" *ngFor="let tenant of tenantsFormArray.controls; let i=index;">
-      <div [formGroupName]="i">
-        <div class="remove-tenant-block">
-          <mat-icon class="material-icons" color="warn" (click)="removeTenant(i)">
-             cancel
-          </mat-icon>
-        </div>
-        <mat-form-field>
-          <input matInput type="text" placeholder="Tenant name"  formControlName="name" (input)="searchTenant(tenant.get('name').value)" [matAutocomplete]="auto">
-        </mat-form-field>
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id, i)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
-            {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
-          </mat-option>
-        </mat-autocomplete>
-      </div>
-    </div>
-    <button mat-raised-button color="primary" id="add-tenant-button" (click)="addTenant()">
-      <span id="button-text-white">ADD TENANT</span>
-    </button>
-    <div class="action-buttons-block">
-      <div>
-        <button mat-raised-button color="warn" (click)='routeToUnsettleBills()' id="back-button">
-          <span id="button-text">Back</span>
-        </button>
-        <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='isTenantsArrayEmpty || isSubmitting'>
-          <span id="button-text-white">{{buttonName}}</span>
-        </button>
-      </div>
-    </div>
-  </mat-card>
+<div class="form-parent-container" *ngIf="isLoading === false">
+ <mat-card [formGroup]="form" class="form">
+   <div class="header-block">
+     <h5 id="label-text-primary">{{formTitle}}</h5>
+   </div>
+   <div class="first-block">
+     <mat-form-field>
+       <mat-select placeholder="Room number"  formControlName="roomNumber">
+         <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+           {{number}}
+         </mat-option>
+       </mat-select>
+     </mat-form-field>
+     <mat-form-field>
+       <mat-select placeholder="Room type"  formControlName="roomType">
+         <mat-option *ngFor="let roomType of roomEnumService.roomType;" [value]="roomType">
+           {{roomType}}
+         </mat-option>
+       </mat-select>
+     </mat-form-field>
+   </div>
+   <div class="second-block">
+     <mat-form-field>
+       <input matInput type="number" placeholder="Due date" formControlName="dueDate">
+     </mat-form-field>
+     <mat-form-field>
+       <input matInput [matDatepicker]="dateExit" placeholder="Date exit" formControlName="dateExit">
+       <mat-datepicker-toggle matSuffix [for]="dateExit"></mat-datepicker-toggle>
+       <mat-datepicker #dateExit></mat-datepicker>
+       </mat-form-field>
+   </div>
+   <div class="third-block">
+     <mat-form-field>
+       <input matInput type="number" placeholder="Rent balance" formControlName="rentBalance">
+     </mat-form-field>
+     <mat-form-field>
+       <input matInput type="number" placeholder="Electric bill balance" formControlName="electricBillBalance">
+     </mat-form-field>
+   </div>
+   <div class="fourth-block">
+     <mat-form-field>
+       <input matInput type="number" placeholder="Water bill balance" formControlName="waterBillBalance">
+     </mat-form-field>
+     <mat-form-field>
+       <input matInput type="number" placeholder="Rice cooker bill balance" formControlName="riceCookerBillBalance">
+     </mat-form-field>
+   </div>
+   <div class="fifth-block" formArrayName="tenants" *ngFor="let tenant of tenantsFormArray.controls; let i=index;">
+     <div [formGroupName]="i">
+       <div class="remove-tenant-block">
+         <mat-icon class="material-icons" color="warn" (click)="removeTenant(i)">
+            cancel
+         </mat-icon>
+       </div>
+       <mat-form-field>
+         <input matInput type="text" placeholder="Tenant name"  formControlName="name" (input)="searchTenant(tenant.get('name').value)" [matAutocomplete]="auto">
+       </mat-form-field>
+       <mat-autocomplete #auto="matAutocomplete">
+         <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id, i)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+           {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
+         </mat-option>
+       </mat-autocomplete>
+     </div>
+   </div>
+   <button mat-raised-button color="primary" id="add-tenant-button" (click)="addTenant()">
+     <span id="button-text-white">ADD TENANT</span>
+   </button>
+   <div class="action-buttons-block">
+     <div>
+       <button mat-raised-button color="warn" (click)='routeToUnsettleBills()' id="back-button">
+         <span id="button-text">Back</span>
+       </button>
+       <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='isTenantsArrayEmpty || isSubmitting'>
+         <span id="button-text-white">{{buttonName}}</span>
+       </button>
+     </div>
+   </div>
+ </mat-card>
 </div>

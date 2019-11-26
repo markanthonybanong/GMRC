@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { KeyStatus, PaymentStatus } from '@gmrc/enums';
+import { KeyStatus, PaymentStatus, RoomViolation } from '@gmrc/enums';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,6 +14,11 @@ export class PaymentEnumService {
   get paymentStatuses(): Array<string> {
     return Object.keys(PaymentStatus).map(function(key) {
       return PaymentStatus[key];
+    });
+  }
+  get roomViolations(): Array<string> {
+    return Object.keys(RoomViolation).map(function(key) {
+      return RoomViolation[key];
     });
   }
 }

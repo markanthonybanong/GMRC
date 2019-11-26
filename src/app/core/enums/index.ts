@@ -11,3 +11,4 @@ export * from './inquiry-filter.enum';
 export * from './KeyStatus';
 export * from './PaymentStatus';
 export * from './InquiryStatus';
+export * from './RoomViolation';

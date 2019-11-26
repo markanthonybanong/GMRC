@@ -10,25 +10,12 @@
       display: flex;
       justify-content: center;
     }
-    >.fifth-block{
-      mat-icon:hover{
-        cursor: pointer;
-      }
-      .remove-tenant-block{
-        display: flex;
-        justify-content: flex-end;
-      }
-    }
     >.action-buttons-block{
       display: flex;
       justify-content: flex-end;
       #back-button{
         margin-right: 5px;
       }
-    }
-    #add-tenant-button{
-      width: 100%;
-      margin-bottom: 20px;
     }
   }
 }
@@ -47,16 +34,11 @@
 // Extra large devices (large desktops, 1200px and up)
 @media (min-width: 1200px) {
   .form{
-    mat-form-field{
-      width: 48%;
-    }
-    >.first-block, >.second-block, >.third-block, >.fourth-block{
+    >.first-block, >.second-block{
       display: flex;
       justify-content: space-between;
-    }
-    >.fifth-block{
       mat-form-field{
-        width: 100%;
+        width: 48%;
       }
     }
   }
