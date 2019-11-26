@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatTableDataSource, PageEvent, MatSort, MatPaginator } from '@angular/material';
+import { MatDialog, MatTableDataSource, PageEvent } from '@angular/material';
 import { TenantAdvanceSearchComponent } from '@gmrc/shared';
 import { Router } from '@angular/router';
 import { TenantService, ObjectService, LocalStorageService } from '@gmrc/services';
@@ -28,10 +28,9 @@ export class TenantComponent implements OnInit {
   pageSizeOptions: number[] = [10, 20, 30, 40];
   name = new FormControl('');
   isLoading = true;
-  pageRequest = new PageRequest(null, null);
+  pageRequest = new PageRequest(1, this.pageSizeOptions[0]);
   tenants: Tenant[] = [];
   tenantObjectId: string = null;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -44,32 +43,11 @@ export class TenantComponent implements OnInit {
     this.pageRequest.filters.type = FilterType.ALLTENANTS;
     this.getTenants();
   }
-  displayPreviousPage(): void {
-    const filterType     = this.localStorageService.getItem('tenantFilterType');
-    const filter         = this.localStorageService.getItem('tenantFilter');
-    const tenantObjectId = this.localStorageService.getItem('tenantObjectId');
-    const page           = this.localStorageService.getItem('tenantPage');
-
-    if ( filterType !== null ) {
-      this.pageRequest.filters.type = filterType;
-    }
-    if ( filter !== null ) {
-      this.pageRequest.filters.tenantFilter = filter;
-    }
-    if ( tenantObjectId !== null ) {
-      this.pageRequest.filters.tenantObjectId = tenantObjectId;
-    }
-    if ( page !== null) {
-      this.paginator.pageIndex = page;
-    }
-  }
   getTenants(): void {
-    this.displayPreviousPage();
     this.tenantService.getTenants<Tenant>(this.pageRequest)
       .then( tenants => {
         this.totalCount = tenants.totalCount;
         this.dataSource.data = tenants.data as Tenant[];
-        this.dataSource.paginator = this.paginator;
         this.isLoading = false;
       })
       .catch( err => {
@@ -88,8 +66,6 @@ export class TenantComponent implements OnInit {
     if (this.name.value.length !== 0 && this.tenantObjectId !== null) {
       this.pageRequest.filters.type = FilterType.TENANTBYOBJECTID;
       this.pageRequest.filters.tenantObjectId = this.tenantObjectId;
-      this.localStorageService.setItem('tenantFilterType', FilterType.TENANTBYOBJECTID);
-      this.localStorageService.setItem('tenantObjectId', this.tenantObjectId);
       this.getTenants();
     }
   }
@@ -100,18 +76,16 @@ export class TenantComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe(searchResult => {
       if (searchResult) {
-        const filterType = FilterType.ADVANCESEARCHTENANT;
-        const filter     = this.objectService.removeNullValuesInSearchResult(searchResult);
         this.pageRequest.filters.type = FilterType.ADVANCESEARCHTENANT;
-        this.pageRequest.filters.tenantFilter = filter;
-        this.localStorageService.setItem('tenantFilterType', filterType);
-        this.localStorageService.setItem('tenantFilter', filter);
+        this.pageRequest.filters.tenantFilter = this.objectService.removeNullValuesInSearchResult(searchResult);
         this.getTenants();
       }
     });
   }
   onPaginatorUpdate($event: PageEvent): void {
-    this.localStorageService.setItem('tenantPage', $event.pageIndex);
+    this.pageRequest.page = $event.pageIndex + 1;
+    this.pageRequest.limit = $event.pageSize;
+    this.getTenants();
   }
   addTenant(): void {
    this.router.navigate(['tenant/add']);
@@ -120,10 +94,6 @@ export class TenantComponent implements OnInit {
    this.router.navigate([`tenant/update/${tenantId}`]);
  }
  displayAllTenants(): void {
-    this.localStorageService.remove('tenantFilterType');
-    this.localStorageService.remove('tenantFilter');
-    this.localStorageService.remove('tenantObjectId');
-    this.localStorageService.remove('tenantPage');
     this.pageRequest.filters = { type: FilterType.ALLTENANTS };
     this.getTenants();
  }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageRequest, UnsettleBill } from '@gmrc/models';
-import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { FilterType } from '@gmrc/enums';
 import { Router } from '@angular/router';
 import { RoomService, NotificationService, ObjectService } from '@gmrc/services';
@@ -23,11 +23,11 @@ export class UnsettleBillComponent implements OnInit {
     'actions',
   ];
   isLoading = true;
-  pageRequest = new PageRequest(null, null);
+  pageSizeOptions: number[] = [10, 20, 30, 40];
+  pageRequest = new PageRequest(1, this.pageSizeOptions[0]);
   totalCount: number;
   dataSource = new MatTableDataSource<UnsettleBill>();
-  pageSizeOptions: number[] = [10, 20, 30, 40];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(
     private router: Router,
     private roomService: RoomService,
@@ -45,7 +45,6 @@ export class UnsettleBillComponent implements OnInit {
       const unsettleBills       = await this.roomService.getUnsettleBills(this.pageRequest);
       this.totalCount           = unsettleBills.totalCount;
       this.dataSource.data      = unsettleBills.data as UnsettleBill[];
-      this.dataSource.paginator = this.paginator;
       this.isLoading            = false;
     } catch (error) {
     }
@@ -83,8 +82,7 @@ export class UnsettleBillComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe(searchResult => {
       if (searchResult) {
-        const filterType = FilterType.ADVANCESEARCHUNSETTLEBILL;
-        this.pageRequest.filters.type = filterType;
+        this.pageRequest.filters.type = FilterType.ADVANCESEARCHUNSETTLEBILL;
         this.pageRequest.filters.unsettleBillFilter = searchResult;
         this.getUnsettleBills();
       }
@@ -92,6 +90,11 @@ export class UnsettleBillComponent implements OnInit {
   }
   displayAllUnsettleBills(): void {
     this.pageRequest.filters.type = FilterType.ALLUNSETTLEBILLS;
+    this.getUnsettleBills();
+  }
+  onPaginatorUpdate($event: PageEvent): void {
+    this.pageRequest.page = $event.pageIndex + 1;
+    this.pageRequest.limit = $event.pageSize;
     this.getUnsettleBills();
   }
 }

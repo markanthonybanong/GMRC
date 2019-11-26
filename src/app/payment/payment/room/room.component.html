@@ -53,5 +53,5 @@
   <mat-spinner *ngIf="isLoading"></mat-spinner>
  </div>
 <footer>
-  <mat-paginator #paginator [length]="totalCount" [pageSize]="pageSizeOptions[0]" [pageSizeOptions]="pageSizeOptions"  showFirstLastButtons  (page)="onPaginatorUpdate($event)"></mat-paginator>
+  <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions"  showFirstLastButtons  (page)="onPaginatorUpdate($event)"></mat-paginator>
 </footer>

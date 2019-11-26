@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageRequest, Inquiry} from '@gmrc/models';
-import { MatTableDataSource, MatDialog, PageEvent, MatPaginator } from '@angular/material';
+import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { Router } from '@angular/router';
 import { InquiryService, NotificationService, ObjectService, LocalStorageService } from '@gmrc/services';
 import { ConfirmationDialogComponent, InquiryAdvanceSearchComponent } from '@gmrc/shared';
-import { FilterType, InquiryFilter, InquiryStatus } from '@gmrc/enums';
+import { FilterType } from '@gmrc/enums';
 import * as moment from 'moment';
 
 @Component({
@@ -27,7 +27,6 @@ export class InquiryComponent implements OnInit {
   pageRequest = new PageRequest(1, this.pageSizeOptions[0]);
   totalCount: number;
   dataSource = new MatTableDataSource<Inquiry>();
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private router: Router,
@@ -35,7 +34,6 @@ export class InquiryComponent implements OnInit {
     private dialog: MatDialog,
     private notificationService: NotificationService,
     private objectService: ObjectService,
-    private localStorageService: LocalStorageService
     ) { }
   ngOnInit() {
     this.pageRequest.filters.type = FilterType.ALLINQUIRIES;
@@ -44,27 +42,11 @@ export class InquiryComponent implements OnInit {
   addInquiry(): void {
     this.router.navigate(['inquiry/add']);
   }
-  displayPreviousPage(): void {
-    const filterType = this.localStorageService.getItem('inquiryFilterType');
-    const filter     = this.localStorageService.getItem('inquiryFilter');
-    const page       = this.localStorageService.getItem('inquiryPage');
-    if ( filterType !== null ) {
-      this.pageRequest.filters.type = filterType;
-    }
-    if ( filter !== null) {
-      this.pageRequest.filters.inquiryFilter = filter;
-    }
-    if ( page !== null) {
-      this.paginator.pageIndex = page;
-    }
-  }
   getInquiries(): void {
-   // this.displayPreviousPage();
     this.inquiryService.getInquiries<Inquiry>(this.pageRequest)
     .then( inquiries => {
       this.totalCount = inquiries.totalCount;
       this.dataSource.data = inquiries.data as Inquiry[];
-      this.dataSource.paginator = this.paginator;
       this.isLoading = false;
     })
     .catch( err => {
@@ -109,28 +91,18 @@ export class InquiryComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe(searchResult => {
       if (searchResult) {
-        const filterType = FilterType.ADVANCESEARCHINQUIRY;
-        const filter     = this.objectService.removeNullValuesInSearchResult(searchResult);
-        this.pageRequest.filters.type = filterType;
-        this.pageRequest.filters.inquiryFilter = filter;
-        this.localStorageService.setItem('inquiryFilterType', filterType);
-        this.localStorageService.setItem('inquiryFilter', filter);
+        this.pageRequest.filters.type          = FilterType.ADVANCESEARCHINQUIRY;
+        this.pageRequest.filters.inquiryFilter = this.objectService.removeNullValuesInSearchResult(searchResult);
         this.getInquiries();
       }
     });
   }
   onPaginatorUpdate($event: PageEvent): void {
     this.pageRequest.page = $event.pageIndex + 1;
+    this.pageRequest.limit = $event.pageSize;
     this.getInquiries();
-    console.log('the event ', $event);
-    console.log('the page req ', this.pageRequest);
-
-    //this.localStorageService.setItem('inquiryPage', $event.pageIndex);
   }
   displayAllInquiries(): void {
-    this.localStorageService.remove('inquiryFilterType');
-    this.localStorageService.remove('inquiryFilter');
-    this.localStorageService.remove('inquiryPage');
     this.pageRequest.filters = { type: FilterType.ALLINQUIRIES} ;
     this.getInquiries();
   }

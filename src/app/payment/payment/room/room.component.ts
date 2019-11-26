@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageRequest, RoomPayment, RoomTenant } from '@gmrc/models';
-import { MatTableDataSource, MatDialog, PageEvent, MatPaginator } from '@angular/material';
-import { PaymentService, ObjectService, LocalStorageService } from '@gmrc/services';
+import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
+import { PaymentService, ObjectService } from '@gmrc/services';
 import { PaymentStatus, FilterType } from '@gmrc/enums';
 import { RoomPaymentAdvanceSearchComponent } from '@gmrc/shared';
 @Component({
@@ -12,7 +12,7 @@ import { RoomPaymentAdvanceSearchComponent } from '@gmrc/shared';
 })
 export class RoomComponent implements OnInit  {
   pageSizeOptions: number[] = [10, 20, 30, 40];
-  pageRequest = new PageRequest(null, null);
+  pageRequest = new PageRequest(1, this.pageSizeOptions[0]);
   dataSource = new MatTableDataSource<RoomPayment>();
   totalCount: number;
   isLoading = true;
@@ -26,13 +26,12 @@ export class RoomComponent implements OnInit  {
     'actions'
   ];
   usedPageRequestFilter: PageRequest = {filters: {}, page: null, limit: null};
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(
     private router: Router,
     private paymentService: PaymentService,
     private dialog: MatDialog,
     private objectService: ObjectService,
-    private localStorageService: LocalStorageService
     ) { }
 
   ngOnInit() {
@@ -42,28 +41,11 @@ export class RoomComponent implements OnInit  {
   addRoomPayment(): void {
     this.router.navigate(['payment/add-room-payment']);
   }
-  displayPreviousPage(): void {
-    const filterType = this.localStorageService.getItem('roomPaymentFilterType');
-    const filter     = this.localStorageService.getItem('roomPaymentFilter');
-    const page       = this.localStorageService.getItem('roomPaymentPage');
-
-    if ( filterType !== null ) {
-      this.pageRequest.filters.type = filterType;
-    }
-    if ( filter !== null ) {
-      this.pageRequest.filters.roomPaymentFilter = filter;
-    }
-    if ( page !== null) {
-      this.paginator.pageIndex = page;
-    }
-  }
   getRoomPayments(): void {
-    this.displayPreviousPage();
     this.paymentService.getRoomPayments<RoomPayment>(this.pageRequest)
       .then( roomPayments => {
         this.totalCount = roomPayments.totalCount;
         this.dataSource.data = roomPayments.data as RoomPayment[];
-        this.dataSource.paginator = this.paginator;
         this.isLoading = false;
       })
       .catch( err => {});
@@ -113,25 +95,20 @@ export class RoomComponent implements OnInit  {
     );
     dialogRef.afterClosed().subscribe(searchResult => {
       if (searchResult) {
-        const filterType = FilterType.ADVANCESEARCHROOMPAYMENT;
-        const filter     = this.arrangeRoomPaymentFilters(
-                            this.objectService.removeNullValuesInSearchResult(searchResult)
-                          );
-        this.pageRequest.filters.type = filterType;
-        this.pageRequest.filters.roomPaymentFilter = filter;
-        this.localStorageService.setItem('roomPaymentFilterType', filterType);
-        this.localStorageService.setItem('roomPaymentFilter', filter);
+        this.pageRequest.filters.type = FilterType.ADVANCESEARCHROOMPAYMENT;
+        this.pageRequest.filters.roomPaymentFilter = this.arrangeRoomPaymentFilters(
+          this.objectService.removeNullValuesInSearchResult(searchResult)
+        );
         this.getRoomPayments();
       }
     });
   }
   onPaginatorUpdate($event: PageEvent): void {
-    this.localStorageService.setItem('roomPaymentPage', $event.pageIndex);
+    this.pageRequest.page = $event.pageIndex + 1;
+    this.pageRequest.limit = $event.pageSize;
+    this.getRoomPayments();
   }
   displayAllRoomPayments(): void {
-    this.localStorageService.remove('roomPaymentFilterType');
-    this.localStorageService.remove('roomPaymentFilter');
-    this.localStorageService.remove('roomPaymentPage');
     this.pageRequest.filters = { type: FilterType.ALLROOMPAYMENTS };
     this.getRoomPayments();
   }
