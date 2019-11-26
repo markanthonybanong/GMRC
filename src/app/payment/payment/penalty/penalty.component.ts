@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageRequest, Penalty } from '@gmrc/models';
-import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatDialog } from '@angular/material';
 import { FilterType } from '@gmrc/enums';
 import { PaymentService, NotificationService, ObjectService } from '@gmrc/services';
 import * as moment from 'moment';
@@ -22,11 +22,11 @@ export class PenaltyComponent implements OnInit {
     'actions',
   ];
   isLoading = true;
-  pageRequest = new PageRequest(null, null);
+  pageSizeOptions: number[] = [10, 20, 30, 40];
+  pageRequest = new PageRequest(1, this.pageSizeOptions[0]);
   totalCount: number;
   dataSource = new MatTableDataSource<Penalty>();
-  pageSizeOptions: number[] = [10, 20, 30, 40];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(
     private router: Router,
     private paymentService: PaymentService,
@@ -44,7 +44,6 @@ export class PenaltyComponent implements OnInit {
       const penalties           = await this.paymentService.getPenalties<Penalty>(this.pageRequest);
       this.totalCount           = penalties.totalCount;
       this.dataSource.data      = penalties.data as Penalty[];
-      this.dataSource.paginator = this.paginator;
       this.isLoading            = false;
     } catch (error) {
     }
@@ -89,12 +88,16 @@ export class PenaltyComponent implements OnInit {
     );
     dialogRef.afterClosed().subscribe(searchResult => {
       if (searchResult) {
-        const filterType = FilterType.ADVANCESEARCHPENALTY;
-        this.pageRequest.filters.type = filterType;
+        this.pageRequest.filters.type = FilterType.ADVANCESEARCHPENALTY;
         this.pageRequest.filters.penaltyFilter = this.objectService.removeNullValuesInSearchResult(searchResult);
         this.getPenalties();
       }
     });
+  }
+  onPaginatorUpdate($event: PageEvent): void {
+    this.pageRequest.page = $event.pageIndex + 1;
+    this.pageRequest.limit = $event.pageSize;
+    this.getPenalties();
   }
 
 }

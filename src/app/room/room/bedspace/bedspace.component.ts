@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageRequest, Bedspace, Filter } from '@gmrc/models';
-import { MatTableDataSource, PageEvent, MatDialog, MatPaginator } from '@angular/material';
+import { MatTableDataSource, PageEvent, MatDialog } from '@angular/material';
 import { FilterType } from '@gmrc/enums';
 import { RoomService, ObjectService, LocalStorageService } from '@gmrc/services';
 import { BedspaceAdvanceSearchComponent } from '@gmrc/shared';
@@ -22,53 +22,36 @@ export class BedspaceComponent implements OnInit {
   ];
   pageSizeOptions: number[] = [10, 20, 30, 40];
   isLoading = true;
-  pageRequest = new PageRequest(null, null);
+  pageRequest = new PageRequest(1, this.pageSizeOptions[0]);
   totalCount: number;
   dataSource = new MatTableDataSource<Bedspace>();
   roomSearch = ['number', 'floor', 'aircon'];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(
     private roomService: RoomService,
     private dialog: MatDialog,
     private router: Router,
     private objectService: ObjectService,
-    private localStorageService: LocalStorageService,
     ) {}
 
   ngOnInit() {
     this.pageRequest.filters.type = FilterType.BEDSPACEROOMS;
     this.getBedspaceRooms();
   }
-
-  displayPreviousPage(): void {
-    const filterType = this.localStorageService.getItem('bedspaceRoomFilterType');
-    const filter     = this.localStorageService.getItem('bedspaceRoomFilter');
-    const page       = this.localStorageService.getItem('bedspaceRoomPage');
-
-    if ( filter !== null ) {
-      this.pageRequest.filters  = filter;
-    }
-    if ( filterType !== null ) {
-      this.pageRequest.filters.type = filterType;
-    }
-    if ( page !== null) {
-      this.paginator.pageIndex = page;
-    }
-  }
   getBedspaceRooms(): void {
-    this.displayPreviousPage();
     this.roomService.getRooms<Bedspace>(this.pageRequest)
       .then( rooms => {
         this.totalCount = rooms.totalCount;
         this.dataSource.data = rooms.data as Bedspace[];
-        this.dataSource.paginator = this.paginator;
         this.isLoading = false;
       })
       .catch( err => {
       });
   }
   onPaginatorUpdate($event: PageEvent): void {
-    this.localStorageService.setItem('bedspaceRoomPage', $event.pageIndex);
+    this.pageRequest.page = $event.pageIndex + 1;
+    this.pageRequest.limit = $event.pageSize;
+    this.getBedspaceRooms();
   }
   convertDateToDateString(date): string {
     return moment(date).format('dddd LL');
@@ -96,8 +79,6 @@ export class BedspaceComponent implements OnInit {
         const filter = this.mergeSearchResult(searchResult);
         this.pageRequest.filters = filter;
         this.pageRequest.filters.type = FilterType.ADVANCESEARCHBEDSPACEROOMS;
-        this.localStorageService.setItem('bedspaceRoomFilterType', FilterType.ADVANCESEARCHBEDSPACEROOMS);
-        this.localStorageService.setItem('bedspaceRoomFilter', filter);
         this.getBedspaceRooms();
       }
     });
@@ -106,9 +87,6 @@ export class BedspaceComponent implements OnInit {
     this.router.navigate([`room/update-bedspace/${roomObjectId}`]);
   }
   displayAllBedspaceRooms(): void {
-    this.localStorageService.remove('bedspaceRoomFilterType');
-    this.localStorageService.remove('bedspaceRoomFilter');
-    this.localStorageService.remove('bedspaceRoomPage');
     this.pageRequest.filters = {type: FilterType.BEDSPACEROOMS};
     this.getBedspaceRooms();
   }
