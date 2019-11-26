@@ -37,5 +37,4 @@ export class InquiryAdvanceSearchComponent implements OnInit {
       });
     } catch (error) {}
   }
-
 }

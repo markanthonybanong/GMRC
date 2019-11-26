@@ -3,7 +3,7 @@ import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { RoomEnumService, RoomService, NotificationService, TenantService, BedService } from '@gmrc/services';
 import { RoomType, FilterType, DeckStatus, PatchTo, RoomStatus } from '@gmrc/enums';
 import { Router, ActivatedRoute } from '@angular/router';
-import { PageRequest, Room, Tenant, DeckToRemove, PatchData, Bedspace, Away, DeckToSend, AwayToSend, Deck } from '@gmrc/models';
+import { PageRequest, Room, Tenant, DeckToRemove, PatchData, Bedspace, Away } from '@gmrc/models';
 import { MatSelectChange, MatDialog } from '@angular/material';
 import { ConfirmationDialogComponent } from '@gmrc/shared';
 

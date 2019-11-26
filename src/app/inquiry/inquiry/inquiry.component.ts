@@ -24,7 +24,7 @@ export class InquiryComponent implements OnInit {
   ];
   pageSizeOptions: number[] = [10, 20, 30, 40];
   isLoading = true;
-  pageRequest = new PageRequest(null, null);
+  pageRequest = new PageRequest(1, this.pageSizeOptions[0]);
   totalCount: number;
   dataSource = new MatTableDataSource<Inquiry>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -59,7 +59,7 @@ export class InquiryComponent implements OnInit {
     }
   }
   getInquiries(): void {
-    this.displayPreviousPage();
+   // this.displayPreviousPage();
     this.inquiryService.getInquiries<Inquiry>(this.pageRequest)
     .then( inquiries => {
       this.totalCount = inquiries.totalCount;
@@ -120,7 +120,12 @@ export class InquiryComponent implements OnInit {
     });
   }
   onPaginatorUpdate($event: PageEvent): void {
-    this.localStorageService.setItem('inquiryPage', $event.pageIndex);
+    this.pageRequest.page = $event.pageIndex + 1;
+    this.getInquiries();
+    console.log('the event ', $event);
+    console.log('the page req ', this.pageRequest);
+
+    //this.localStorageService.setItem('inquiryPage', $event.pageIndex);
   }
   displayAllInquiries(): void {
     this.localStorageService.remove('inquiryFilterType');

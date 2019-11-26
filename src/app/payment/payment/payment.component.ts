@@ -21,7 +21,7 @@ export class PaymentComponent implements OnInit {
   routeToRoom(): void {
     this.router.navigate(['payment/room']);
   }
-  routeToPenalties(): void {
-    this.router.navigate(['payment/penalties']);
+  routeToPenalty(): void {
+    this.router.navigate(['payment/penalty']);
   }
 }

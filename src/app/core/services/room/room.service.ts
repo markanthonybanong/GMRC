@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { Room, Bedspace, PageData, PageRequest, TenantData, DeckToSend, UnsettleBill } from '@gmrc/models';
+import { Room, Bedspace, PageData, PageRequest, TenantData, UnsettleBill } from '@gmrc/models';
 
 @Injectable({
   providedIn: 'root'

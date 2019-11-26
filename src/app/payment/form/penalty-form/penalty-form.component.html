@@ -1,0 +1,56 @@
+<div *ngIf="isLoading" class="form-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="form-parent-container" *ngIf="isLoading === false">
+  <mat-card [formGroup]="form" class="form">
+    <div class="header-block">
+      <h5 id="label-text-primary">{{formTitle}}</h5>
+    </div>
+    <div class="first-block">
+      <mat-form-field>
+        <mat-select placeholder="Room number"  formControlName="roomNumber">
+          <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+            {{number}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput [matDatepicker]="date" placeholder="Date" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+        <mat-datepicker #date></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="second-block">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Tenant name"  formControlName="tenant" (input)="searchTenant(form.get('tenant').value)" [matAutocomplete]="auto">
+      </mat-form-field>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let tenant of tenants" (click)="patchTenantObjectId(tenant._id)" [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+          {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Fine"  formControlName="fine">
+      </mat-form-field>
+    </div>
+    <div class="third-block">
+      <mat-form-field>
+        <mat-select placeholder="Violation" formControlName="violation">
+          <mat-option *ngFor="let violation of paymentEnumService.roomViolations;" [value]="violation">
+            {{violation}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="action-buttons-block">
+      <div>
+        <button mat-raised-button color="warn" (click)='routeToPenalties()' id="back-button">
+          <span id="button-text">Back</span>
+        </button>
+        <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='!form.valid || isSubmitting'>
+          <span id="button-text-white">{{buttonName}}</span>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>

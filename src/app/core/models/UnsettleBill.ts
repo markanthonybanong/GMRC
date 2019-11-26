@@ -11,6 +11,5 @@ export class UnsettleBill {
   electricBillBalance: number;
   waterBillBalance: number;
   riceCookerBillBalance: number;
-
   _id: string;
 }

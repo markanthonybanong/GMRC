@@ -3,10 +3,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { EntryComponent } from './payment/entry/entry.component';
 import { PaymentComponent } from './payment/payment.component';
 import { RoomComponent } from './payment/room/room.component';
-import { PenaltiesComponent } from './payment/penalties/penalties.component';
 import { EntryFormComponent } from './form/entry-form/entry-form.component';
 import { RoomFormComponent } from './form/room-form/room-form.component';
-import { PenaltiesFormComponent } from './form/penalties-form/penalties-form.component';
+import { PenaltyComponent } from './payment/penalty/penalty.component';
+import { PenaltyFormComponent } from './form/penalty-form/penalty-form.component';
 
 const routes: Routes = [
   {
@@ -16,15 +16,15 @@ const routes: Routes = [
       { path: '', redirectTo: 'entry', pathMatch: 'full' },
       { path: 'entry', component: EntryComponent },
       { path: 'room', component: RoomComponent },
-      { path: 'penalties', component: PenaltiesComponent },
+      { path: 'penalty', component: PenaltyComponent },
     ]
   },
   { path: 'add-entry', component: EntryFormComponent },
   { path: 'update-entry/:id', component: EntryFormComponent },
   { path: 'add-room-payment', component: RoomFormComponent },
   { path: 'update-room-payment/:id', component: RoomFormComponent },
-  { path: 'add-penalties', component: PenaltiesFormComponent },
-  { path: 'update-panalties', component: PenaltiesFormComponent },
+  { path: 'add-penalty', component: PenaltyFormComponent },
+  { path: 'update-penalty/:id', component: PenaltyFormComponent },
 ];
 
 @NgModule({
