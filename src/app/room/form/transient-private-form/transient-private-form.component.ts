@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { RoomEnumService, RoomService, NotificationService, TenantService } from '@gmrc/services';
-import { PageRequest, Room, Tenant } from '@gmrc/models';
+import { PageRequest, Room, Tenant, RoomTenant } from '@gmrc/models';
 import { FilterType, RoomType } from '@gmrc/enums';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
@@ -54,12 +54,19 @@ export class TransientPrivateFormComponent implements OnInit {
   }
   loadFormValue(): void {
     const transientPrivateRoomProperties = this.form.get('transientPrivateRoomProperties') as FormArray;
+    const tenants: Array<Tenant> = [];
+
+    this.model.transientPrivateRoomProperties[0].tenants.forEach( (tenant) => {
+      tenants.push(tenant);
+    });
+
     transientPrivateRoomProperties.push(
       this.formBuilder.group({
           status: this.model.transientPrivateRoomProperties[0].status,
           dueRentDate: this.model.transientPrivateRoomProperties[0].dueRentDate,
           monthlyRent: this.model.transientPrivateRoomProperties[0].monthlyRent,
-          tenants: [[]],
+          riceCookerBill: this.model.transientPrivateRoomProperties[0].riceCookerBill,
+          tenants: tenants,
         })
     );
     this.form.patchValue({
@@ -197,7 +204,6 @@ export class TransientPrivateFormComponent implements OnInit {
   async formOnSubmit(): Promise<void> {
     this.isSubmitting = true;
     try {
-        // tslint:disable-next-line: no-shadowed-variable
         const room = await this.roomService.updateRoom(this.form.value);
         this.notificationService.notifySuccess(`Updated room number ${room.number}`);
         this.isSubmitting = false;

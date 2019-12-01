@@ -11,5 +11,6 @@ export class Entry {
   oneMonthDepositBalance: Array<{balance: number}>;
   oneMonthAdvance: string;
   oneMonthAdvanceBalance: Array<{balance: number}>;
+  partialPayments: Array<{date: Date, amount: number}>;
   _id: string;
 }

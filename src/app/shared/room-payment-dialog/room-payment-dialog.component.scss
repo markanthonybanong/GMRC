@@ -6,11 +6,11 @@
   mat-form-field{
     width: 48%;
   }
-  >.first-block, >.second-block{
+  >.first-block, >.second-block, >.fourth-block{
     display: flex;
     justify-content: space-between;
   }
-  >.third-block{
+  >.third-block, >.fifth-block{
     mat-form-field{
       width: 100%;
     }

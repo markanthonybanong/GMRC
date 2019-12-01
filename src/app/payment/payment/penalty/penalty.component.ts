@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageRequest, Penalty } from '@gmrc/models';
-import { MatTableDataSource, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { FilterType } from '@gmrc/enums';
 import { PaymentService, NotificationService, ObjectService } from '@gmrc/services';
 import * as moment from 'moment';

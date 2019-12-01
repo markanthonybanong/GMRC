@@ -8,16 +8,16 @@ export class RoomPayment {
   presentReadingKWUsed: number;
   previousReading: Date;
   previousReadingKWUsed: number;
-  riceCookerBillBalance:  Array<{balance: number}>;
-  riceCookerBillStatus: string;
   roomNumber: number;
   waterBillBalance: Array<{balance: number}>;
   waterBillStatus: string;
   roomTenants: Array<RoomTenant>;
   total: number;
   totalAmountElectricBill: number;
+  electricBillInterest: string;
   waterBill: number;
-  riceCookerBill: number;
+  waterBillInterest: string;
+
   roomType: string;
   _id: string;
  }

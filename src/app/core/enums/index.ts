@@ -12,3 +12,4 @@ export * from './KeyStatus';
 export * from './PaymentStatus';
 export * from './InquiryStatus';
 export * from './RoomViolation';
+export * from './Interest';

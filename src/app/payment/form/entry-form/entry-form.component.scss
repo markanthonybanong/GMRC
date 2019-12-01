@@ -7,12 +7,26 @@
       display: flex;
       justify-content: center;
     }
+    >.sixth-block{
+      mat-icon:hover{
+        cursor: pointer;
+      }
+      .first-block{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
     >.action-buttons-block{
       display: flex;
       justify-content: flex-end;
       #back-button{
         margin-right: 5px;
       }
+    }
+    #add-partial-button{
+      width: 100%;
+      margin-bottom: 20px;
     }
   }
 }
@@ -44,6 +58,12 @@
         }
         >div{
           width: 48%;
+        }
+      }
+      .sixth-block div{
+        .second-block{
+          display: flex;
+          justify-content: space-between;
         }
       }
     }

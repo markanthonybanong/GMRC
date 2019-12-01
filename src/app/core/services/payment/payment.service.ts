@@ -41,4 +41,5 @@ export class PaymentService {
   removePenalty(objectId: string) {
     return this.apiService.delete<Penalty>(`payment/removePenalty/${objectId}`);
   }
+  
 }

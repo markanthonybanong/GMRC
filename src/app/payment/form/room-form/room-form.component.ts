@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, FormControl, FormArray, Form, FormGroup } from '@angular/forms';
 import {
@@ -10,9 +10,10 @@ import {
 import * as moment from 'moment';
 import { Moment} from 'moment';
 import { PaymentEnumService, RoomService, PaymentService, NotificationService } from '@gmrc/services';
-import { PaymentStatus, FilterType, RoomType, DeckStatus } from '@gmrc/enums';
+import { PaymentStatus, FilterType, RoomType, DeckStatus, Interest } from '@gmrc/enums';
 import { PageRequest, Room, PageData, RoomTenant, RoomPayment } from '@gmrc/models';
 import { RoomPaymentDialogComponent } from '@gmrc/shared';
+
 
 @Component({
   selector: 'app-room-form',
@@ -32,14 +33,15 @@ export class RoomFormComponent implements OnInit {
     total: [{value: '', disabled: true}],
     amountKWUsed: ['', Validators.required],
     totalAmountElectricBill: [{value: '', disabled: true}],
+    electricBillInterest: null,
     electricBillStatus: [PaymentStatus.UNPAID, Validators.required],
     electricBillBalance: this.formBuilder.array([]),
-    waterBillStatus: [PaymentStatus.UNPAID, Validators.required],
-    waterBill: ['', Validators.required],
+    electricBillBalancePlaceHolder: null,
+    enterWaterBill: [{value: '', disabled: true}],
+    waterBillStatus: [{value: PaymentStatus.NONE, disabled: true}],
+    waterBill: [{value: '', disabled: true}],
+    waterBillInterest: null,
     waterBillBalance: this.formBuilder.array([]),
-    riceCookerBillStatus: [PaymentStatus.UNPAID, Validators.required],
-    riceCookerBill: ['', Validators.required],
-    riceCookerBillBalance: this.formBuilder.array([]),
     roomTenants: ['', Validators.required],
     roomType: [''],
     _id: null,
@@ -57,7 +59,9 @@ export class RoomFormComponent implements OnInit {
     'tenants',
     'dueDate',
     'monthlyRent',
-    'status',
+    'riceCookerBill',
+    'rentStatus',
+    'riceCookerBillStatus',
     'action',
   ];
   pageSizeOptions: number[] = [5, 10, 15];
@@ -65,6 +69,12 @@ export class RoomFormComponent implements OnInit {
   buttonName = 'Add';
   model: RoomPayment;
   disabledShowTenantsButton = true;
+  currentDate = moment().date();
+  electricBillPlaceHolder = 'Electric bill';
+  waterBillPlaceHolder = 'Water bill';
+  waterBillBalancePlaceHolder = 'Balance';
+  riceCookerBillPlaceHolder = 'Rice cooker bill';
+  riceCookerBillBalancePlaceHolder = 'Balance';
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -87,6 +97,14 @@ export class RoomFormComponent implements OnInit {
     this.form.get('date').setValue(this.monthYear);
     datepicker.close();
   }
+  setPlaceHolders(): void {
+    if (this.model.electricBillInterest !== null ) {
+      this.electricBillPlaceHolder = `Electric bill ${this.model.electricBillInterest}`;
+    }
+    if (this.model.waterBillInterest !== null) {
+      this.waterBillBalancePlaceHolder = `Water bill ${this.model.waterBillInterest}`;
+    }
+  }
   loadFormValue(): void {
     if (this.model.electricBillBalance.length) {
       this.electricBillBalanceFormArray.push(
@@ -102,33 +120,29 @@ export class RoomFormComponent implements OnInit {
         })
       );
     }
-    if (this.model.riceCookerBillBalance.length) {
-      this.riceCookerBillBalanceFormArray.push(
-        this.formBuilder.group({
-          balance: this.model.riceCookerBillBalance[0].balance,
-        })
-      );
-    }
+    this.addRoomRentInterest();
+    this.addElectricBillInterest();
+    this.addWaterBillInterest();
+    this.setPlaceHolders();
     this.form.patchValue({
       amountKWUsed: this.model.amountKWUsed,
       date: this.model.date,
+      total: this.model.total,
       electricBillStatus: this.model.electricBillStatus,
       totalAmountElectricBill: this.model.totalAmountElectricBill,
+      electricBillInterest: this.model.electricBillInterest,
       presentReading: this.model.presentReading,
       presentReadingKWUsed: this.model.presentReadingKWUsed,
       previousReading: this.model.previousReading,
       previousReadingKWUsed: this.model.previousReadingKWUsed,
-      riceCookerBillStatus: this.model.riceCookerBillStatus,
-      riceCookerBill: this.model.riceCookerBill,
       roomNumber: this.model.roomNumber,
       waterBillStatus: this.model.waterBillStatus,
       waterBill: this.model.waterBill,
+      waterBillInterest: this.model.waterBillInterest,
       roomTenants: this.model.roomTenants,
       roomType: this.model.roomType,
       _id: this.model._id,
     });
-    this.calculateTotalKWused();
-    this.calculateTotalAmountElectricBill();
   }
   getRoomPaymentByObjectId(roomPaymentObjectId: string): void {
     this.pageRequest.filters.type = FilterType.ROOMPAYMENTBYOBJECTID;
@@ -143,7 +157,6 @@ export class RoomFormComponent implements OnInit {
       this.tablePagination();
       this.disabledShowTenantsButton = false;
       this.isLoading = false;
-
     })
     .catch( err => {});
   }
@@ -181,15 +194,14 @@ export class RoomFormComponent implements OnInit {
     const totalKWused = this.form.get('total').value;
     const amountKWUsed = this.form.get('amountKWUsed').value;
     this.form.get('totalAmountElectricBill').setValue(Math.round(totalKWused * amountKWUsed));
+    this.form.get('electricBillInterest').setValue(null);
+    this.addElectricBillInterest();
   }
   get electricBillBalanceFormArray(): FormArray {
     return this.form.get('electricBillBalance') as FormArray;
   }
   get waterBillBalanceFormArray(): FormArray {
     return this.form.get('waterBillBalance') as FormArray;
-  }
-  get riceCookerBillBalanceFormArray(): FormArray {
-    return this.form.get('riceCookerBillBalance') as FormArray;
   }
   get createBalanceFormGroup(): FormGroup {
     return this.formBuilder.group({
@@ -226,21 +238,6 @@ export class RoomFormComponent implements OnInit {
       this.removeWaterBillBalanceFormGroup();
     }
   }
-  addRiceCookerBillBalanceFormGroup(): void {
-    this.riceCookerBillBalanceFormArray.push(this.createBalanceFormGroup);
-  }
-  removeaddRiceCookerBillBalanceFormGroup(): void {
-    if (this.riceCookerBillBalanceFormArray.length > 0  ) {
-      this.riceCookerBillBalanceFormArray.removeAt(0);
-    }
-  }
-  riceCookerBillStatusToggle($event: MatSelectChange): void {
-    if ($event.value === PaymentStatus.BALANCE) {
-      this.addRiceCookerBillBalanceFormGroup();
-    } else {
-      this.removeaddRiceCookerBillBalanceFormGroup();
-    }
-  }
   async getRoomByRoomNumber(): Promise<PageData<Room>> {
     this.pageRequest.filters.type       = FilterType.ROOMNUMBER;
     this.pageRequest.filters.roomFilter = {number: this.form.get('roomNumber').value};
@@ -262,35 +259,45 @@ export class RoomFormComponent implements OnInit {
                                                 name: null,
                                                 dueRentDate: null,
                                                 rent: null,
+                                                rentToPay: null,
+                                                rentInterestAdded: null,
                                                 rentStatus: {value: null},
+                                                riceCookerBill: null,
+                                                riceCookerBillToPay: null,
+                                                riceCookerBillInterestAdded: null,
+                                                riceCookerBillStatus: {value: null},
                                                 index: null,
-
                                               };
           const awayRoomTenant: RoomTenant  = {
                                                 name: null,
                                                 dueRentDate: null,
                                                 rent: null,
+                                                rentToPay: null,
+                                                rentInterestAdded: null,
                                                 rentStatus: {value: null},
                                                 index: null,
                                               };
           if ( deck.tenant !== null ) {
-            roomTenant.name                 = `${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`;
-            roomTenant.dueRentDate          = deck.dueRentDate;
-            roomTenant.rent                 = deck.monthlyRent;
-            roomTenant.rentStatus.value     = PaymentStatus.UNPAID;
-            roomTenant.rentStatus.balance   = null;
-            roomTenant.index                = roomTennantIndex;
+            roomTenant.name                            = `${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`;
+            roomTenant.dueRentDate                     = deck.dueRentDate;
+            roomTenant.rent                            = deck.monthlyRent;
+            roomTenant.rentStatus.value                = PaymentStatus.UNPAID;
+            roomTenant.rentStatus.balance              = null;
+            roomTenant.riceCookerBill                  = deck.riceCookerBill;
+            roomTenant.riceCookerBillStatus.value      = PaymentStatus.UNPAID;
+            roomTenant.riceCookerBillStatus.balance    = null;
+            roomTenant.index                           = roomTennantIndex;
             roomTenants.push(roomTenant);
             roomTennantIndex++;
           }
           if (deck.status === DeckStatus.AWAY && deck.away[0].tenant !== null ) {
             // tslint:disable-next-line: max-line-length
-            awayRoomTenant.name             = `${deck.away[0].tenant.firstname} ${deck.away[0].tenant.middlename} ${deck.away[0].tenant.lastname}`;
-            awayRoomTenant.dueRentDate      = deck.away[0].dueRentDate;
-            awayRoomTenant.rent             = deck.away[0].rent;
-            awayRoomTenant.rentStatus.value = PaymentStatus.UNPAID;
-            roomTenant.rentStatus.balance   = null;
-            awayRoomTenant.index            = roomTennantIndex;
+            awayRoomTenant.name                        = `${deck.away[0].tenant.firstname} ${deck.away[0].tenant.middlename} ${deck.away[0].tenant.lastname}`;
+            awayRoomTenant.dueRentDate                 = deck.away[0].dueRentDate;
+            awayRoomTenant.rent                        = deck.away[0].rent;
+            awayRoomTenant.rentStatus.value            = PaymentStatus.UNPAID;
+            roomTenant.rentStatus.balance              = null;
+            awayRoomTenant.index                       = roomTennantIndex;
             roomTenants.push(awayRoomTenant);
             roomTennantIndex++;
           }
@@ -302,16 +309,25 @@ export class RoomFormComponent implements OnInit {
                                           name: null,
                                           dueRentDate: null,
                                           rent: null,
+                                          rentToPay: null,
+                                          rentInterestAdded: null,
                                           rentStatus: {value: null},
+                                          riceCookerBill: null,
+                                          riceCookerBillToPay: null,
+                                          riceCookerBillInterestAdded: null,
+                                          riceCookerBillStatus: {value: null},
                                           index: null,
                                         };
         if ( arrIndex === 0 ) {
-          roomTenant.name               = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
-          roomTenant.dueRentDate        = room.transientPrivateRoomProperties[0].dueRentDate;
-          roomTenant.rent               = room.transientPrivateRoomProperties[0].monthlyRent;
-          roomTenant.rentStatus.value   = PaymentStatus.UNPAID;
-          roomTenant.rentStatus.balance = null;
-          roomTenant.index              = roomTennantIndex;
+          roomTenant.name                            = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
+          roomTenant.dueRentDate                     = room.transientPrivateRoomProperties[0].dueRentDate;
+          roomTenant.rent                            = room.transientPrivateRoomProperties[0].monthlyRent;
+          roomTenant.rentStatus.value                = PaymentStatus.UNPAID;
+          roomTenant.rentStatus.balance              = null;
+          roomTenant.riceCookerBill                  = room.transientPrivateRoomProperties[0].riceCookerBill;
+          roomTenant.riceCookerBillStatus.value      = PaymentStatus.UNPAID;
+          roomTenant.riceCookerBillStatus.balance    = null;
+          roomTenant.index                           = roomTennantIndex;
           roomTenants.push(roomTenant);
         } else {
           roomTenant.name               = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
@@ -349,6 +365,13 @@ export class RoomFormComponent implements OnInit {
     this.form.get('roomType').setValue(RoomType.TRANSIENT);
   }
  }
+ setWaterBill(): void {
+   if (this.form.get('roomType').value !== RoomType.BEDSPACE) {
+    this.form.get('enterWaterBill').enable();
+    this.form.get('waterBillStatus').setValue(PaymentStatus.UNPAID);
+    this.form.get('waterBillStatus').enable();
+   }
+ }
   async showTenants(): Promise<void> {
     try {
       const roomByRoomNumber                = await this.getRoomByRoomNumber();
@@ -359,15 +382,116 @@ export class RoomFormComponent implements OnInit {
       const roomByRoomType                  = await this.roomService.getRooms<Room>(this.pageRequest);
       const roomTenants                     = this.getRoomTenants(roomByRoomType.data[0]);
       this.addRoomType(roomByRoomType.data[0]);
+      this.setWaterBill();
       this.addRoomTenantsToForm(roomTenants);
       this.addRoomTenantsToRoomTenantsArray(roomTenants);
       this.totalCount = this.roomTenants.length;
       this.tablePagination();
     } catch (error) {}
   }
+  addPercent(rentAmount: number, percent: number): number {
+    const decimal              = percent / 100;
+    const addOneToDecimalValue = decimal + 1;
+    const rentWithAddedPercent = rentAmount * addOneToDecimalValue;
+    return Math.round(rentWithAddedPercent);
+  }
+  addRoomRentInterest(): void {
+    this.roomTenants.forEach(tenant => {
+      if ( tenant.rentStatus.value === PaymentStatus.UNPAID) {
+        const dateDifference = this.currentDate - tenant.dueRentDate;
+        if ( dateDifference >= 8 && dateDifference <= 10 && tenant.rentInterestAdded !== Interest.PLUSFIVEPERCENT) {
+          tenant.rentToPay = this.addPercent(tenant.rent, 5);
+          tenant.rentInterestAdded = Interest.PLUSFIVEPERCENT;
+        } else if ( dateDifference >= 11 && dateDifference <= 15 && tenant.rentInterestAdded !== Interest.PLUSTENPERCENT) {
+          tenant.rentToPay = this.addPercent(tenant.rent, 10);
+          tenant.rentInterestAdded = Interest.PLUSTENPERCENT;
+        } else if (dateDifference >= 16 && tenant.rentInterestAdded !== Interest.PLUSFIFTEENPERCENT) {
+          tenant.rentToPay = this.addPercent(tenant.rent, 15);
+          tenant.rentInterestAdded = Interest.PLUSFIFTEENPERCENT;
+        } else {
+          tenant.rentToPay = tenant.rent;
+        }
+      }
+    });
+  }
+  addElectricBillInterest(): void {
+    const electricBillStatus = this.form.get('electricBillStatus').value;
+    if (electricBillStatus === PaymentStatus.UNPAID) {
+      const electricBill = this.form.get('totalAmountElectricBill').value;
+      const electricBillInterest = this.form.get('electricBillInterest').value;
+      if (this.currentDate >= 5 && this.currentDate <= 10 && electricBillInterest !== Interest.PLUSFIVEPERCENT) {
+        this.form.get('totalAmountElectricBill').setValue(this.addPercent(electricBill, 5));
+        this.form.get('electricBillInterest').setValue(Interest.PLUSFIVEPERCENT);
+        this.electricBillPlaceHolder = 'Electric bill +5% interest';
+      } else if (this.currentDate >= 11 && this.currentDate <= 15 && electricBillInterest !== Interest.PLUSTENPERCENT) {
+        this.form.get('totalAmountElectricBill').setValue(this.addPercent(electricBill, 10));
+        this.form.get('electricBillInterest').setValue(Interest.PLUSTENPERCENT);
+        this.electricBillPlaceHolder = 'Electric bill +10% interest';
+      } else if (this.currentDate >= 16 && electricBillInterest !== Interest.PLUSFIFTEENPERCENT) {
+        this.form.get('totalAmountElectricBill').setValue(this.addPercent(electricBill, 15));
+        this.form.get('electricBillInterest').setValue(Interest.PLUSFIFTEENPERCENT);
+        this.electricBillPlaceHolder = 'Electric bill +15% interest';
+      }
+    }
+  }
+  enterWaterBillKeyInput(): void {
+    this.form.get('waterBill').setValue(this.form.get('enterWaterBill').value);
+    this.form.get('waterBillInterest').setValue(null);
+    this.addWaterBillInterest();
+  }
+  addWaterBillInterest(): void {
+    const waterBillStatus = this.form.get('waterBillStatus').value;
+    const roomType        = this.form.get('roomType').value;
+    this.setWaterBill();
+    if (waterBillStatus === PaymentStatus.UNPAID && roomType !== RoomType.BEDSPACE ) {
+      const roomTenantsArray: Array<RoomTenant> = this.form.get('roomTenants').value;
+      const waterBill = this.form.get('waterBill').value;
+      const dateDifference = this.currentDate - roomTenantsArray[0].dueRentDate;
+      const waterBillInterest = this.form.get('waterBillInterest').value;
+      if (dateDifference >= 8 && dateDifference >= 10 && waterBillInterest !== Interest.PLUSTENPERCENT) {
+        this.form.get('waterBill').setValue(this.addPercent(waterBill, 10));
+        this.form.get('waterBillInterest').setValue(Interest.PLUSTENPERCENT);
+        this.waterBillPlaceHolder = `Water bill ${waterBillInterest}`;
+      } else if (this.currentDate >= 11 && this.currentDate <= 15 && waterBillInterest !== Interest.PLUSFIFTEENPERCENT ) {
+        this.form.get('waterBill').setValue(this.addPercent(waterBill, 15));
+        this.form.get('waterBillInterest').setValue(Interest.PLUSFIFTEENPERCENT);
+        this.waterBillPlaceHolder = `Water bill ${waterBillInterest}`;
+      } else if (this.currentDate >= 16 && waterBillInterest !== Interest.PLUSTWENTYPERCENT) {
+        this.form.get('waterBill').setValue(this.addPercent(waterBill, 20));
+        this.form.get('waterBillInterest').setValue(Interest.PLUSTWENTYPERCENT);
+        this.waterBillPlaceHolder = `Water bill ${waterBillInterest}`;
+      }
+    }
+  }
+  addRiceCookerBillInterest(): void {
+    const roomType = this.form.get('roomType').value;
+    for (let index = 0; index < this.roomTenants.length; index++) {
+      if (this.roomTenants[index].rentStatus.value === PaymentStatus.UNPAID) {
+        const dateDifference = this.currentDate - this.roomTenants[index].dueRentDate;
+        if (roomType === RoomType.BEDSPACE || index === 0) {
+          // tslint:disable-next-line: max-line-length
+          if ( dateDifference >= 8 && dateDifference <= 10 && this.roomTenants[index].riceCookerBillInterestAdded !== Interest.PLUSTENPERCENT) {
+            this.roomTenants[index].riceCookerBillToPay = this.addPercent(this.roomTenants[index].riceCookerBill, 10);
+            this.roomTenants[index].riceCookerBillInterestAdded = Interest.PLUSTENPERCENT;
+          // tslint:disable-next-line: max-line-length
+          } else if ( dateDifference >= 11 && dateDifference <= 15 && this.roomTenants[index].riceCookerBillInterestAdded !== Interest.PLUSFIFTEENPERCENT) {
+            this.roomTenants[index].riceCookerBillToPay = this.addPercent(this.roomTenants[index].riceCookerBill, 15);
+            this.roomTenants[index].riceCookerBillInterestAdded = Interest.PLUSFIFTEENPERCENT;
+          } else if ( dateDifference >= 16 && this.roomTenants[index].riceCookerBillInterestAdded !== Interest.PLUSTWENTYPERCENT) {
+            this.roomTenants[index].riceCookerBillToPay = this.addPercent(this.roomTenants[index].riceCookerBill, 20);
+            this.roomTenants[index].riceCookerBillInterestAdded = Interest.PLUSTENPERCENT;
+            } else {
+            this.roomTenants[index].riceCookerBillToPay = this.roomTenants[index].riceCookerBill;
+          }
+        }
+      }
+    }
+  }
   tablePagination(): void {
     const start     = this.pageSize * this.pageNumber;
     const end       = this.pageSize * (this.pageNumber + 1);
+    this.addRoomRentInterest();
+    this.addRiceCookerBillInterest();
     this.roomTenantsDataSource   = this.roomTenants.slice(start, end);
   }
   onPaginatorUpdate($event: PageEvent): void {
@@ -376,7 +500,6 @@ export class RoomFormComponent implements OnInit {
     this.tablePagination();
   }
   updateTenantPayment(index: number): void {
-    console.log(this.roomTenants[index].dueRentDate);
     const dialogRef = this.dialog.open(
       RoomPaymentDialogComponent,
       {
@@ -389,16 +512,28 @@ export class RoomFormComponent implements OnInit {
             balance: this.roomTenants[index].rentStatus.balance !== null
             ? this.roomTenants[index].rentStatus.balance
             : null,
+          },
+          riceCookerBill: this.roomTenants[index].riceCookerBill,
+          riceCookerBillStatus: {
+            value: this.roomTenants[index].riceCookerBillStatus.value,
+            balance: this.roomTenants[index].riceCookerBillStatus.balance !== null
+            ? this.roomTenants[index].riceCookerBillStatus.balance
+            : null,
           }
         }
       }
     );
     dialogRef.afterClosed().subscribe( (result) => {
       if (result !== undefined) {
-        this.roomTenants[index].rentStatus.value = result.status;
-         if (result.rentBalance.length !== 0 ) {
-          this.roomTenants[index].rentStatus.balance = result.rentBalance[0].balance;
-         }
+        this.roomTenants[index].rentStatus.value             = result.rentStatus;
+        this.roomTenants[index].rentStatus.balance           = result.rentBalance.length > 0
+                                                               ? result.rentBalance[0].balance
+                                                               : null;
+        this.roomTenants[index].riceCookerBillStatus.value   = result.riceCookerBillStatus;
+        this.roomTenants[index].riceCookerBillStatus.balance = result.riceCookerBillBalance.length > 0
+                                                               ? result.riceCookerBillBalance[0].balance
+                                                               : null;
+
        this.roomTenantsDataSource = this.roomTenants;
        this.tablePagination();
       }
@@ -407,25 +542,25 @@ export class RoomFormComponent implements OnInit {
   routeToRoomPayments() {
     this.router.navigate(['payment/room']);
   }
-  onSubmit() {
-    this.isSubmitting = true;
-    const formValue: RoomPayment = this.form.getRawValue();
-    let promiseForm: Promise<RoomPayment>;
-    promiseForm = this.model
-     ? this.paymentService.updateRoomPayment(formValue)
-     : this.paymentService.addRoomPayment(formValue);
-    promiseForm.then( roomPayment => {
-      const message = this.model ? 'Updated room payment' : 'Added room payment';
-      this.model = roomPayment;
+  async onSubmit() {
+    try {
+      this.isSubmitting            = true;
+      const formValue: RoomPayment = this.form.getRawValue();
+      const roomPayment            = this.model
+                                     ? await this.paymentService.updateRoomPayment(formValue)
+                                     : await this.paymentService.addRoomPayment(formValue);
+      const message                = this.model ? 'Updated room payment' : 'Added room payment';
+      this.model                   = roomPayment;
+      this.buttonName              = 'Update';
+      this.isSubmitting            = false;
       this.form.get('_id').setValue(this.model._id);
       this.notificationService.notifySuccess(message);
-      this.buttonName = 'Update';
-      this.isSubmitting = false;
-    })
-    .catch( err => {
+    } catch (error) {
+      console.log('the error ', error);
+
       this.notificationService.notifyFailed('Something went wrong');
       this.isSubmitting = false;
-    });
+    }
   }
   roomNumbersToggle($event: MatSelect): void {
     if ($event.value) {

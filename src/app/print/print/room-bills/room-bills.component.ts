@@ -162,11 +162,11 @@ export class RoomBillsComponent implements OnInit {
                                             ? monthRoomPayment.waterBillBalance[0].balance
                                             : null;
 
-      monthPayment.riceCookerBill.value   = monthRoomPayment.riceCookerBill;
-      monthPayment.riceCookerBill.status  = monthRoomPayment.riceCookerBillStatus;
-      monthPayment.riceCookerBill.balance = monthRoomPayment.riceCookerBillBalance.length > 0
-                                            ? monthRoomPayment.riceCookerBillBalance[0].balance
-                                            : null;
+      // monthPayment.riceCookerBill.value   = monthRoomPayment.riceCookerBill;
+      // monthPayment.riceCookerBill.status  = monthRoomPayment.riceCookerBillStatus;
+      // monthPayment.riceCookerBill.balance = monthRoomPayment.riceCookerBillBalance.length > 0
+      //                                       ? monthRoomPayment.riceCookerBillBalance[0].balance
+      //                                       : null;
     } else {
       monthPayment = null;
     }

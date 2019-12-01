@@ -4,31 +4,31 @@
   margin-top: 10px;
   mat-form-field{
     width: 100%;
-  }
-  >.form{
-    >.header-block{
-      display: flex;
-      justify-content: center;
-    }
-    >.fifth-block{
-      mat-icon:hover{
-        cursor: pointer;
+    >.form{
+      >.header-block{
+        display: flex;
+        justify-content: center;
       }
-      .remove-tenant-block{
+      >.fifth-block{
+        mat-icon:hover{
+          cursor: pointer;
+        }
+        .remove-tenant-block{
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
+      >.action-buttons-block{
         display: flex;
         justify-content: flex-end;
+        #back-button{
+          margin-right: 5px;
+        }
       }
-    }
-    >.action-buttons-block{
-      display: flex;
-      justify-content: flex-end;
-      #back-button{
-        margin-right: 5px;
+      #add-tenant-button{
+        width: 100%;
+        margin-bottom: 20px;
       }
-    }
-    #add-tenant-button{
-      width: 100%;
-      margin-bottom: 20px;
     }
   }
 }
@@ -39,7 +39,6 @@
 }
 // Medium devices (tablets, 768px and up)
 @media (min-width: 768px) {
-
 }
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {

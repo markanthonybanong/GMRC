@@ -57,16 +57,27 @@
                 </mat-autocomplete>
               </mat-form-field>
               <mat-form-field>
-                <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
+                <input matInput type="number" placeholder="Monthly rent"  formControlName="monthlyRent">
               </mat-form-field>
             </div>
             <div class="clear-float">
             </div>
             <div class="third-block">
               <mat-form-field>
-                <input matInput type="number" placeholder="Monthly rent"  formControlName="monthlyRent">
+                <input matInput type="number" placeholder="Rice cooker bill"  formControlName="riceCookerBill">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
               </mat-form-field>
             </div>
+            <!-- <div class="fourth-block">
+              <mat-form-field>
+                <input matInput type="number" placeholder="Rice cooker bill"  formControlName="riceCookerBill">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput type="number" placeholder="Due rent date"  formControlName="dueRentDate">
+              </mat-form-field>
+            </div> -->
             <div class="tenant-action-buttons-block">
               <button mat-raised-button color="primary" (click)="addDeckInBedspaceFormGoup(bedIndex, deckIndex)" [disabled]="isSubmitting" *ngIf="deck.get('fromServer').value === false">
                 <span id="button-text-white">Save</span>

@@ -25,6 +25,7 @@ export class EntryFormComponent implements OnInit {
     oneMonthAdvance: ['', Validators.required],
     oneMonthAdvanceBalance: this.formBuilder.array([]),
     tenantObjectId: ['',  Validators.required],
+    partialPayments: this.formBuilder.array([]),
     _id: '',
   });
   roomNumbers: number[] = [];
@@ -47,6 +48,15 @@ export class EntryFormComponent implements OnInit {
 
   ngOnInit() {
     this.isGoingToUpdate();
+  }
+  get createPartialFormGroup(): FormGroup{
+    return this.formBuilder.group({
+      date: ['', Validators.required],
+      amount: ['', Validators.required]
+    });
+  }
+  get partialPaymentsFormArray(): FormArray {
+    return this.form.get('partialPayments') as FormArray;
   }
   getOneMonthDepositBalance(): FormArray{
     return this.form.get('oneMonthDepositBalance') as FormArray;
@@ -92,6 +102,16 @@ export class EntryFormComponent implements OnInit {
           balance: this.model.oneMonthAdvanceBalance[0].balance,
         })
       );
+    }
+    if (this.model.partialPayments.length) {
+      this.model.partialPayments.forEach( payment => {
+        this.partialPaymentsFormArray.push(
+          this.formBuilder.group({
+            date: payment.date,
+            amount: payment.amount
+          })
+        );
+      });
     }
     this.form.patchValue({
       _id: this.model._id,
@@ -158,6 +178,12 @@ export class EntryFormComponent implements OnInit {
     if ( formArray.length > 0 ) {
       formArray.removeAt(0);
     }
+  }
+  addPartial(): void {
+    this.partialPaymentsFormArray.push(this.createPartialFormGroup);
+  }
+  removePayment(index: number): void {
+    this.partialPaymentsFormArray.removeAt(index);
   }
   oneMonthAdvanceToggle($event: MatSelectChange): void {
     if ($event.value === PaymentStatus.BALANCE) {
