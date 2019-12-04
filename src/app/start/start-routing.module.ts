@@ -7,6 +7,7 @@ import { LoginFormComponent } from '../login/login-form/login-form.component';
 const routes: Routes = [
   { path: '', component: StartComponent },
   { path: '', loadChildren: () => HomeModule },
+
   { path: 'login', component: LoginFormComponent}
 ];
 

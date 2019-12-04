@@ -1,0 +1,36 @@
+.body{
+  margin-top: 40px;
+  header{
+    h1, p{
+      text-align: center;
+    }
+    p{
+      font-size: 13px;
+      font-weight: bold;
+    }
+  }
+  table {
+    width: 100%;
+    th.mat-header-cell,  td.mat-cell{
+      text-align: center;
+      font-size: 9px;
+      font-weight: bolder;
+    }
+    #light-green-column{
+      background: lightgreen;
+    }
+    #sky-blue-column{
+      background: skyblue;
+    }
+    #gray-column{
+      background: gray;
+    }
+    #brown-column{
+      background: brown;
+    }
+    #violet-column{
+      background: violet;
+    }
+
+  }
+}

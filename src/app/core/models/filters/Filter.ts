@@ -17,4 +17,5 @@ export class Filter {
   unsettleBillFilter?: object;
   penaltyObjectId?: string;
   penaltyFilter?: object;
+  date?: string;
 }

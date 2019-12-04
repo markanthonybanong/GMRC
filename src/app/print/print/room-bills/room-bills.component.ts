@@ -8,8 +8,10 @@ import groupBy from 'lodash/groupBy';
 import toArray from 'lodash/toArray';
 import find from 'lodash/find';
 import unionBy from 'lodash/unionBy';
-import * as jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+
 @Component({
   selector: 'app-room-bills',
   templateUrl: './room-bills.component.html',
@@ -75,9 +77,7 @@ export class RoomBillsComponent implements OnInit {
         } else if (monthRoomPayment.date === moment().format('MM/YYYY')) {
           currentMonthTenants = monthRoomPayment.roomTenants;
         }
-
     });
-
     return unionBy(monthMinusThreeTenants, monthMinusTwoTenants, monthMinusOneTenants, currentMonthTenants, 'name');
   }
   getRoomNumbers(roomPayments: Array<Array<RoomPayment>>): Array<number> {
@@ -100,73 +100,86 @@ export class RoomBillsComponent implements OnInit {
   ): MonthRoomPayment {
     let monthPayment: MonthRoomPayment =  {
                                               advanceRental: [],
+                                              riceCookerBill: [],
                                               electricBill: {
                                                 value: null,
+                                                interestAdded: null,
                                                 status: null,
                                                 balance: null,
                                               },
                                               waterBill: {
                                                 value: null,
+                                                interestAdded: null,
                                                 status: null,
                                                 balance: null,
                                               },
-                                              riceCookerBill: {
-                                                value: null,
-                                                status: null,
-                                                balance: null,
-                                              }
                                           };
     const monthsRoomPaymentInRoom = roomPayments[roomPaymentsIndex];
     const monthRoomPayment: RoomPayment  = find(monthsRoomPaymentInRoom, {date: date});
-
 
     if (monthRoomPayment !== undefined) {
       roomTenants.forEach( (roomTenant, roomTenantIndex) => {
         let isTenantNotFound = true;
         monthRoomPayment.roomTenants.forEach((roomPaymentTenant, roomPaymentTenantIndex) => {
-
           if (roomTenant.name === roomPaymentTenant.name && roomPaymentTenant.rent !== null) {
             const advanceRental = {
                                     name: roomPaymentTenant.name,
-                                    value: roomPaymentTenant.rent,
+                                    value: roomPaymentTenant.rentToPay,
+                                    interestAdded: roomPaymentTenant.rentInterestAdded,
                                     rentStatus: {
                                       value: roomPaymentTenant.rentStatus.value,
                                       balance: roomPaymentTenant.rentStatus.balance,
                                     }
                                   };
-            isTenantNotFound = false;
             monthPayment.advanceRental.push(advanceRental);
+
+            const riceCookerBill = {
+                                      name: roomPaymentTenant.name,
+                                      value: roomPaymentTenant.riceCookerBillToPay,
+                                      interestAdded: roomPaymentTenant.riceCookerBillInterestAdded,
+                                      status: roomPaymentTenant.riceCookerBillStatus.value,
+                                      balance: roomPaymentTenant.riceCookerBillStatus.balance,
+                                   };
+            monthPayment.riceCookerBill.push(riceCookerBill);
+            isTenantNotFound = false;
           }
         });
         if (isTenantNotFound && monthRoomPayment.roomType === RoomType.BEDSPACE) {
           const advanceRental = {
             name: roomTenant.name,
             value: 0,
+            interestAdded: roomTenant.rentInterestAdded,
             rentStatus: {
               value: null,
               balance: null,
             }
           };
           monthPayment.advanceRental.push(advanceRental);
+
+          const riceCookerBill = {
+            name: roomTenant.name,
+            value: 0,
+            interestAdded: roomTenant.riceCookerBillInterestAdded,
+            status: null,
+            balance: null,
+         };
+         monthPayment.riceCookerBill.push(riceCookerBill);
         }
       });
-      monthPayment.electricBill.value     = monthRoomPayment.totalAmountElectricBill;
-      monthPayment.electricBill.status    = monthRoomPayment.electricBillStatus;
-      monthPayment.electricBill.balance   = monthRoomPayment.electricBillBalance.length > 0
-                                            ? monthRoomPayment.electricBillBalance[0].balance
-                                            : null;
+      monthPayment.electricBill.value         = monthRoomPayment.totalAmountElectricBill;
+      monthPayment.electricBill.interestAdded = monthRoomPayment.electricBillInterest;
+      monthPayment.electricBill.status        = monthRoomPayment.electricBillStatus;
+      monthPayment.electricBill.balance       = monthRoomPayment.electricBillBalance.length > 0
+                                                ? monthRoomPayment.electricBillBalance[0].balance
+                                                : null;
 
-      monthPayment.waterBill.value        = monthRoomPayment.waterBill;
-      monthPayment.waterBill.status       = monthRoomPayment.waterBillStatus;
-      monthPayment.waterBill.balance      = monthRoomPayment.waterBillBalance.length > 0
-                                            ? monthRoomPayment.waterBillBalance[0].balance
-                                            : null;
+      monthPayment.waterBill.value            = monthRoomPayment.waterBill;
+      monthPayment.waterBill.interestAdded    = monthRoomPayment.waterBillInterest;
+      monthPayment.waterBill.status           = monthRoomPayment.waterBillStatus;
+      monthPayment.waterBill.balance          = monthRoomPayment.waterBillBalance.length > 0
+                                                ? monthRoomPayment.waterBillBalance[0].balance
+                                                : null;
 
-      monthPayment.riceCookerBill.value   = monthRoomPayment.riceCookerBill;
-      monthPayment.riceCookerBill.status  = monthRoomPayment.riceCookerBillStatus;
-      monthPayment.riceCookerBill.balance = monthRoomPayment.riceCookerBillBalance.length > 0
-                                            ? monthRoomPayment.riceCookerBillBalance[0].balance
-                                            : null;
     } else {
       monthPayment = null;
     }
@@ -240,17 +253,5 @@ export class RoomBillsComponent implements OnInit {
         this.isLoading = false;
       })
       .catch( err => {});
-  }
-  downloadRoomBills(): void {
-    const a = document.getElementById('table').offsetWidth;
-    const b = document.getElementById('table').offsetHeight;
-
-    this.disableDownloadButton = true;
-		html2canvas(document.querySelector('#roomBillsToPrint'), {scale: 1}).then(canvas => {
-      const pdf    = new jsPDF('l', 'mm', 'a4');
-			pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0);
-      pdf.save(`room-bills-${this.currentMonth}`);
-      this.disableDownloadButton = false;
-		});
   }
 }

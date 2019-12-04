@@ -53,7 +53,7 @@ export class RoomComponent implements OnInit  {
   updateRoomPayment(roomPaymentObjectId: string): void {
     this.router.navigate([`payment/update-room-payment/${roomPaymentObjectId}`]);
   }
-  setRoomStatus(roomTenants: Array<RoomTenant> ): Array<string> {
+  setRoomRentStatus(roomTenants: Array<RoomTenant> ): Array<string> {
     const tenantstatuses: Array<string> = [];
     const roomStatuses:   Array<string> = [];
 
@@ -73,8 +73,30 @@ export class RoomComponent implements OnInit  {
     if (tenantstatuses.includes(PaymentStatus.NONE)) {
       roomStatuses.push(PaymentStatus.NONE);
     }
-
+    if (tenantstatuses.includes(PaymentStatus.USEDONEMONTHADVANCE)) {
+      roomStatuses.push(PaymentStatus.USEDONEMONTHADVANCE);
+    }
     return roomStatuses;
+  }
+  setRiceCookerBillStatus(roomTenants: Array<RoomTenant>): Array<string> {
+    const riceCookerBillStatuses: Array<string> = [];
+    const statuses: Array<string> = [];
+    roomTenants.forEach(tenant => {
+      riceCookerBillStatuses.push(tenant.riceCookerBillStatus.value);
+    });
+    if (riceCookerBillStatuses.includes(PaymentStatus.PAID)) {
+      statuses.push(PaymentStatus.PAID);
+    }
+    if (riceCookerBillStatuses.includes(PaymentStatus.UNPAID)) {
+      statuses.push(PaymentStatus.UNPAID);
+    }
+    if (riceCookerBillStatuses.includes(PaymentStatus.BALANCE)) {
+      statuses.push(PaymentStatus.BALANCE);
+    }
+    if (riceCookerBillStatuses.includes(PaymentStatus.NONE)) {
+      statuses.push(PaymentStatus.NONE);
+    }
+    return statuses;
   }
   arrangeRoomPaymentFilters(searchResult: object): object {
     const arrangedSearchResult = { firstFilter: {}, secondFilter: {}};

@@ -16,7 +16,6 @@
   }
 }
 
-
 .form-parent-container{
   display: flex;
   justify-content: center;
@@ -60,19 +59,19 @@
 @media (min-width: 992px) {
   .form-parent-container{
     .form {
+      #interest-label{
+        font-size: 12px;
+        font-weight: bold;
+
+      }
       mat-form-field{
         width: 48%;
       }
-      >.seventh-block, >.eight-block, >.ninth-block{
-        mat-form-field{
-          width: 100%;
-        }
-      }
-      >.first-block, >.second-block, >.third-block, >.fourth-block, >.fifth-block, >.seventh-block, >.ninth-block {
+      >.first-block, >.second-block, >.third-block, >.fourth-block, >.fifth-block, >.seventh-block, >.eight-block {
         display: flex;
         justify-content: space-between;
       }
-      >.sixth-block, >.eight-block, >.tenth-block{
+      >.sixth-block, >.eight-block{
         mat-form-field{
           width: 100%;
         }

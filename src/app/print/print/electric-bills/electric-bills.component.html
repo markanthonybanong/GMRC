@@ -1,3 +1,49 @@
-<p>
-  electric-bills works!
-</p>
+<div *ngIf="isLoading" class="form-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="body" *ngIf="isLoading === false">
+  <header>
+    <h1>Electric bills for {{date}}</h1>
+  </header>
+  <div class="electric-bills-parent">
+    <div class="electric-bills" *ngFor="let bill of electricBills; let i = index">
+      <div class="first-block">
+        <p>Electric Bill {{bill.date}}</p>
+      </div>
+      <div class="second-block">
+        <p>
+          ROOM#: {{bill.roomNumber}}
+        </p>
+      </div>
+      <div class="third-block">
+        <p>
+          PREVIOUS READING: {{bill.previousReading}} : {{bill.previousReadingKWUsed}} KW USED
+        </p>
+      </div>
+      <div class="fourth-block">
+        <p>
+          PRESENT READING: {{bill.presentReading}} : {{bill.presentReadingKWUsed}} KW USED
+        </p>
+      </div>
+      <div class="fifth-block">
+        <p>
+          TOTAL: {{bill.total}}
+        </p>
+      </div>
+      <div class="sixth-block">
+        <p>
+          AMOUNT/KW USED (NORECO): {{bill.amountKWUsed}}
+        </p>
+      </div>
+      <div class="seventh-block">
+        <p>
+          TOTAL AMOUNT ELECTRIC BILL: {{bill.totalAmountElectricBill}} <span *ngIf="bill.electricBillInterest !== null">({{bill.electricBillInterest}})</span>
+        </p>
+      </div>
+      <div class="eight-block">
+        <p>PLEASE PAY ON  or BEFORE 5th of {{bill.date}}</p>
+        <p>TO AVOID PENALTY/DISCONNECTION</p>
+      </div>
+    </div>
+  </div>
+</div>

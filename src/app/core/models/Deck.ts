@@ -7,6 +7,7 @@ export class Deck {
   tenant?: Tenant;
   away?: Away[];
   _id?: string;
+  riceCookerBill: number;
   tenantObjectId?: string;
   oldTenantObjectId?: string;
   monthlyRent?: number;

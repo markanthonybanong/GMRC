@@ -4,14 +4,17 @@
       <h1 id="label-text-primary">PRINT</h1>
     </div>
     <div class="second-block">
-      <button mat-raised-button color="primary" [routerLink]="'/print/room-bills'">
+      <button mat-raised-button color="primary" (click)="openRoomBillsTab()">
         <span id="button-text-white">Room Bills</span>
       </button>
-      <button mat-raised-button color="primary" [routerLink]="'/print/electric-bills'">
+      <button mat-raised-button color="primary" (click)="openElectricBillsTab()">
         <span id="button-text-white">Electric Bills</span>
       </button>
-      <button mat-raised-button color="primary" [routerLink]="'/print/promisory-note'">
+      <button mat-raised-button color="primary" (click)="routeToPromisoryNote()">
         <span id="button-text-white">Promisory Note</span>
+      </button>
+      <button mat-raised-button color="primary" (click)="routeToUnpaidBalanceTenants()">
+        <span id="button-text-white">Un-paid/Balance Tenants</span>
       </button>
     </div>
   </div>

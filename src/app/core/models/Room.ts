@@ -10,6 +10,7 @@ export class Room {
     status: string,
     dueRentDate: number,
     monthlyRent: number,
+    riceCookerBill: number,
     tenants: Array<Tenant>;
   }];
   bedspaces: Bedspace[];

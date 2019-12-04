@@ -79,6 +79,28 @@
         </div>
       </div>
     </div>
+    <div class="sixth-block" formArrayName="partialPayments" *ngFor="let payment of form.get('partialPayments').controls; let i = index;">
+      <div [formGroupName]="i">
+        <div class="first-block">
+            <mat-icon class="material-icons" color="warn" (click)="removePayment(i)">
+                cancel
+            </mat-icon>
+        </div>
+        <div class="second-block">
+            <mat-form-field>
+                <input matInput [matDatepicker]="date" placeholder="Date" formControlName="date">
+                <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                <mat-datepicker #date></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput type="number" placeholder="Amount" formControlName="amount">
+            </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <button mat-raised-button color="primary" id="add-partial-button" (click)="addPartial()">
+      <span id="button-text-white">ADD PARTIAL PAYMENT</span>
+    </button>
     <div class="action-buttons-block">
       <div>
         <button mat-raised-button color="warn" (click)='routeToEntries()' id="back-button">

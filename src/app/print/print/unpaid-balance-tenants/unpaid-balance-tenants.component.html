@@ -1,0 +1,18 @@
+<div class="header">
+  <div class="container">
+    <div [formGroup]="form" class="form">
+      <mat-form-field>
+        <input class="hidden-date-input" [matDatepicker]="date">
+        <input matInput placeholder="Month/Year" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+        <mat-datepicker #date
+                        startView="multi-year"
+                        (monthSelected)="chosenMonthHandler($event, date)"
+        ></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <button mat-raised-button color="primary" (click)='openUnpaidBalanceTenantsTab()' [disabled]="!form.valid">
+      <span id="button-text-white">Display Tenants</span>
+    </button>
+  </div>
+</div>

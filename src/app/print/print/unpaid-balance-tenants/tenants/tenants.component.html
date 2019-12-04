@@ -1,0 +1,36 @@
+<div *ngIf="isLoading" class="form-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="body" *ngIf="isLoading === false">
+  <header>
+    <h1 *ngIf="warningMessage !== null">{{warningMessage}}</h1>
+    <h1 *ngIf="warningMessage === null">Tenants with unpaid and balances in rent, {{date}}</h1>
+  </header>
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="tenantName">
+      <th mat-header-cell *matHeaderCellDef id="light-green-column">TENANT</th>
+      <td mat-cell *matCellDef="let element" id="light-green-column">{{element.name}}</td>
+    </ng-container>
+    <ng-container matColumnDef="rent">
+      <th mat-header-cell *matHeaderCellDef id="sky-blue-column">RENT</th>
+      <td mat-cell *matCellDef="let element" id="sky-blue-column">
+        <p>{{element.rentToPay}}</p>
+        <p *ngIf="element.rentInterestAdded !== null">{{element.rentInterestAdded}}</p>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="dueRentDate">
+      <th mat-header-cell *matHeaderCellDef id="gray-column">DUE-RENT DATE</th>
+      <td mat-cell *matCellDef="let element" id="gray-column">{{element.dueRentDate}}</td>
+    </ng-container>
+    <ng-container matColumnDef="roomNumber">
+      <th mat-header-cell *matHeaderCellDef id="brown-column">ROOM NUMBER</th>
+      <td mat-cell *matCellDef="let element" id="brown-column">{{element.roomNumber}}</td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef id="violet-column">STATUS</th>
+      <td mat-cell *matCellDef="let element" id="violet-column">{{element.rentStatus.value}}</td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

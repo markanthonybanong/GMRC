@@ -88,6 +88,7 @@ export class BedspaceFormComponent implements OnInit {
           status: deck.status,
           dueRentDate: deck.dueRentDate,
           monthlyRent: deck.monthlyRent,
+          riceCookerBill: deck.riceCookerBill,
           tenant: deck.tenant !== null ? `${deck.tenant.firstname}  ${deck.tenant.middlename} ${deck.tenant.lastname}` : null,
           away: deck.away !== null ? this.patchAwayFormValue(deck.away) : this.formBuilder.array([]),
           fromServer: true,
@@ -186,6 +187,7 @@ export class BedspaceFormComponent implements OnInit {
       status: [DeckStatus.VACANT, Validators.required],
       tenant: [''],
       dueRentDate: [''],
+      riceCookerBill: null,
       monthlyRent: [''],
       away: this.formBuilder.array([]),
       fromServer: false,
@@ -276,6 +278,7 @@ export class BedspaceFormComponent implements OnInit {
     deckFormGroup.get('tenantObjectId').patchValue(null);
     deckFormGroup.get('dueRentDate').patchValue(null);
     deckFormGroup.get('monthlyRent').patchValue(null);
+    deckFormGroup.get('riceCookerBill').patchValue(null);
   }
   searchTenantNameFieldInput(inputTenantName: string): void {
     if (inputTenantName.length !== 0 ) {
@@ -391,6 +394,8 @@ export class BedspaceFormComponent implements OnInit {
     const formToSend                          = this.getDeckTenantToSend(deckIndex, bedspaceFormValue);
     const deckFormGroup                       = this.getDeckInDecksFormArrayInBedspacesFormArray(bedIndex, deckIndex);
     const tenantObjectId                      = deckFormGroup.get('tenantObjectId').value;
+    console.log('form value ', formToSend);
+
     try {
       this.pageRequest.filters.type           = FilterType.ROOMSBYTENANTOBJECTID;
       this.pageRequest.filters.tenantObjectId = tenantObjectId;
@@ -398,8 +403,6 @@ export class BedspaceFormComponent implements OnInit {
       /**check when deck is already created */
       if (deckFormGroup.get('fromServer').value === true && tenantObjectId !== null) {
         if (rooms.data.length === 0 || this.haveSelectedDeckTenant.value === false) {
-          console.log('teh form to ',formToSend);
-
           const bedspace = await this.roomService.updateDeckInBed(formToSend);
           this.loadDeckFormGroupValue(bedIndex, deckIndex);
           this.notificationService.notifySuccess(`Deck number ${bedspace.decks[deckIndex].number} updated`);
@@ -427,7 +430,6 @@ export class BedspaceFormComponent implements OnInit {
         this.isSubmitting = false;
       }
     } catch (error) {
-      console.log(error);
       this.notificationService.notifyFailed('Something went wrong');
       this.isSubmitting = false;
     }
