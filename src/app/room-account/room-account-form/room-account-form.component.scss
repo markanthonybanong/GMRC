@@ -1,0 +1,50 @@
+.form-parent-container{
+  display: flex;
+  justify-content: center;
+  .form{
+    mat-form-field{
+      width: 100%;
+    }
+    >.form-header-block{
+      display: flex;
+      justify-content: center;
+    }
+    >.second-block{
+      button{
+        width: 100%;
+      }
+    }
+    >.action-buttons-block{
+      display: flex;
+      justify-content: flex-end;
+      #back-button{
+        margin-top: 20px;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+/*MEDIA QUERIES*/
+@media (max-width: 575px) {}
+@media (min-width: 576px) {}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .form-parent-container{
+    .form {
+      >.first-block{
+        display: flex;
+        justify-content: space-between;
+        mat-form-field{
+          width: 48%;
+        }
+      }
+    }
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {  }
