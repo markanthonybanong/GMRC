@@ -7,6 +7,5 @@ export class Inquiry {
   phoneNumber: number;
   gender: string;
   howDidYouFindUs: string;
-  status: string;
   _id: string;
 }

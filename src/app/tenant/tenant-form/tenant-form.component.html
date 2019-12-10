@@ -4,9 +4,10 @@
 <div class="container" *ngIf="isLoading === false">
   <mat-card [formGroup]="form">
     <div class="img-block">
-      <div class="tenant-image">
-        <img src="../../../assets/img/tenant_default_image.png" alt="tenant_image" height="100" width="100">
-        <div class="tenant-image-selector">
+      <div class="tenant-image" (mouseenter)="imgBlockMouseEnter()"  (mouseleave) ="imgBlockMouseLeave()">
+        <img src="../../../assets/img/tenant_default_image.png" *ngIf="form.get('tenantImage').value === null">
+        <img [src]="form.get('tenantImage').value" *ngIf="form.get('tenantImage').value !== null">
+        <div (click)="openTakeTenantPhotoDialog()" class="tenant-image-selector" *ngIf="imgBlockHover === true">
           <div>
             <mat-icon>camera_alt</mat-icon>
             <p>Update</p>

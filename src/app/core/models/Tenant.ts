@@ -1,4 +1,5 @@
 export class Tenant {
+  tenantImage: string;
   firstname: string;
   middlename: string;
   lastname: string;

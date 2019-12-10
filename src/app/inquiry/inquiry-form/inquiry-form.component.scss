@@ -10,6 +10,7 @@
       display: flex;
       justify-content: center;
     }
+
     >.action-buttons-block{
       display: flex;
       justify-content: flex-end;
@@ -30,14 +31,17 @@
 @media (min-width: 992px) {
   .form-parent-container{
     .form {
-      mat-form-field{
-        width: 48%;
-      }
-      >.first-block, >.second-block, >.third-block, >.fourth-block {
+      >.first-block, >.second-block, >.third-block{
         display: flex;
         justify-content: space-between;
+        mat-form-field{
+          width: 48%;
+        }
       }
       >.fifth-block{
+        mat-form-field{
+          width: 48%;
+        }
         >div{
           display: flex;
           justify-content: space-between;

@@ -13,10 +13,12 @@ import { EntryAdvanceSearchComponent } from './advanced-search-dialogs/entry-adv
 import { RoomPaymentDialogComponent } from './room-payment-dialog/room-payment-dialog.component';
 // tslint:disable-next-line: max-line-length
 import { RoomPaymentAdvanceSearchComponent } from './advanced-search-dialogs/room-payment-advance-search/room-payment-advance-search.component';
-import { UnsettleBillAdvanceSearchComponent } from './advanced-search-dialogs/unsettle-bill-advance-search/unsettle-bill-advance-search.component';
+import {
+  UnsettleBillAdvanceSearchComponent
+} from './advanced-search-dialogs/unsettle-bill-advance-search/unsettle-bill-advance-search.component';
 import { PenaltyAdvanceSearchComponent } from './advanced-search-dialogs/penalty-advance-search/penalty-advance-search.component';
-
-
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { UploadTenantPhotoComponent } from './upload-tenant-photo/upload-tenant-photo.component';
 // TODO: use the ts config.
 @NgModule({
   imports: [
@@ -24,6 +26,7 @@ import { PenaltyAdvanceSearchComponent } from './advanced-search-dialogs/penalty
     AngularMaterialModule,
     ReactiveFormsModule,
     FormsModule,
+    ImageCropperModule
   ],
   exports: [LoadingComponent],
 
@@ -39,6 +42,7 @@ import { PenaltyAdvanceSearchComponent } from './advanced-search-dialogs/penalty
     RoomPaymentAdvanceSearchComponent,
     UnsettleBillAdvanceSearchComponent,
     PenaltyAdvanceSearchComponent,
+    UploadTenantPhotoComponent,
   ],
 
   providers: []

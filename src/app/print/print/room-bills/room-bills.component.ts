@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PaymentService } from '@gmrc/services';
 import { PageRequest, RoomPayment, RoomPaymentForPrint, RoomTenant, MonthRoomPayment } from '@gmrc/models';
 import { FilterType, RoomType } from '@gmrc/enums';

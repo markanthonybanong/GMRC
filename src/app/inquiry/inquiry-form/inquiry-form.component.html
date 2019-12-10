@@ -48,13 +48,6 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field>
-        <mat-select placeholder="Status" formControlName="status">
-          <mat-option *ngFor="let status of inquiryEnumService.inquiryStatuses" [value]="status">
-            {{status}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
     <div class="fifth-block" formArrayName="bedInfos" *ngFor="let bedInfo of form.get('bedInfos').controls; let i=index;">
       <div [formGroupName]="i">

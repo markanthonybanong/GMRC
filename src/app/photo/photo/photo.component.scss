@@ -1,0 +1,16 @@
+ .cointainer{
+   display: flex;
+   justify-content: center;
+    >.mat-card{
+      display: flex;
+      justify-content: space-between;
+      width: 720px;
+      img {
+        width: 350px;
+        height: 262px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+ }

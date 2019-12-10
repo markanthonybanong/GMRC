@@ -19,7 +19,6 @@ export class InquiryComponent implements OnInit {
     'roomNumber',
     'willOccupyIn',
     'foundGMRCthrough',
-    'status',
     'actions',
   ];
   pageSizeOptions: number[] = [10, 20, 30, 40];

@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="first-block">
+    <div class="img-container">
+      <image-cropper
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="true"
+      [aspectRatio]="1/1"
+      [resizeToWidth]="170"
+      [resizeToHeight]="170"
+      [roundCropper]="true"
+      format="png"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded()"
+      (cropperReady)="cropperReady()"
+      (loadImageFailed)="loadImageFailed()"
+      ></image-cropper>
+    </div>
+    <input type="file" (change)="fileChangeEvent($event)" />
+  </div>
+  <div class="second-block">
+    <div class="img-container">
+      <img [src]="croppedImage"/>
+    </div>
+    <button mat-raised-button color="primary" [disabled]="!form.valid" [matDialogClose]='form.value'>
+      <span id="button-text-white">Set</span>
+    </button>
+  </div>
+</div>

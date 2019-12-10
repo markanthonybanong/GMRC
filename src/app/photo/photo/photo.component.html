@@ -1,0 +1,21 @@
+<div class="cointainer">
+  <mat-card>
+    <div class="first-block">
+      <div class="webcam">
+        <img *ngIf="!showWebcam" src="../../../assets/img/no_camera_found.png" alt="no_camera_found" >
+        <webcam [height]="350" [width]="350" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
+         (initError)="handleInitError($event)"></webcam>
+    </div>
+    <button mat-raised-button id="button-text-white" color="primary" mat-button (click)="triggerSnapshot()">Capture</button>
+      <div class="error-block">
+        <ul *ngFor="let error of errors">
+          <li>{{error | json}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="second-block">
+      <img *ngIf="!webcamImage" src="../../../assets/img/tenant_default_image.png" alt="tenant_image" >
+      <img *ngIf="webcamImage" [src]="webcamImage.imageAsDataUrl" />
+    </div>
+  </mat-card>
+</div>

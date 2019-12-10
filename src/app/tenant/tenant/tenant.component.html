@@ -33,6 +33,13 @@
   <mat-divider></mat-divider>
   <body>
     <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="photo">
+        <th mat-header-cell *matHeaderCellDef>Photo</th>
+        <td mat-cell *matCellDef="let element">
+          <img src="../../../assets/img/tenant_default_image.png" *ngIf="element.tenantImage === null">
+          <img src="{{element.tenantImage}}" *ngIf="element.tenantImage !== null">
+        </td>
+      </ng-container>
       <ng-container matColumnDef="firstname">
         <th mat-header-cell *matHeaderCellDef> Firstname </th>
         <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
@@ -60,14 +67,14 @@
       <ng-container matColumnDef="dueRentDate">
         <th mat-header-cell *matHeaderCellDef> Due rent date  </th>
         <td mat-cell *matCellDef="let element"> {{element.dueRentDate}} </td>
-       </ng-container>
-       <ng-container matColumnDef="action">
+      </ng-container>
+      <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef> Action </th>
         <td mat-cell *matCellDef="let element">
           <button mat-icon-button color="primary" (click)="updateTenant(element._id)">
             <mat-icon color="primary">edit</mat-icon>
           </button>
-        </td>
+      </td>
        </ng-container>
        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -77,6 +84,6 @@
     </div>
   </body>
   <footer>
-      <mat-paginator #paginator [length]="totalCount" [pageSize]="pageSizeOptions[0]" [pageSizeOptions]="pageSizeOptions"  showFirstLastButtons  (page)="onPaginatorUpdate($event)"></mat-paginator>
+    <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons (page)="onPaginatorUpdate($event)"></mat-paginator>
   </footer>
 </mat-card>
