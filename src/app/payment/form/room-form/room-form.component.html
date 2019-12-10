@@ -67,11 +67,11 @@
     </div>
     <div class="first-block">
       <mat-form-field>
-          <mat-select placeholder="Room number"  formControlName="roomNumber" (selectionChange)="roomNumbersToggle($event)">
-            <mat-option *ngFor="let number of roomNumbers;" [value]="number">
-              {{number}}
-            </mat-option>
-          </mat-select>
+        <mat-select placeholder="Room number"  formControlName="roomNumber" (selectionChange)="roomNumbersToggle($event)">
+          <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+            {{number}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
       <mat-form-field>
         <input class="hidden-date-input" [matDatepicker]="date">

@@ -1,0 +1,33 @@
+<div *ngIf="isLoading" class="form-spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="form-parent-container" *ngIf="isLoading === false">
+  <mat-card [formGroup]="form" class="form">
+    <div class="form-header-block">
+      <h5 id="label-text-primary">{{formTitle}}</h5>
+    </div>
+    <div class="first-block">
+      <mat-form-field>
+        <input matInput type="number" placeholder="Room number"  formControlName="roomNumber">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="text" placeholder="Password"  formControlName="password">
+      </mat-form-field>
+    </div>
+    <div class="second-block">
+      <button mat-raised-button color="primary" (click)='generateRoomAccountPassword()'>
+        <span id="button-text-white">Generate Room Account Password</span>
+      </button>
+    </div>
+    <div class="action-buttons-block">
+      <div>
+        <button mat-raised-button color="warn" (click)='backToRoomAccountList()' id="back-button">
+          <span id="button-text">Back</span>
+        </button>
+        <button mat-raised-button color="primary" (click)='onSubmit()' [disabled]='!form.valid || isSubmitting'>
+          <span id="button-text-white">{{buttonName}}</span>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>

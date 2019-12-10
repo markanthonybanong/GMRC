@@ -29,4 +29,7 @@ export enum FilterType {
   ALLPENALTIES = 'allPenalties',
   PENALTYBYOBJECTID = 'penaltyByObjectId',
   ADVANCESEARCHPENALTY = 'advanceSearchPenalty',
+  ALLROOMACCOUNTS = 'allRoomAccounts',
+  ROOMACCOUNTBYOBJECTID = 'roomAccountByObjectId',
+  ROOMACCOUNTBYROOMNUMBER = 'roomAccountByRoomNumber',
 }

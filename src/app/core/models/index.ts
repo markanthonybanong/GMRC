@@ -18,3 +18,4 @@ export * from './RoomPaymentForPrint';
 export * from './MonthRoomPayment';
 export * from './UnsettleBill';
 export * from './Penalty';
+export * from './RoomAccount';

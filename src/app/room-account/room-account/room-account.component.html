@@ -1,0 +1,51 @@
+<mat-card>
+  <header>
+    <div class="first-block">
+      <h1 id="label-text-primary">ROOM ACCOUNT</h1>
+    </div>
+    <div class="second-block">
+      <div id="form-parent" [formGroup]="form">
+        <mat-form-field>
+          <mat-select placeholder="Room numbers"  formControlName="roomNumbers" (selectionChange)="roomNumbersToggle($event)">
+            <mat-option *ngFor="let number of roomNumbers;" [value]="number">
+              {{number}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <button mat-raised-button color="primary" (click)='displayAllRoomAccounts()'>
+        <span id="button-text-white">Display All Room Account</span>
+      </button>
+      <button mat-raised-button color="primary" (click)='addRoomAccount()'>
+        <span id="button-text-white">Add Room Account</span>
+      </button>
+    </div>
+  </header>
+  <mat-divider></mat-divider>
+  <body *ngIf="isLoading === false">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="roomNumber">
+        <th mat-header-cell *matHeaderCellDef>Room number</th>
+        <td mat-cell *matCellDef="let element">{{element.roomNumber}}</td>
+      </ng-container>
+      <ng-container matColumnDef="password">
+        <th mat-header-cell *matHeaderCellDef>Password</th>
+        <td mat-cell *matCellDef="let element">{{element.password}}</td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let element" class="actions-container">
+          <mat-icon id="label-text-primary" (click)="updateRoomAccount(element._id)">edit</mat-icon>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </body>
+  <div class="table-spinner-container">
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+  </div>
+  <footer>
+    <mat-paginator [length]="totalCount" [pageSizeOptions]="pageSizeOptions"  showFirstLastButtons (page)="onPaginatorUpdate($event)"></mat-paginator>
+  </footer>
+</mat-card>

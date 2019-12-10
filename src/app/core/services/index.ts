@@ -11,3 +11,4 @@ export * from './route-guard/auth-guard.service';
 export * from './payment/payment.service';
 export * from './payment/payment-enum.service';
 export * from './bed/bed.service';
+export * from './room-account/room-account.service';
