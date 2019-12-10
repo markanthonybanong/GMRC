@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
-import { RoomType, FilterType, InquiryStatus } from '@gmrc/enums';
+import { RoomType, FilterType } from '@gmrc/enums';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Inquiry, PageRequest, Filter } from '@gmrc/models';
 import { RoomEnumService, InquiryService, NotificationService, TenantEnumService } from '@gmrc/services';
-import { InquiryEnumService } from '@gmrc/services';
 
 @Component({
   selector: 'app-inquiry-form',
@@ -28,7 +27,6 @@ export class InquiryFormComponent implements OnInit {
     phoneNumber: ['', Validators.required],
     gender: ['', Validators.required],
     roomType:  ['', Validators.required],
-    status: [InquiryStatus.WAITING, Validators.required],
     bedInfos: this.formBuilder.array([]),
     _id: '',
   });
@@ -47,7 +45,6 @@ export class InquiryFormComponent implements OnInit {
     private notificationService: NotificationService,
     private route: ActivatedRoute,
     private tenantEnumService: TenantEnumService,
-    private inquiryEnumService: InquiryEnumService
     ) { }
 
   ngOnInit() {
@@ -117,7 +114,6 @@ export class InquiryFormComponent implements OnInit {
       roomNumber: this.model.roomNumber,
       roomType: this.model.roomType,
       willOccupyIn: this.model.willOccupyIn,
-      status: this.model.status,
       gender: this.model.gender,
       phoneNumber: this.model.phoneNumber
     });

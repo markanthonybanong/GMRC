@@ -16,13 +16,14 @@ export class TenantComponent implements OnInit {
   dataSource = new MatTableDataSource<Tenant>();
   totalCount: number;
   displayedColumns: string[] = [
-    'roomNumber',
-    'dueRentDate',
+    'photo',
     'firstname',
     'middlename',
     'lastname',
     'gender',
     'typeOfNetWork',
+    'roomNumber',
+    'dueRentDate',
     'action'
   ];
   pageSizeOptions: number[] = [10, 20, 30, 40];
@@ -85,6 +86,7 @@ export class TenantComponent implements OnInit {
   onPaginatorUpdate($event: PageEvent): void {
     this.pageRequest.page = $event.pageIndex + 1;
     this.pageRequest.limit = $event.pageSize;
+    console.log(this.pageRequest);
     this.getTenants();
   }
   addTenant(): void {

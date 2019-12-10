@@ -4,6 +4,8 @@ import { TenantEnumService, TenantService, NotificationService } from '@gmrc/ser
 import { Router, ActivatedRoute } from '@angular/router';
 import { Tenant, PageRequest } from '@gmrc/models';
 import { FilterType } from '@gmrc/enums';
+import { MatDialog } from '@angular/material';
+import { UploadTenantPhotoComponent } from 'src/app/shared';
 
 @Component({
   selector: 'app-tenant-form',
@@ -12,6 +14,7 @@ import { FilterType } from '@gmrc/enums';
 })
 export class TenantFormComponent implements OnInit {
   form = this.formBuilder.group({
+    tenantImage: null,
     firstname: ['', Validators.required],
     middlename: [''],
     lastname: ['', Validators.required],
@@ -32,12 +35,15 @@ export class TenantFormComponent implements OnInit {
   notificationMessage: string = null;
   isLoading = true;
   pageRequest = new PageRequest(1, 5);
+  imgBlockHover = false;
   constructor(private formBuilder: FormBuilder,
     private tenantService: TenantService,
     private tenantEnumService: TenantEnumService,
     private router: Router,
     private notificationService: NotificationService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+     ) { }
 
   ngOnInit() {
     this.isGoingToUpdate();
@@ -50,6 +56,7 @@ export class TenantFormComponent implements OnInit {
   }
   loadFormValue(): void {
     this.form.patchValue({
+      tenantImage: this.model.tenantImage,
       firstname: this.model.firstname,
       middlename: this.model.middlename,
       lastname: this.model.lastname,
@@ -64,6 +71,7 @@ export class TenantFormComponent implements OnInit {
       _id: this.model._id
     });
   }
+
   getTenantByObjectId(objectId: string): void {
     this.pageRequest.filters.type = FilterType.TENANTBYOBJECTID;
     this.pageRequest.filters.tenantObjectId = objectId;
@@ -107,6 +115,23 @@ export class TenantFormComponent implements OnInit {
     .catch( (err) => {
       this.notificationService.notifyFailed('Something went wrong');
       this.isSubmitting = false;
+    });
+  }
+  imgBlockMouseEnter(): void {
+    this.imgBlockHover = true;
+  }
+  imgBlockMouseLeave(): void {
+    this.imgBlockHover = false;
+  }
+  openTakeTenantPhotoDialog(): void {
+    const dialogRef = this.dialog.open(
+      UploadTenantPhotoComponent,
+      {}
+    );
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.form.get('tenantImage').setValue(result.tenantImage);
+      }
     });
   }
 }

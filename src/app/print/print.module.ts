@@ -6,7 +6,6 @@ import { PrintComponent } from './print/print.component';
 import { RoomBillsComponent } from './print/room-bills/room-bills.component';
 import { PromisoryNoteComponent } from './print/promisory-note/promisory-note.component';
 import { PrintRoutingModule } from './print-routing.module';
-import {NgxPrintModule} from 'ngx-print';
 import { UnpaidBalanceTenantsComponent } from './print/unpaid-balance-tenants/unpaid-balance-tenants.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TenantsComponent } from './print/unpaid-balance-tenants/tenants/tenants.component';
@@ -18,10 +17,17 @@ import { NoteComponent } from './print/promisory-note/note/note.component';
     AngularMaterialModule,
     PrintRoutingModule,
     SharedModule,
-    NgxPrintModule,
     ReactiveFormsModule,
     FormsModule,
   ],
-  declarations: [RoomBillsComponent, ElectricBillsComponent, PromisoryNoteComponent, PrintComponent, UnpaidBalanceTenantsComponent, TenantsComponent, NoteComponent]
+  declarations: [
+    RoomBillsComponent,
+    ElectricBillsComponent,
+    PromisoryNoteComponent,
+    PrintComponent,
+    UnpaidBalanceTenantsComponent,
+    TenantsComponent,
+    NoteComponent
+  ]
 })
 export class PrintModule { }

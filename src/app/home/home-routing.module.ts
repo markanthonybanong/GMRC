@@ -11,6 +11,7 @@ import { RoomBillsComponent } from '../print/print/room-bills/room-bills.compone
 import { TenantsComponent } from '../print/print/unpaid-balance-tenants/tenants/tenants.component';
 import { ElectricBillsComponent } from '../print/print/electric-bills/electric-bills.component';
 import { NoteComponent } from '../print/print/promisory-note/note/note.component';
+import { PhotoComponent } from '../photo/photo/photo.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,8 @@ const routes: Routes = [
       { path: 'tenant', loadChildren: () => TenantModule, canActivate: [AuthGuardService] },
       { path: 'payment', loadChildren: () => PaymentModule, canActivate: [AuthGuardService] },
       { path: 'print', loadChildren: () => PrintModule, canActivate: [AuthGuardService] },
+
+      { path: 'photo', component: PhotoComponent, canActivate: [AuthGuardService] },
     ]
   },
   {

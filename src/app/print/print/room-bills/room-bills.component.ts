@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PaymentService } from '@gmrc/services';
 import { PageRequest, RoomPayment, RoomPaymentForPrint, RoomTenant, MonthRoomPayment } from '@gmrc/models';
 import { FilterType, RoomType } from '@gmrc/enums';
@@ -8,8 +8,6 @@ import groupBy from 'lodash/groupBy';
 import toArray from 'lodash/toArray';
 import find from 'lodash/find';
 import unionBy from 'lodash/unionBy';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 
 @Component({
