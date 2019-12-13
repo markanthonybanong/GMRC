@@ -1,3 +1,17 @@
-<p>
-  promisory-note works!
-</p>
+<div class="header">
+  <div class="container">
+    <div [formGroup]="form" class="form">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Tenant name"  formControlName="name"   (input)="searchTenant(form.get('name').value)" [matAutocomplete]="auto">
+      </mat-form-field>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let tenant of tenants"  [value]="tenant.firstname+' '+tenant.middlename+' '+tenant.lastname">
+          {{ tenant.firstname+" "+tenant.middlename+" "+tenant.lastname }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+    <button mat-raised-button color="primary" (click)='openUnpaidBalanceTenantsTab()' [disabled]="!form.valid">
+      <span id="button-text-white">Display Note</span>
+    </button>
+  </div>
+</div>

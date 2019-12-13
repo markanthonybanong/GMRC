@@ -1,0 +1,49 @@
+.header{
+  margin-top: 40px;
+  .container{
+    >.form{
+      mat-form-field{
+        width: 100%;
+      }
+      .hidden-date-input {
+        width: 0;
+        border: none;
+        padding: 0;
+      }
+    }
+    >button{
+      width: 100%;
+    }
+  }
+}
+/*MEDIA QUERIES*/
+/*MAX-WIDTH*/
+@media (max-width: 768px) {
+
+}
+/*MIN-WIDTH*/
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .header {
+    display: flex;
+    justify-content: flex-end;
+
+    >.container {
+      width: 30%;
+    }
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+
+}

@@ -4,34 +4,35 @@
   margin-top: 10px;
   mat-form-field{
     width: 100%;
-    >.form{
-      >.header-block{
-        display: flex;
-        justify-content: center;
+  }
+  >.form{
+    >.header-block{
+      display: flex;
+      justify-content: center;
+    }
+    >.fifth-block{
+      mat-icon:hover{
+        cursor: pointer;
       }
-      >.fifth-block{
-        mat-icon:hover{
-          cursor: pointer;
-        }
-        .remove-tenant-block{
-          display: flex;
-          justify-content: flex-end;
-        }
-      }
-      >.action-buttons-block{
+      .remove-tenant-block{
         display: flex;
         justify-content: flex-end;
-        #back-button{
-          margin-right: 5px;
-        }
       }
-      #add-tenant-button{
-        width: 100%;
-        margin-bottom: 20px;
+    }
+    >.action-buttons-block{
+      display: flex;
+      justify-content: flex-end;
+      #back-button{
+        margin-right: 5px;
       }
+    }
+    #add-tenant-button{
+      width: 100%;
+      margin-bottom: 20px;
     }
   }
 }
+
 /*MEDIA QUERIES*/
 @media (max-width: 575px) {
 }
@@ -59,4 +60,4 @@
       }
     }
   }
- }
+}

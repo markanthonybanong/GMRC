@@ -15,6 +15,6 @@ export class RoomTenant {
     value: string,
     balance?: number,
   };
-
   index?: number;
+  roomNumber?: number;
 }

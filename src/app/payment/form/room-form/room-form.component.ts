@@ -36,10 +36,9 @@ export class RoomFormComponent implements OnInit {
     electricBillInterest: null,
     electricBillStatus: [PaymentStatus.UNPAID, Validators.required],
     electricBillBalance: this.formBuilder.array([]),
-    electricBillBalancePlaceHolder: null,
-    enterWaterBill: [{value: '', disabled: true}],
-    waterBillStatus: [{value: PaymentStatus.NONE, disabled: true}],
-    waterBill: [{value: '', disabled: true}],
+    enterWaterBill: [''],
+    waterBillStatus: PaymentStatus.NONE,
+    waterBill: [{value: null, disabled: true}],
     waterBillInterest: null,
     waterBillBalance: this.formBuilder.array([]),
     roomTenants: ['', Validators.required],
@@ -72,9 +71,7 @@ export class RoomFormComponent implements OnInit {
   currentDate = moment().date();
   electricBillPlaceHolder = 'Electric bill';
   waterBillPlaceHolder = 'Water bill';
-  waterBillBalancePlaceHolder = 'Balance';
-  riceCookerBillPlaceHolder = 'Rice cooker bill';
-  riceCookerBillBalancePlaceHolder = 'Balance';
+
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -102,7 +99,7 @@ export class RoomFormComponent implements OnInit {
       this.electricBillPlaceHolder = `Electric bill ${this.model.electricBillInterest}`;
     }
     if (this.model.waterBillInterest !== null) {
-      this.waterBillBalancePlaceHolder = `Water bill ${this.model.waterBillInterest}`;
+      this.waterBillPlaceHolder = `Water bill ${this.model.waterBillInterest}`;
     }
   }
   loadFormValue(): void {
@@ -120,10 +117,7 @@ export class RoomFormComponent implements OnInit {
         })
       );
     }
-    this.addRoomRentInterest();
-    this.addElectricBillInterest();
-    this.addWaterBillInterest();
-    this.setPlaceHolders();
+
     this.form.patchValue({
       amountKWUsed: this.model.amountKWUsed,
       date: this.model.date,
@@ -143,6 +137,9 @@ export class RoomFormComponent implements OnInit {
       roomType: this.model.roomType,
       _id: this.model._id,
     });
+    this.addElectricBillInterest();
+    this.addWaterBillInterest();
+    this.setPlaceHolders();
   }
   getRoomPaymentByObjectId(roomPaymentObjectId: string): void {
     this.pageRequest.filters.type = FilterType.ROOMPAYMENTBYOBJECTID;
@@ -278,26 +275,29 @@ export class RoomFormComponent implements OnInit {
                                                 index: null,
                                               };
           if ( deck.tenant !== null ) {
-            roomTenant.name                            = `${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`;
-            roomTenant.dueRentDate                     = deck.dueRentDate;
-            roomTenant.rent                            = deck.monthlyRent;
-            roomTenant.rentStatus.value                = PaymentStatus.UNPAID;
-            roomTenant.rentStatus.balance              = null;
-            roomTenant.riceCookerBill                  = deck.riceCookerBill;
-            roomTenant.riceCookerBillStatus.value      = PaymentStatus.UNPAID;
-            roomTenant.riceCookerBillStatus.balance    = null;
-            roomTenant.index                           = roomTennantIndex;
+            roomTenant.name                         = `${deck.tenant.firstname} ${deck.tenant.middlename} ${deck.tenant.lastname}`;
+            roomTenant.dueRentDate                  = deck.dueRentDate;
+            roomTenant.rent                         = deck.monthlyRent;
+            roomTenant.rentToPay                    = deck.monthlyRent;
+            roomTenant.rentStatus.value             = PaymentStatus.UNPAID;
+            roomTenant.rentStatus.balance           = null;
+            roomTenant.riceCookerBill               = deck.riceCookerBill;
+            roomTenant.riceCookerBillToPay          = deck.riceCookerBill;
+            roomTenant.riceCookerBillStatus.value   = PaymentStatus.UNPAID;
+            roomTenant.riceCookerBillStatus.balance = null;
+            roomTenant.index                        = roomTennantIndex;
             roomTenants.push(roomTenant);
             roomTennantIndex++;
           }
           if (deck.status === DeckStatus.AWAY && deck.away[0].tenant !== null ) {
             // tslint:disable-next-line: max-line-length
-            awayRoomTenant.name                        = `${deck.away[0].tenant.firstname} ${deck.away[0].tenant.middlename} ${deck.away[0].tenant.lastname}`;
-            awayRoomTenant.dueRentDate                 = deck.away[0].dueRentDate;
-            awayRoomTenant.rent                        = deck.away[0].rent;
-            awayRoomTenant.rentStatus.value            = PaymentStatus.UNPAID;
-            roomTenant.rentStatus.balance              = null;
-            awayRoomTenant.index                       = roomTennantIndex;
+            awayRoomTenant.name                     = `${deck.away[0].tenant.firstname} ${deck.away[0].tenant.middlename} ${deck.away[0].tenant.lastname}`;
+            awayRoomTenant.dueRentDate              = deck.away[0].dueRentDate;
+            awayRoomTenant.rent                     = deck.away[0].rent;
+            awayRoomTenant.rentToPay                = deck.away[0].rent;
+            awayRoomTenant.rentStatus.value         = PaymentStatus.UNPAID;
+            roomTenant.rentStatus.balance           = null;
+            awayRoomTenant.index                    = roomTennantIndex;
             roomTenants.push(awayRoomTenant);
             roomTennantIndex++;
           }
@@ -319,15 +319,17 @@ export class RoomFormComponent implements OnInit {
                                           index: null,
                                         };
         if ( arrIndex === 0 ) {
-          roomTenant.name                            = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
-          roomTenant.dueRentDate                     = room.transientPrivateRoomProperties[0].dueRentDate;
-          roomTenant.rent                            = room.transientPrivateRoomProperties[0].monthlyRent;
-          roomTenant.rentStatus.value                = PaymentStatus.UNPAID;
-          roomTenant.rentStatus.balance              = null;
-          roomTenant.riceCookerBill                  = room.transientPrivateRoomProperties[0].riceCookerBill;
-          roomTenant.riceCookerBillStatus.value      = PaymentStatus.UNPAID;
-          roomTenant.riceCookerBillStatus.balance    = null;
-          roomTenant.index                           = roomTennantIndex;
+          roomTenant.name                         = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
+          roomTenant.dueRentDate                  = room.transientPrivateRoomProperties[0].dueRentDate;
+          roomTenant.rent                         = room.transientPrivateRoomProperties[0].monthlyRent;
+          roomTenant.rentToPay                    = room.transientPrivateRoomProperties[0].monthlyRent;
+          roomTenant.rentStatus.value             = PaymentStatus.UNPAID;
+          roomTenant.rentStatus.balance           = null;
+          roomTenant.riceCookerBill               = room.transientPrivateRoomProperties[0].riceCookerBill;
+          roomTenant.riceCookerBillToPay          = room.transientPrivateRoomProperties[0].riceCookerBill;
+          roomTenant.riceCookerBillStatus.value   = PaymentStatus.UNPAID;
+          roomTenant.riceCookerBillStatus.balance = null;
+          roomTenant.index                        = roomTennantIndex;
           roomTenants.push(roomTenant);
         } else {
           roomTenant.name               = `${tenant.firstname} ${tenant.middlename} ${tenant.lastname}`;
@@ -365,13 +367,6 @@ export class RoomFormComponent implements OnInit {
     this.form.get('roomType').setValue(RoomType.TRANSIENT);
   }
  }
- setWaterBill(): void {
-   if (this.form.get('roomType').value !== RoomType.BEDSPACE) {
-    this.form.get('enterWaterBill').enable();
-    this.form.get('waterBillStatus').setValue(PaymentStatus.UNPAID);
-    this.form.get('waterBillStatus').enable();
-   }
- }
   async showTenants(): Promise<void> {
     try {
       const roomByRoomNumber                = await this.getRoomByRoomNumber();
@@ -382,7 +377,6 @@ export class RoomFormComponent implements OnInit {
       const roomByRoomType                  = await this.roomService.getRooms<Room>(this.pageRequest);
       const roomTenants                     = this.getRoomTenants(roomByRoomType.data[0]);
       this.addRoomType(roomByRoomType.data[0]);
-      this.setWaterBill();
       this.addRoomTenantsToForm(roomTenants);
       this.addRoomTenantsToRoomTenantsArray(roomTenants);
       this.totalCount = this.roomTenants.length;
@@ -408,8 +402,6 @@ export class RoomFormComponent implements OnInit {
         } else if (dateDifference >= 16 && tenant.rentInterestAdded !== Interest.PLUSFIFTEENPERCENT) {
           tenant.rentToPay = this.addPercent(tenant.rent, 15);
           tenant.rentInterestAdded = Interest.PLUSFIFTEENPERCENT;
-        } else {
-          tenant.rentToPay = tenant.rent;
         }
       }
     });
@@ -419,7 +411,7 @@ export class RoomFormComponent implements OnInit {
     if (electricBillStatus === PaymentStatus.UNPAID) {
       const electricBill = this.form.get('totalAmountElectricBill').value;
       const electricBillInterest = this.form.get('electricBillInterest').value;
-      if (this.currentDate >= 5 && this.currentDate <= 10 && electricBillInterest !== Interest.PLUSFIVEPERCENT) {
+      if (this.currentDate >= 6 && this.currentDate <= 10 && electricBillInterest !== Interest.PLUSFIVEPERCENT) {
         this.form.get('totalAmountElectricBill').setValue(this.addPercent(electricBill, 5));
         this.form.get('electricBillInterest').setValue(Interest.PLUSFIVEPERCENT);
         this.electricBillPlaceHolder = 'Electric bill +5% interest';
@@ -442,7 +434,6 @@ export class RoomFormComponent implements OnInit {
   addWaterBillInterest(): void {
     const waterBillStatus = this.form.get('waterBillStatus').value;
     const roomType        = this.form.get('roomType').value;
-    this.setWaterBill();
     if (waterBillStatus === PaymentStatus.UNPAID && roomType !== RoomType.BEDSPACE ) {
       const roomTenantsArray: Array<RoomTenant> = this.form.get('roomTenants').value;
       const waterBill = this.form.get('waterBill').value;
@@ -451,41 +442,37 @@ export class RoomFormComponent implements OnInit {
       if (dateDifference >= 8 && dateDifference >= 10 && waterBillInterest !== Interest.PLUSTENPERCENT) {
         this.form.get('waterBill').setValue(this.addPercent(waterBill, 10));
         this.form.get('waterBillInterest').setValue(Interest.PLUSTENPERCENT);
-        this.waterBillPlaceHolder = `Water bill ${waterBillInterest}`;
+        this.waterBillPlaceHolder = 'Water bill +10% interest';
       } else if (this.currentDate >= 11 && this.currentDate <= 15 && waterBillInterest !== Interest.PLUSFIFTEENPERCENT ) {
         this.form.get('waterBill').setValue(this.addPercent(waterBill, 15));
         this.form.get('waterBillInterest').setValue(Interest.PLUSFIFTEENPERCENT);
-        this.waterBillPlaceHolder = `Water bill ${waterBillInterest}`;
+        this.waterBillPlaceHolder = 'Water bill +15% interest';
       } else if (this.currentDate >= 16 && waterBillInterest !== Interest.PLUSTWENTYPERCENT) {
         this.form.get('waterBill').setValue(this.addPercent(waterBill, 20));
         this.form.get('waterBillInterest').setValue(Interest.PLUSTWENTYPERCENT);
-        this.waterBillPlaceHolder = `Water bill ${waterBillInterest}`;
+        this.waterBillPlaceHolder = 'Water bill +20% interest';
       }
     }
   }
   addRiceCookerBillInterest(): void {
     const roomType = this.form.get('roomType').value;
-    for (let index = 0; index < this.roomTenants.length; index++) {
-      if (this.roomTenants[index].rentStatus.value === PaymentStatus.UNPAID) {
-        const dateDifference = this.currentDate - this.roomTenants[index].dueRentDate;
+    this.roomTenants.forEach((tenant, index) => {
+      if (tenant.rentStatus.value === PaymentStatus.UNPAID) {
+        const dateDifference = this.currentDate - tenant.dueRentDate;
         if (roomType === RoomType.BEDSPACE || index === 0) {
-          // tslint:disable-next-line: max-line-length
-          if ( dateDifference >= 8 && dateDifference <= 10 && this.roomTenants[index].riceCookerBillInterestAdded !== Interest.PLUSTENPERCENT) {
-            this.roomTenants[index].riceCookerBillToPay = this.addPercent(this.roomTenants[index].riceCookerBill, 10);
-            this.roomTenants[index].riceCookerBillInterestAdded = Interest.PLUSTENPERCENT;
-          // tslint:disable-next-line: max-line-length
-          } else if ( dateDifference >= 11 && dateDifference <= 15 && this.roomTenants[index].riceCookerBillInterestAdded !== Interest.PLUSFIFTEENPERCENT) {
-            this.roomTenants[index].riceCookerBillToPay = this.addPercent(this.roomTenants[index].riceCookerBill, 15);
-            this.roomTenants[index].riceCookerBillInterestAdded = Interest.PLUSFIFTEENPERCENT;
-          } else if ( dateDifference >= 16 && this.roomTenants[index].riceCookerBillInterestAdded !== Interest.PLUSTWENTYPERCENT) {
-            this.roomTenants[index].riceCookerBillToPay = this.addPercent(this.roomTenants[index].riceCookerBill, 20);
-            this.roomTenants[index].riceCookerBillInterestAdded = Interest.PLUSTENPERCENT;
-            } else {
-            this.roomTenants[index].riceCookerBillToPay = this.roomTenants[index].riceCookerBill;
+          if ( dateDifference >= 8 && dateDifference <= 10 && tenant.riceCookerBillInterestAdded !== Interest.PLUSTENPERCENT) {
+            tenant.riceCookerBillToPay         = this.addPercent(tenant.riceCookerBill, 10);
+            tenant.riceCookerBillInterestAdded = Interest.PLUSTENPERCENT;
+          } else if ( dateDifference >= 11 && dateDifference <= 15 && tenant.riceCookerBillInterestAdded !== Interest.PLUSFIFTEENPERCENT) {
+            tenant.riceCookerBillToPay         = this.addPercent(tenant.riceCookerBill, 15);
+            tenant.riceCookerBillInterestAdded = Interest.PLUSFIFTEENPERCENT;
+          } else if ( dateDifference >= 16 && tenant.riceCookerBillInterestAdded !== Interest.PLUSTWENTYPERCENT) {
+            tenant.riceCookerBillToPay         = this.addPercent(tenant.riceCookerBill, 20);
+            tenant.riceCookerBillInterestAdded = Interest.PLUSTENPERCENT;
           }
         }
       }
-    }
+    });
   }
   tablePagination(): void {
     const start     = this.pageSize * this.pageNumber;
@@ -556,8 +543,6 @@ export class RoomFormComponent implements OnInit {
       this.form.get('_id').setValue(this.model._id);
       this.notificationService.notifySuccess(message);
     } catch (error) {
-      console.log('the error ', error);
-
       this.notificationService.notifyFailed('Something went wrong');
       this.isSubmitting = false;
     }

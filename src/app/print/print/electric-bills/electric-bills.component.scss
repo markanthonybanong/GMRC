@@ -1,0 +1,71 @@
+.body{
+  margin-top: 40px;
+  header{
+    h1 {
+      text-align: center;
+    }
+  }
+  .electric-bills-parent{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 1em;
+    p{
+      font-size: 7px;
+    }
+    >.electric-bills{
+      border: 1px solid black;
+      padding: 5px;
+      .first-block{
+        p{
+          text-align: center;
+        }
+      }
+      .seventh-block{
+
+        p{
+          font-weight: bolder;
+        }
+      }
+      .eight-block{
+        margin-top: 15px;
+      }
+    }
+  }
+}
+/*MEDIA QUERIES*/
+@media (max-width: 575px) {
+}
+@media (min-width: 576px) {
+}
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+  .body{
+    >.electric-bills-parent{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-gap: 1em;
+    }
+  }
+}
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .body{
+    >.electric-bills-parent{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      grid-gap: 1em;
+
+    }
+  }
+}
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+  .body{
+    >.electric-bills-parent{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-gap: 1em;
+    }
+  }
+
+ }

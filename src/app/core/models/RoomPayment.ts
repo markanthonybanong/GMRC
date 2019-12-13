@@ -17,7 +17,6 @@ export class RoomPayment {
   electricBillInterest: string;
   waterBill: number;
   waterBillInterest: string;
-
   roomType: string;
   _id: string;
  }
