@@ -10,6 +10,7 @@ import {NgxPrintModule} from 'ngx-print';
 import { UnpaidBalanceTenantsComponent } from './print/unpaid-balance-tenants/unpaid-balance-tenants.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TenantsComponent } from './print/unpaid-balance-tenants/tenants/tenants.component';
+import { NoteComponent } from './print/promisory-note/note/note.component';
 
 @NgModule({
   imports: [
@@ -21,6 +22,6 @@ import { TenantsComponent } from './print/unpaid-balance-tenants/tenants/tenants
     ReactiveFormsModule,
     FormsModule,
   ],
-  declarations: [RoomBillsComponent, ElectricBillsComponent, PromisoryNoteComponent, PrintComponent, UnpaidBalanceTenantsComponent, TenantsComponent]
+  declarations: [RoomBillsComponent, ElectricBillsComponent, PromisoryNoteComponent, PrintComponent, UnpaidBalanceTenantsComponent, TenantsComponent, NoteComponent]
 })
 export class PrintModule { }

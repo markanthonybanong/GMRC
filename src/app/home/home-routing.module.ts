@@ -10,6 +10,7 @@ import { PrintModule } from '../print/print.module';
 import { RoomBillsComponent } from '../print/print/room-bills/room-bills.component';
 import { TenantsComponent } from '../print/print/unpaid-balance-tenants/tenants/tenants.component';
 import { ElectricBillsComponent } from '../print/print/electric-bills/electric-bills.component';
+import { NoteComponent } from '../print/print/promisory-note/note/note.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,11 @@ const routes: Routes = [
     path: 'print/unpaid-balance-tenants/tenants/:date',
     canActivate: [AuthGuardService],
     component: TenantsComponent
+  },
+  {
+    path: 'print/promisory-note/note/:name',
+    canActivate: [AuthGuardService],
+    component: NoteComponent
   },
 
 ];

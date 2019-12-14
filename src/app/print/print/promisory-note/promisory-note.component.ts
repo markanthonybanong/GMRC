@@ -32,7 +32,9 @@ export class PromisoryNoteComponent implements OnInit {
         this.tenants = tenant.data;
       } catch (error) {
       }
-
     }
+  }
+  openPromisoryNoteTab(): void {
+    window.open(`print/promisory-note/note/${this.form.get('name').value}`, '_blank');
   }
 }
