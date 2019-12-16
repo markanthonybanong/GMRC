@@ -5,6 +5,7 @@ import { TenantComponent } from './tenant/tenant.component';
 import { TenantFormComponent } from './tenant-form/tenant-form.component';
 import { AngularMaterialModule, TenantAdvanceSearchComponent, SharedModule } from '@gmrc/shared';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { WebcamModule } from 'ngx-webcam';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     SharedModule,
     ReactiveFormsModule,
     FormsModule,
+    WebcamModule
   ],
   declarations: [TenantComponent, TenantFormComponent],
   entryComponents: [TenantAdvanceSearchComponent],

@@ -3,6 +3,17 @@
 </div>
 <div class="container" *ngIf="isLoading === false">
   <mat-card [formGroup]="form">
+    <div class="img-block">
+      <div class="tenant-image">
+        <img src="../../../assets/img/tenant_default_image.png" alt="tenant_image" height="100" width="100">
+        <div class="tenant-image-selector">
+          <div>
+            <mat-icon>camera_alt</mat-icon>
+            <p>Update</p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="form-header-block">
       <h5 id="label-text-primary">{{formTitle}}</h5>
     </div>

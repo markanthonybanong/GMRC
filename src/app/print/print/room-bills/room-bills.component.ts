@@ -8,8 +8,6 @@ import groupBy from 'lodash/groupBy';
 import toArray from 'lodash/toArray';
 import find from 'lodash/find';
 import unionBy from 'lodash/unionBy';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 
 @Component({
